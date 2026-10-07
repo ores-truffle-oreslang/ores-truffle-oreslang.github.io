@@ -474,178 +474,128 @@ footer a {
   letter-spacing: -0.02em;
 }
 
-.street-scene {
-  position: relative;
-  min-height: 390px;
+.terminal-trace {
   overflow: hidden;
   margin: 34px 0;
-  border: 1px solid rgba(255, 240, 220, 0.14);
-  border-radius: 4px 36px 4px 36px;
-  background:
-    linear-gradient(180deg, rgba(3, 5, 7, 0.1), rgba(3, 5, 7, 0.82)),
-    linear-gradient(180deg, #11171c 0 46%, #07090b 46% 52%, #1a120f 52% 100%);
-  box-shadow:
-    inset 0 -80px 90px rgba(255, 106, 0, 0.05),
-    0 30px 90px rgba(16, 8, 5, 0.28);
+  border: 1px solid rgba(255, 240, 220, 0.16);
+  border-radius: 12px;
+  background: #050607;
+  box-shadow: 0 22px 80px rgba(12, 6, 3, 0.34);
 }
 
-.street-scene::before {
-  content: "";
-  position: absolute;
-  inset: 46% 0 0;
-  opacity: 0.75;
-  background:
-    linear-gradient(105deg, transparent 0 15%, rgba(255,255,255,0.035) 15.3% 15.7%, transparent 16% 100%),
-    linear-gradient(74deg, transparent 0 61%, rgba(255,106,0,0.08) 61.3% 61.8%, transparent 62% 100%),
-    linear-gradient(180deg, rgba(255,255,255,0.035), transparent 28%);
-  transform: perspective(240px) rotateX(34deg);
-  transform-origin: top;
+.terminal-trace-home {
+  margin-top: 30px;
 }
 
-.street-scene-home {
-  min-height: 330px;
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 13px;
+  border-bottom: 1px solid #23272b;
+  background: #0d0f11;
 }
 
-.street-glow {
-  position: absolute;
-  width: 210px;
-  height: 210px;
+.terminal-bar strong {
+  margin-left: 6px;
+  color: #8d949b;
+  font: 700 0.7rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.terminal-dot {
+  width: 9px;
+  height: 9px;
   border-radius: 999px;
-  filter: blur(16px);
-  opacity: 0.35;
-  background: radial-gradient(circle, rgba(255, 169, 93, 0.58), rgba(255, 106, 0, 0.12) 32%, transparent 68%);
+  background: #3b4045;
 }
 
-.street-glow-a {
-  top: 12px;
-  left: 5%;
+.terminal-trace pre {
+  overflow-x: auto;
+  margin: 0;
+  padding: clamp(18px, 3vw, 28px);
+  color: #d9e0e6;
+  font: 0.86rem/1.72 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  tab-size: 2;
 }
 
-.street-glow-b {
-  top: 42px;
-  right: 16%;
-  transform: scale(0.7);
+.terminal-trace code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
 }
 
-.street-lamp {
-  position: absolute;
-  bottom: 42%;
-  width: 3px;
-  height: 175px;
-  background: linear-gradient(180deg, #6c5a4c, #171717);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.025);
+.term-prompt {
+  color: #f2f5f7;
+  font-weight: 800;
 }
 
-.street-lamp::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -16px;
-  width: 34px;
-  height: 4px;
-  border-radius: 999px;
-  background: #302922;
+.term-dim {
+  color: #68727c;
 }
 
-.street-lamp span {
-  position: absolute;
-  top: -10px;
-  left: -8px;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  background: #ffd49a;
-  box-shadow:
-    0 0 18px rgba(255, 186, 108, 0.95),
-    0 0 62px rgba(255, 106, 0, 0.45);
+.term-error {
+  color: #ff875f;
+  font-weight: 800;
 }
 
-.street-lamp-a {
-  left: 17%;
+.term-tag {
+  display: inline-block;
+  padding: 0 5px;
+  border: 1px solid #384047;
+  border-radius: 3px;
+  color: #b8c2cb;
+  font-size: 0.82em;
+  line-height: 1.45;
 }
 
-.street-lamp-b {
-  right: 24%;
-  height: 152px;
-  opacity: 0.82;
+.compile-strip {
+  margin: 22px 0 30px;
+  padding: 18px 20px;
+  border-left: 3px solid var(--orange);
+  background: rgba(30, 19, 14, 0.32);
 }
 
-.wet-line {
-  position: absolute;
-  bottom: -38px;
-  width: 16px;
-  height: 210px;
-  border-radius: 50%;
-  filter: blur(6px);
-  opacity: 0.36;
-  background: linear-gradient(180deg, rgba(255, 198, 134, 0.8), rgba(255, 106, 0, 0.02));
-  transform: skewX(-10deg);
+.compile-strip strong {
+  color: var(--cream);
 }
 
-.wet-line-a {
-  left: 18%;
+.compile-strip p {
+  margin: 5px 0 0;
 }
 
-.wet-line-b {
-  right: 25%;
-  height: 160px;
-  opacity: 0.22;
-}
-
-.white-coat {
-  position: absolute;
-  right: 8%;
-  bottom: 27px;
-  width: 62px;
-  height: 132px;
-  border-radius: 28px 28px 11px 11px;
-  background: linear-gradient(180deg, #f7f0e7, #cfc7bd 72%, #857b72);
-  clip-path: polygon(28% 0, 72% 0, 86% 18%, 100% 100%, 54% 91%, 48% 100%, 0 100%, 14% 18%);
-  box-shadow:
-    -14px 12px 26px rgba(0,0,0,0.34),
-    0 0 28px rgba(255,255,255,0.08);
-}
-
-.white-coat::before {
-  content: "";
-  position: absolute;
-  top: -29px;
-  left: 19px;
-  width: 27px;
-  height: 31px;
-  border-radius: 48% 48% 40% 40%;
-  background: #201c19;
-}
-
-.white-coat span {
-  position: absolute;
-  top: 22px;
-  left: 30px;
-  width: 2px;
-  height: 92px;
-  background: rgba(50, 42, 37, 0.32);
-}
-
-.street-copy {
-  position: absolute;
-  left: 28px;
-  bottom: 24px;
+.compile-grid {
   display: grid;
-  gap: 2px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  text-transform: lowercase;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 28px 0 34px;
 }
 
-.street-copy strong {
-  color: #fff3e3;
-  font-size: clamp(1rem, 2.1vw, 1.35rem);
-  letter-spacing: 0.08em;
+.compile-card {
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: rgba(45, 32, 25, 0.24);
 }
 
-.street-copy span {
-  color: var(--orange-soft);
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
+.compile-card > span {
+  color: var(--orange);
+  font: 800 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.14em;
+}
+
+.compile-card h4 {
+  margin: 11px 0 7px;
+  color: var(--cream);
+  font-size: 1.05rem;
+}
+
+.compile-card p {
+  margin: 0;
+  color: var(--paper);
+  font-size: 0.94rem;
 }
 
 .keyword-rail {
@@ -784,19 +734,11 @@ footer a {
     grid-template-columns: 1fr;
   }
 
-  .street-scene,
-  .street-scene-home {
-    min-height: 300px;
+  .compile-grid {
+    grid-template-columns: 1fr;
   }
 
-  .white-coat {
-    right: 7%;
-    transform: scale(0.82);
-    transform-origin: bottom right;
-  }
-
-  .street-copy {
-    left: 18px;
-    bottom: 18px;
+  .terminal-trace pre {
+    font-size: 0.76rem;
   }
 }
