@@ -520,7 +520,7 @@ footer a {
   tab-size: 2;
 }
 
-.terminal-trace code {
+.prose .terminal-trace code {
   padding: 0;
   border: 0;
   background: transparent;
