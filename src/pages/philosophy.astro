@@ -18,19 +18,64 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   <section class="page-body">
     <div class="prose">
-      <div class="street-scene" aria-label="Abstract dark city street with streetlights reflected on wet pavement and a lone white-coated figure">
-        <div class="street-glow street-glow-a"></div>
-        <div class="street-glow street-glow-b"></div>
-        <div class="street-lamp street-lamp-a"><span></span></div>
-        <div class="street-lamp street-lamp-b"><span></span></div>
-        <div class="wet-line wet-line-a"></div>
-        <div class="wet-line wet-line-b"></div>
-        <div class="white-coat" aria-hidden="true"><span></span></div>
-        <div class="street-copy">
-          <strong>pure · trap · actor</strong>
-          <span>nlex · rt · recover</span>
+      <div class="terminal-trace" aria-label="Illustrative Oreslang runtime stack trace">
+        <div class="terminal-bar">
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <strong>ores · runtime</strong>
         </div>
+        <pre><code><span class="term-prompt">$</span> ores run app.ores --mode=hybrid
+<span class="term-dim">[oresvm]</span> loaded code image app.aot <span class="term-tag">AOT</span>
+<span class="term-dim">[oresvm]</span> Worker.run crossed hot threshold <span class="term-tag">JIT tier 2</span>
+
+<span class="term-error">OresError[E_OPTION_NONE]</span>: unwrap() called on Option.none
+  --> src/worker.ores:18:14
+  18 | const job = next.unwrap();
+     |                  ^^^^^^
+
+stack trace:
+  0: Worker.run(Job)          src/worker.ores:18
+  1: QueueActor.dispatch(Job) src/queue.ores:44
+  2: actor#worker-17.mailbox  &lt;oresvm&gt;
+
+runtime frames:
+  code image   app.aot       <span class="term-tag">AOT</span>
+  hot frame    Worker.run    <span class="term-tag">JIT tier 2</span>
+  actor        worker-17     <span class="term-tag">isolated</span></code></pre>
       </div>
+
+      <h3>AOT + JIT are complementary</h3>
+      <p>
+        Oreslang is designed so one static language surface can support two compilation strategies
+        without forcing applications into two different programming models. Ahead-of-time compilation
+        can turn verified code and runtime metadata into deployable images with predictable startup,
+        while JIT compilation can specialize the hot functions, actor routes, and data shapes that only
+        become obvious after a program is running.
+      </p>
+
+      <div class="compile-grid">
+        <article class="compile-card">
+          <span>AOT</span>
+          <h4>Compile before deployment</h4>
+          <p>Resolve types, ownership rules, closed shapes, imports, and as much dispatch as possible before the program starts.</p>
+        </article>
+        <article class="compile-card">
+          <span>JIT</span>
+          <h4>Specialize what gets hot</h4>
+          <p>Use runtime profiles to optimize frequently executed actor handlers and routines without weakening the static contract.</p>
+        </article>
+        <article class="compile-card">
+          <span>IR</span>
+          <h4>Share the same semantic core</h4>
+          <p>A stable typed IR can feed Graal/Truffle today and later native backends such as LLVM without redesigning the language.</p>
+        </article>
+      </div>
+
+      <p>
+        Extra explicitness is useful here: fewer ambiguous constructs mean less compiler work proving
+        what a program means, more stable AOT output, and cleaner specialization opportunities for a JIT.
+      </p>
 
       <h3>Memory safety should be layered</h3>
       <p>
