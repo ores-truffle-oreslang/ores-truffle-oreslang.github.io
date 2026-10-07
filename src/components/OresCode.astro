@@ -1,5 +1,6 @@
 ---
-import { highlightOres } from "../lib/oresHighlight";
+import { defaultHighlighter } from "@ores-truffle-oreslang/html-js-css-syntax-highlighter";
+import { highlightForAstro } from "@ores-truffle-oreslang/html-js-css-syntax-highlighter/adapters/astro";
 
 interface Props {
   code: string;
@@ -7,7 +8,7 @@ interface Props {
 }
 
 const { code, caption = "Oreslang" } = Astro.props;
-const html = highlightOres(code.trim());
+const { html } = highlightForAstro(defaultHighlighter, code.trim(), "oreslang");
 ---
 
 <figure class="code-card">

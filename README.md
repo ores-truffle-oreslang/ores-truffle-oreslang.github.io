@@ -7,8 +7,16 @@ Marketing site for [Oreslang](https://github.com/ores-truffle-oreslang), built w
 Requires Node.js 22.20.0 or newer.
 
 ```bash
+git clone --recurse-submodules https://github.com/ores-truffle-oreslang/ores-truffle-oreslang.github.io.git
+cd ores-truffle-oreslang.github.io
 npm install
 npm run dev
+```
+
+If the repository was already cloned:
+
+```bash
+git submodule update --init --recursive
 ```
 
 Build and validate:
@@ -24,12 +32,19 @@ The homepage is intentionally both a landing page and a table of contents:
 
 ## Oreslang syntax highlighting
 
-`src/lib/oresHighlight.ts` contains a small Oreslang-specific tokenizer used by
-`src/components/OresCode.astro`. It recognizes Oreslang comments, strings,
-keywords, built-in types, symbols/types, numbers, and operators without treating
-the language as another existing grammar.
+Syntax highlighting lives in the pinned submodule at
+`vendor/html-js-css-syntax-highlighter`, backed by:
+
+https://github.com/ores-truffle-oreslang/html-js-css-syntax-highlighter
+
+The site consumes its Astro adapter from
+`@ores-truffle-oreslang/html-js-css-syntax-highlighter/adapters/astro`.
+
+To intentionally update the grammar used by the site, advance the submodule pointer
+to a tested highlighter commit and commit that pointer change here.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds Astro and deploys `dist/` to GitHub Pages.
+`.github/workflows/deploy.yml` checks out submodules, runs the highlighter's own test
+suite, builds Astro, and deploys `dist/` to GitHub Pages.
 `public/.nojekyll` explicitly disables Jekyll processing.

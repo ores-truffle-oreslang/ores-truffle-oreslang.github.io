@@ -18,8 +18,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout site and pinned syntax highlighter
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Verify highlighter submodule is present
+        run: |
+          test -f vendor/html-js-css-syntax-highlighter/package.json
+          git submodule status --recursive
+
+      - name: Test syntax highlighter
+        working-directory: vendor/html-js-css-syntax-highlighter
+        run: npm run ci
 
       - name: Setup Node
         uses: actions/setup-node@v4

@@ -10,6 +10,7 @@
     "check": "astro check"
   },
   "dependencies": {
+    "@ores-truffle-oreslang/html-js-css-syntax-highlighter": "file:vendor/html-js-css-syntax-highlighter",
     "astro": "7.3.6"
   },
   "devDependencies": {
