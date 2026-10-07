@@ -1,0 +1,163 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionTitle from "../components/SectionTitle.astro";
+import OresCode from "../components/OresCode.astro";
+
+const actorCode = `
+define actor Worker as
+  pub fnc on_start(): void {
+    stdio.println("worker ready");
+  }
+
+  pub fnc run(job: Job): Result {
+    return process(job);
+  }
+end
+
+const worker = spawn Worker();
+const result = await worker.run(job);
+`;
+
+const selectCode = `
+do nb select {
+  when readch messages: val msg {
+    stdio.println("got: ", msg);
+  }
+
+  when await future: val result {
+    consume(result);
+  }
+
+  when timeout 5s {
+    retry();
+  }
+
+  when cancelled token {
+    cleanup();
+  }
+}
+`;
+
+const structCode = `
+const account = infer struct {
+  id: "acct_42",
+  active: true
+};
+
+match account over
+  on structural {id: string, active: bool} a -> {
+    return a.id;
+  }
+  on _ -> {
+    return "unknown";
+  }
+end
+`;
+---
+
+<BaseLayout
+  title="Oreslang — isolation-first systems programming"
+  description="Oreslang is an isolation-first language for actors, FaaS, mobile runtimes, memory safety, and hot-reloadable trusted and untrusted code."
+  home={true}
+>
+  <section class="hero">
+    <div>
+      <p class="kicker">Isolation-first language design</p>
+      <h1><span class="display-word">oreslang</span><br />safe code can still move fast.</h1>
+      <p class="hero-copy">
+        A language for actor-based systems where isolation, option-safe data, hot code loading,
+        and predictable concurrency are part of the model—not a pile of conventions added later.
+      </p>
+    </div>
+    <aside class="hero-note">
+      <strong>Built for hostile boundaries.</strong>
+      <p>Mobile sandboxes. FaaS runtimes. Multi-tenant actors. Trusted and untrusted code living in one system without sharing the wrong things.</p>
+    </aside>
+  </section>
+
+  <section class="section" id="about">
+    <div class="section-grid">
+      <SectionTitle eyebrow="01 / About" title="Why Oreslang" href="/about/" />
+      <div class="prose">
+        <p>
+          Oreslang starts from a different default: code units should have explicit boundaries,
+          actor messages should be safe to move, and the compiler should reject whole categories
+          of lifetime and data-flow mistakes before the runtime needs to clean them up.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <h3>Isolation first</h3>
+            <p>Actors are not just syntax for queues. Shared, private, and untrusted actors have different safety and visibility contracts.</p>
+          </article>
+          <article class="card">
+            <h3>Compile-time leverage</h3>
+            <p>Borrowing, structural types, options, sendability rules, and AOT-friendly shapes make data movement visible to the compiler.</p>
+          </article>
+          <article class="card">
+            <h3>Code sharing without data leaks</h3>
+            <p>Actors in one OresVM can share immutable code images while retaining isolated state and controlled capabilities.</p>
+          </article>
+          <article class="card">
+            <h3>Runtime plurality</h3>
+            <p>The model is meant to fit phones, server processes, FaaS workers, GPU paths, and other constrained execution environments.</p>
+          </article>
+        </div>
+        <p>
+          Oreslang is authored by <a href="https://github.com/oresoftware">Oresoftware Dev House</a>.
+          Click the section title to open the dedicated About page.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="examples">
+    <div class="section-grid">
+      <SectionTitle eyebrow="02 / Examples" title="The language in motion" href="/examples/" />
+      <div class="code-stack">
+        <OresCode caption="Actors with explicit lifecycle" code={actorCode} />
+        <OresCode caption="Select over channels, futures, timeouts, and cancellation" code={selectCode} />
+        <OresCode caption="Closed inferred structs + structural matching" code={structCode} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="problem-spaces">
+    <div class="section-grid">
+      <SectionTitle eyebrow="03 / Problem spaces" title="Where the sharp edges are" href="/problem-spaces/" />
+      <div class="prose">
+        <p>
+          The language is aimed at systems where ordinary process boundaries are too expensive,
+          ordinary shared memory is too risky, and dynamic code loading needs a stronger trust model.
+        </p>
+        <div class="problem-list">
+          <article class="problem">
+            <h3>Isolation on phones and FaaS</h3>
+            <p>Use actors and capabilities to create cheap boundaries inside one process, with stronger isolation for workloads that need it.</p>
+          </article>
+          <article class="problem">
+            <h3>True data safety</h3>
+            <p>Option-aware APIs, compiler-enforced ownership/borrowing, immutable values, and serialized actor mailboxes reduce ambiguous lifetimes and pointer leaks.</p>
+          </article>
+          <article class="problem">
+            <h3>Hot-loading trusted and untrusted code</h3>
+            <p>Load code without duplicating immutable code images across every actor, while whitelisting what untrusted actors are allowed to execute or share.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="links">
+    <div class="section-grid">
+      <SectionTitle eyebrow="04 / Links" title="Follow the source" href="/links/" />
+      <div class="prose">
+        <p>The project is being designed and implemented in the open.</p>
+        <div class="link-list">
+          <a href="https://github.com/ores-truffle-oreslang"><span>Oreslang GitHub organization</span><span>↗</span></a>
+          <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java"><span>Compiler / VM source</span><span>↗</span></a>
+          <a href="https://github.com/oresoftware"><span>Oresoftware Dev House</span><span>↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

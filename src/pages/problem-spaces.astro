@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Oreslang Problem Spaces"
+  description="The core systems problems Oreslang targets: cheap isolation, data safety, actors, and hot-loading trusted or untrusted code."
+>
+  <section class="page-hero">
+    <p class="kicker">Problem spaces</p>
+    <h1>Cheap boundaries without cheap guarantees.</h1>
+    <p>Oreslang is designed around places where isolation, lifetime safety, and code mobility collide.</p>
+  </section>
+
+  <section class="page-body">
+    <div class="prose">
+      <div class="problem-list">
+        <article class="problem">
+          <h3>Isolation on mobile phones</h3>
+          <p>
+            Mobile apps increasingly host extensions, automation, downloaded behavior, and concurrent
+            background work. Spawning a full operating-system process for every unit is often impractical.
+            Oreslang’s actor model is intended to create stronger in-process isolation boundaries, while
+            still allowing selected immutable code to be shared instead of duplicated.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Isolation in FaaS and multi-tenant runtimes</h3>
+          <p>
+            Serverless hosts need rapid startup, dense packing, cancellation, quotas, and clear tenant
+            boundaries. Oreslang actors are intended to map cleanly onto shared, isolated, and untrusted
+            execution pools so the runtime can choose the cost of a boundary without changing the application model.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>True data safety</h3>
+          <p>
+            Memory safety is necessary but insufficient. Oreslang combines ownership/borrowing checks,
+            closed structural values, explicit option/result types, immutable-by-default data, and actor
+            mailbox sendability rules so data cannot casually retain unsafe pointers or cross trust boundaries.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Memory-safe actors</h3>
+          <p>
+            Actor state should be local, messages should have explicit movement/serialization rules, and
+            untrusted actors should not gain ambient access to host capabilities. The compiler and VM both
+            participate: compile-time checks narrow what is possible, while the runtime owns scheduling,
+            GC, cancellation, and enforcement.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Hot-reloading trusted code</h3>
+          <p>
+            A running system should be able to load a new immutable code image once and let many actors
+            execute it without cloning imports or machine code into every actor. Actor state remains isolated
+            while compatible code can be shared inside the same OresVM process.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Hot-reloading untrusted code</h3>
+          <p>
+            Untrusted code requires another gate: sharing must be capability- and whitelist-driven.
+            The runtime should be able to admit a verified subset of code into shared executable memory
+            while keeping untrusted state, capabilities, and mutable references isolated.
+          </p>
+        </article>
+      </div>
+      <p><a href="/#problem-spaces">← Back to the Problem Spaces section on the home page</a></p>
+    </div>
+  </section>
+</BaseLayout>

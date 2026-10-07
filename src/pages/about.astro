@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About Oreslang"
+  description="The motivations behind Oreslang and the Oresoftware Dev House building it."
+>
+  <section class="page-hero">
+    <p class="kicker">About</p>
+    <h1>Isolation is a language feature.</h1>
+    <p>Oreslang is being built around the idea that concurrency, code loading, ownership, and trust boundaries should reinforce one another instead of being separate subsystems.</p>
+  </section>
+
+  <section class="page-body">
+    <div class="prose">
+      <h3>Motivations</h3>
+      <p>
+        Modern runtimes routinely need to host many independent jobs inside one machine: app plugins,
+        serverless functions, actors, background tasks, user-authored code, and hot-reloaded modules.
+        Process isolation is strong but can be expensive; shared memory is cheap but easy to misuse.
+        Oreslang is exploring a middle ground where the compiler and VM cooperate on isolation.
+      </p>
+      <p>
+        The goal is not merely memory safety. The language model should make it difficult to create
+        accidental ambient authority, dangling references, unsafe actor messages, or mutable data
+        races—and it should make the safe path ergonomic enough to use by default.
+      </p>
+
+      <h3>Oresoftware Dev House</h3>
+      <p>
+        Oreslang is authored by <a href="https://github.com/oresoftware">Oresoftware Dev House</a>,
+        with the compiler and related projects collected under the
+        <a href="https://github.com/ores-truffle-oreslang">ores-truffle-oreslang GitHub organization</a>.
+      </p>
+      <p><a href="/#about">← Back to the About section on the home page</a></p>
+    </div>
+  </section>
+</BaseLayout>

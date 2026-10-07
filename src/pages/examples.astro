@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import OresCode from "../components/OresCode.astro";
+
+const selectCode = `
+do nb select {
+  when readch messages: val msg {
+    stdio.println("got later: ", msg);
+  }
+
+  when await future: val result {
+    use(result);
+  }
+
+  when timeout 5s {
+    retry();
+  }
+
+  when cancelled token {
+    cleanup();
+  }
+}
+`;
+
+const actorCode = `
+define actor Worker as
+  pub fnc on_start(): void {
+    warm_cache();
+  }
+
+  pub async fnc transform(input: Payload): Result {
+    return await pipeline(input);
+  }
+end
+
+const worker: ActorRef<Worker> = spawn Worker();
+const result = await worker.transform(payload);
+`;
+
+const dataCode = `
+const user = infer struct {
+  name: "Ada",
+  enabled: true
+};
+
+define type HasName as trait
+  requires name: string;
+end
+
+match user over
+  on structural HasName named -> {
+    return Option.some(named.name);
+  }
+  on _ -> {
+    return Option.none();
+  }
+end
+`;
+---
+
+<BaseLayout
+  title="Oreslang Examples"
+  description="Examples of Oreslang actors, select statements, futures, inferred structs, structural matching, and option-safe data."
+>
+  <section class="page-hero">
+    <p class="kicker">Examples</p>
+    <h1>Syntax that exposes the runtime model.</h1>
+    <p>These samples are highlighted by a purpose-built Oreslang tokenizer included in this site, so the language does not have to masquerade as Java, Rust, or JavaScript.</p>
+  </section>
+
+  <section class="page-body">
+    <div class="code-stack">
+      <OresCode caption="Select is broader than channel receive" code={selectCode} />
+      <OresCode caption="Actors expose references, not raw state pointers" code={actorCode} />
+      <OresCode caption="Closed structural values and option-safe returns" code={dataCode} />
+    </div>
+    <div class="prose">
+      <p><a href="/#examples">← Back to the Examples section on the home page</a></p>
+    </div>
+  </section>
+</BaseLayout>

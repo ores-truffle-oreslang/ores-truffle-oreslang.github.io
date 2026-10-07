@@ -1,0 +1,20 @@
+---
+import { highlightOres } from "../lib/oresHighlight";
+
+interface Props {
+  code: string;
+  caption?: string;
+}
+
+const { code, caption = "Oreslang" } = Astro.props;
+const html = highlightOres(code.trim());
+---
+
+<figure class="code-card">
+  <figcaption>
+    <span class="code-dot" aria-hidden="true"></span>
+    <span>{caption}</span>
+    <span class="code-lang">.ores</span>
+  </figcaption>
+  <pre><code set:html={html}></code></pre>
+</figure>
