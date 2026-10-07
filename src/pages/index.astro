@@ -120,18 +120,34 @@ end
           JIT specialization faster.
         </p>
 
-        <div class="street-scene street-scene-home" aria-label="Abstract dark city street with streetlights reflected on wet pavement and a lone white-coated figure">
-          <div class="street-glow street-glow-a"></div>
-          <div class="street-glow street-glow-b"></div>
-          <div class="street-lamp street-lamp-a"><span></span></div>
-          <div class="street-lamp street-lamp-b"><span></span></div>
-          <div class="wet-line wet-line-a"></div>
-          <div class="wet-line wet-line-b"></div>
-          <div class="white-coat" aria-hidden="true"><span></span></div>
-          <div class="street-copy">
-            <strong>pure · trap · actor</strong>
-            <span>nlex · rt · recover</span>
+        <div class="terminal-trace terminal-trace-home" aria-label="Illustrative Oreslang runtime stack trace">
+          <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <strong>ores · runtime</strong>
           </div>
+          <pre><code><span class="term-prompt">$</span> ores run app.ores --mode=hybrid
+<span class="term-dim">[oresvm]</span> loaded code image app.aot <span class="term-tag">AOT</span>
+<span class="term-dim">[oresvm]</span> Worker.run crossed hot threshold <span class="term-tag">JIT tier 2</span>
+
+<span class="term-error">OresError[E_OPTION_NONE]</span>: unwrap() called on Option.none
+  --> src/worker.ores:18:14
+  18 | const job = next.unwrap();
+     |                  ^^^^^^
+
+stack trace:
+  0: Worker.run(Job)          src/worker.ores:18
+  1: QueueActor.dispatch(Job) src/queue.ores:44
+  2: actor#worker-17.mailbox  &lt;oresvm&gt;</code></pre>
+        </div>
+
+        <div class="compile-strip">
+          <strong>AOT for startup. JIT for heat.</strong>
+          <p>
+            Oreslang's explicit static surface is designed to feed both ahead-of-time compilation for
+            predictable startup and deployment, and runtime specialization of hot code paths when a JIT is available.
+          </p>
         </div>
 
         <div class="keyword-rail" aria-label="Oreslang design themes">
