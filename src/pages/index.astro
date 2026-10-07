@@ -9,7 +9,7 @@ define actor Worker as
     stdio.println("worker ready");
   }
 
-  pub fnc run(job: Job): Result {
+  pub fnc run(Job job): Result {
     return process(job);
   }
 end
@@ -57,7 +57,7 @@ end
 
 <BaseLayout
   title="Oreslang — isolation-first systems programming"
-  description="Oreslang is an isolation-first language for actors, FaaS, mobile runtimes, memory safety, and hot-reloadable trusted and untrusted code."
+  description="Oreslang is an isolation-first language for actors, FaaS, mobile runtimes, memory safety, hot code loading, and explicit compilation."
   home={true}
 >
   <section class="hero">
@@ -66,7 +66,7 @@ end
       <h1><span class="display-word">oreslang</span><br />safe code can still move fast.</h1>
       <p class="hero-copy">
         A language for actor-based systems where isolation, option-safe data, hot code loading,
-        and predictable concurrency are part of the model—not a pile of conventions added later.
+        explicit compilation, and predictable concurrency are part of the model—not a pile of conventions added later.
       </p>
     </div>
     <aside class="hero-note">
@@ -87,7 +87,7 @@ end
         <div class="card-grid">
           <article class="card">
             <h3>Isolation first</h3>
-            <p>Actors are not just syntax for queues. Shared, private, and untrusted actors have different safety and visibility contracts.</p>
+            <p>Actors are not just syntax for queues. Shared, private, isolated, and untrusted actors carry different safety and visibility contracts.</p>
           </article>
           <article class="card">
             <h3>Compile-time leverage</h3>
@@ -110,9 +110,64 @@ end
     </div>
   </section>
 
+  <section class="section section-philosophy" id="philosophy">
+    <div class="section-grid">
+      <SectionTitle eyebrow="02 / Philosophy" title="Spend syntax to buy certainty" href="/philosophy/" />
+      <div class="prose">
+        <p class="manifesto-lede">
+          In the age of AI-assisted programming, terseness is less sacred. Oreslang is willing to
+          be roughly 20–30% more explicit when those extra tokens reduce ambiguity and make static
+          analysis, AOT compilation, and JIT specialization easier to reason about.
+        </p>
+
+        <div class="street-scene street-scene-home" aria-label="Abstract dark city street with streetlights reflected on wet pavement and a lone white-coated figure">
+          <div class="street-glow street-glow-a"></div>
+          <div class="street-glow street-glow-b"></div>
+          <div class="street-lamp street-lamp-a"><span></span></div>
+          <div class="street-lamp street-lamp-b"><span></span></div>
+          <div class="wet-line wet-line-a"></div>
+          <div class="wet-line wet-line-b"></div>
+          <div class="white-coat" aria-hidden="true"><span></span></div>
+          <div class="street-copy">
+            <strong>pure · trap · actor</strong>
+            <span>nlex · rt · recover</span>
+          </div>
+        </div>
+
+        <div class="keyword-rail" aria-label="Oreslang design themes">
+          <span>borrow checker</span>
+          <span>no nulls</span>
+          <span>static types</span>
+          <span>exhaustive match</span>
+          <span>hybrid GC</span>
+          <span>hot reload</span>
+          <span>non-cooperative scheduling</span>
+          <span>GPU / quantum</span>
+        </div>
+
+        <p>
+          The safety stack is layered: Rust-class memory-safety goals through ownership and borrowing,
+          option types instead of null, automatic GC for managed graphs, actor confinement for easier
+          concurrency safety, and explicit effect/error boundaries such as <code>pure</code> and <code>trap</code>.
+          <code>alex</code>/<code>nlex</code> lexical modes are designed to expose more optimization intent to the compiler.
+        </p>
+
+        <div class="future-strip">
+          <strong>Future: location-transparent actors.</strong>
+          <p>
+            Keep one typed actor model while placement evolves from local shared memory to isolated memory,
+            IPC, TCP, or an external machine. Placement affinity should change transport—not application semantics.
+          </p>
+        </div>
+
+        <p><a href="/philosophy/">Read the full philosophy, runtime direction, and language-building notes →</a></p>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="examples">
     <div class="section-grid">
-      <SectionTitle eyebrow="02 / Examples" title="The language in motion" href="/examples/" />
+      <SectionTitle eyebrow="03 / Examples" title="The language in motion" href="/examples/" />
       <div class="code-stack">
         <OresCode caption="Actors with explicit lifecycle" code={actorCode} />
         <OresCode caption="Select over channels, futures, timeouts, and cancellation" code={selectCode} />
@@ -123,11 +178,12 @@ end
 
   <section class="section" id="problem-spaces">
     <div class="section-grid">
-      <SectionTitle eyebrow="03 / Problem spaces" title="Where the sharp edges are" href="/problem-spaces/" />
+      <SectionTitle eyebrow="04 / Problem spaces" title="Where the sharp edges are" href="/problem-spaces/" />
       <div class="prose">
         <p>
           The language is aimed at systems where ordinary process boundaries are too expensive,
-          ordinary shared memory is too risky, and dynamic code loading needs a stronger trust model.
+          ordinary shared memory is too risky, dynamic code loading needs a stronger trust model,
+          and workloads cannot always be trusted to cooperate with a scheduler.
         </p>
         <div class="problem-list">
           <article class="problem">
@@ -142,6 +198,10 @@ end
             <h3>Hot-loading trusted and untrusted code</h3>
             <p>Load code without duplicating immutable code images across every actor, while whitelisting what untrusted actors are allowed to execute or share.</p>
           </article>
+          <article class="problem">
+            <h3>Scheduling code that will not yield</h3>
+            <p>FaaS and mobile runtimes need a path for CPU-hungry or third-party work that cannot rely on cooperative scheduling alone.</p>
+          </article>
         </div>
       </div>
     </div>
@@ -149,7 +209,7 @@ end
 
   <section class="section" id="links">
     <div class="section-grid">
-      <SectionTitle eyebrow="04 / Links" title="Follow the source" href="/links/" />
+      <SectionTitle eyebrow="05 / Links" title="Follow the source" href="/links/" />
       <div class="prose">
         <p>The project is being designed and implemented in the open.</p>
         <div class="link-list">

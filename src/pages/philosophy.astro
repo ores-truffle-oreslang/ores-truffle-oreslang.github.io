@@ -1,0 +1,140 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Oreslang Philosophy — explicit syntax, safer runtimes"
+  description="Why Oreslang chooses explicit syntax, actor isolation, borrowing, option types, hybrid GC, non-cooperative scheduling, hot code loading, and a path toward location-transparent distributed actors."
+>
+  <section class="page-hero philosophy-hero">
+    <p class="kicker">Philosophy</p>
+    <h1>Spend syntax to buy certainty.</h1>
+    <p>
+      In an AI-assisted era, terseness is less sacred. Oreslang is willing to spend roughly
+      20–30% more syntax when that extra explicitness reduces ambiguity, strengthens static
+      analysis, and gives both AOT and JIT compilers more information earlier.
+    </p>
+  </section>
+
+  <section class="page-body">
+    <div class="prose">
+      <div class="street-scene" aria-label="Abstract dark city street with streetlights reflected on wet pavement and a lone white-coated figure">
+        <div class="street-glow street-glow-a"></div>
+        <div class="street-glow street-glow-b"></div>
+        <div class="street-lamp street-lamp-a"><span></span></div>
+        <div class="street-lamp street-lamp-b"><span></span></div>
+        <div class="wet-line wet-line-a"></div>
+        <div class="wet-line wet-line-b"></div>
+        <div class="white-coat" aria-hidden="true"><span></span></div>
+        <div class="street-copy">
+          <strong>pure · trap · actor</strong>
+          <span>nlex · rt · recover</span>
+        </div>
+      </div>
+
+      <h3>Memory safety should be layered</h3>
+      <p>
+        The target is Rust-class memory safety without requiring every workload to live at Rust's
+        level of manual lifetime ceremony. Oreslang combines static types, a borrow checker,
+        immutable-by-default values, option types instead of null, actor isolation, and runtime GC.
+        The compiler should prevent invalid ownership and lifetime states before GC ever sees them;
+        the runtime collector remains available for managed graphs and cycles.
+      </p>
+      <p>
+        GC is therefore not treated as an excuse to ignore ownership. Nor is ownership treated as
+        a reason the runtime can never collect. The model is deliberately hybrid: compile-time
+        lifetime information first, automatic collection where useful, plus explicit lifetime/GC
+        controls for latency-sensitive runtimes.
+      </p>
+
+      <h3>Actors are a memory-safety primitive</h3>
+      <p>
+        Oreslang actors are intended to make the safest concurrency model the easiest one. Shared
+        actors can cooperate inside one process where sharing is allowed. Isolated and untrusted
+        actors get confined memory regions for mutable state, restricted capabilities, serialized mailbox boundaries where
+        required, and stronger rules about what code and memory can cross the boundary.
+      </p>
+      <p>
+        That matters on FaaS hosts and on Android/iOS, where the runtime may need dense in-process
+        isolation but cannot assume that every workload cooperates with a single event loop.
+        Oreslang therefore treats non-cooperative scheduling, cancellation, quotas, and actor
+        confinement as runtime concerns rather than application conventions.
+      </p>
+
+      <div class="principle-grid">
+        <article class="principle">
+          <span>01</span>
+          <h4>Static by default</h4>
+          <p>Static types, closed shapes, option types, exhaustive matching, and compile-time sendability rules.</p>
+        </article>
+        <article class="principle">
+          <span>02</span>
+          <h4>Borrow + collect</h4>
+          <p>Borrow checking narrows lifetime mistakes; GC handles managed object graphs instead of carrying the whole safety burden.</p>
+        </article>
+        <article class="principle">
+          <span>03</span>
+          <h4>Make effects visible</h4>
+          <p><code>pure</code> and <code>trap</code> make logic safety and error boundaries explicit enough for humans and compilers to reason about.</p>
+        </article>
+        <article class="principle">
+          <span>04</span>
+          <h4>Expose lexical intent</h4>
+          <p><code>alex</code> / <code>nlex</code> modes are designed to expose capture and lexical-scope intent for stronger compiler optimization.</p>
+        </article>
+        <article class="principle">
+          <span>05</span>
+          <h4>Schedule hostile work</h4>
+          <p>Actors can be placed in cooperative or non-cooperative execution pools instead of assuming every task yields politely.</p>
+        </article>
+        <article class="principle">
+          <span>06</span>
+          <h4>Accelerators are language domains</h4>
+          <p>GPU and quantum/QNTM routines are part of the language design, so accelerator placement can be explicit rather than hidden behind ad-hoc FFI.</p>
+        </article>
+      </div>
+
+      <h3>Hot code loading without surrendering trust boundaries</h3>
+      <p>
+        Trusted and untrusted code should both be reloadable, but not under the same rules.
+        Compatible immutable code images can be shared across actors inside one OresVM instead of
+        being copied per actor. Untrusted actors additionally require whitelisting and capability
+        checks before code or host functionality becomes visible.
+      </p>
+
+      <div class="future-card">
+        <p class="kicker">Future runtime direction</p>
+        <h3>One actor model, more than one machine.</h3>
+        <p>
+          Actor isolation already gives Oreslang a natural seam for distribution. The long-term
+          abstraction should preserve the same typed actor reference while the runtime chooses
+          transport and placement: local shared memory, isolated memory, IPC, TCP, or an external
+          host. Placement affinity can prefer the same machine, require a different machine, or
+          delegate to an external scheduler without rewriting actor business logic.
+        </p>
+        <p>
+          This is intentionally a runtime direction, not finalized surface syntax. The goal is to
+          avoid creating a separate language that suddenly appears when an actor moves across a
+          process or network boundary. Remote mailboxes would become serialized transport, making
+          the model start to resemble systems such as Vert.x while preserving Oreslang's actor
+          safety rules.
+        </p>
+      </div>
+
+      <h3>How to build your own language</h3>
+      <ol class="language-steps">
+        <li><strong>Start with Truffle on the JVM.</strong> Get parsing, semantics, instrumentation, and an executable language model working quickly.</li>
+        <li><strong>Use GraalVM for JIT and AOT experiments.</strong> A language on Truffle is not limited to interpretation or JIT-only execution.</li>
+        <li><strong>Stabilize syntax after proving compilation.</strong> Once the language surface feels right, prove representative programs can compile ahead of time with the runtime constraints you care about.</li>
+        <li><strong>Then lower through an IR.</strong> LLVM and other native backends become much easier to approach once the language semantics and intermediate representation are no longer moving every day.</li>
+      </ol>
+
+      <p class="status-note">
+        Some items on this page describe design goals and staged runtime work rather than claiming
+        every backend is production-complete today. The compiler and VM are being built in public.
+      </p>
+
+      <p><a href="/#philosophy">← Back to the Philosophy section on the home page</a></p>
+    </div>
+  </section>
+</BaseLayout>

@@ -70,6 +70,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             while keeping untrusted state, capabilities, and mutable references isolated.
           </p>
         </article>
+
+        <article class="problem">
+          <h3>Non-cooperative scheduling</h3>
+          <p>
+            FaaS and mobile runtimes cannot assume every third-party workload will yield politely.
+            Oreslang is designed to support dedicated or isolated execution pools for CPU-hungry actors,
+            with cancellation, quotas, and scheduling boundaries enforced by the runtime instead of by convention.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Actors beyond one machine</h3>
+          <p>
+            Actor isolation creates a natural future transport boundary. A typed actor reference should
+            be able to preserve the same application-facing model while placement moves between local
+            memory, an isolated runtime, IPC, TCP, or an external machine. Remote placement is a future
+            runtime direction; the surface syntax and scheduling policy are intentionally not frozen yet.
+          </p>
+        </article>
       </div>
       <p><a href="/#problem-spaces">← Back to the Problem Spaces section on the home page</a></p>
     </div>
