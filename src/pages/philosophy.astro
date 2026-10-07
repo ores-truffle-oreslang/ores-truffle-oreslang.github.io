@@ -51,7 +51,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <p>
         Oreslang actors are intended to make the safest concurrency model the easiest one. Shared
         actors can cooperate inside one process where sharing is allowed. Isolated and untrusted
-        actors get confined state, restricted capabilities, serialized mailbox boundaries where
+        actors get confined memory regions for mutable state, restricted capabilities, serialized mailbox boundaries where
         required, and stronger rules about what code and memory can cross the boundary.
       </p>
       <p>
@@ -90,7 +90,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <article class="principle">
           <span>06</span>
           <h4>Accelerators are language domains</h4>
-          <p>GPU and quantum routines are part of the language design, so execution placement can be explicit rather than hidden behind ad-hoc FFI.</p>
+          <p>GPU and quantum/QNTM routines are part of the language design, so accelerator placement can be explicit rather than hidden behind ad-hoc FFI.</p>
         </article>
       </div>
 
