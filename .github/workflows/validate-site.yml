@@ -1,0 +1,40 @@
+name: Validate marketing site
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/validate-site.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout site and pinned submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check and build static HTML
+        run: npm run build
+
+      - name: Verify first engineering log in generated output
+        run: |
+          test -s dist/logs/index.html
+          test -s dist/logs/1/index.html
+          grep -q 'Alex Mills' dist/logs/1/index.html
+          grep -q '<table' dist/logs/1/index.html
+          grep -q 'href="/logs/"' dist/index.html
