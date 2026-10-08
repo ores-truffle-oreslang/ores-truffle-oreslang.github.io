@@ -46,3 +46,145 @@
 .log-entry-footer a{font-weight:700;color:var(--orange-soft)}
 @media(max-width:900px){.log-entry-layout{grid-template-columns:1fr;gap:30px}.log-toc{position:static;padding:18px 20px;border:1px solid var(--line)}.log-toc ol{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 20px}.log-entry-header{padding:55px 0 45px}}
 @media(max-width:600px){.log-list-entry>a{grid-template-columns:1fr 30px;gap:10px}.log-entry-number{grid-column:1 / -1}.log-list-entry>p{margin-left:0}.log-toc ol{grid-template-columns:1fr}.log-article table{min-width:620px}.log-entry-meta{gap:7px}}
+
+
+/* An accessible, native HTML disclosure: the heading stays short and the
+   ghost text hints at the full prompt without acting like a traditional link. */
+.log-prompt-disclosure {
+  interpolate-size: allow-keywords;
+  margin: 2px 0 0;
+}
+.log-prompt-summary {
+  display: block;
+  cursor: pointer;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(255, 154, 82, .46);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 92% 0%, rgba(255, 106, 0, .11), transparent 22rem),
+    rgba(38, 23, 17, .42);
+  box-shadow: 0 12px 36px rgba(24, 11, 6, .1);
+  transition: border-color .25s ease, background-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.log-prompt-summary::-webkit-details-marker { display: none; }
+.log-prompt-summary::marker { content: ""; }
+.log-prompt-summary:hover {
+  border-color: var(--orange);
+  background-color: rgba(38, 23, 17, .65);
+  box-shadow: 0 18px 54px rgba(24, 11, 6, .24), inset 0 0 0 1px rgba(255, 154, 82, .12);
+  transform: translateY(-1px);
+}
+.log-prompt-summary:focus-visible {
+  outline: 3px solid var(--orange-soft);
+  outline-offset: 4px;
+}
+.log-prompt-heading { margin: 0; }
+.log-prompt-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.log-prompt-word {
+  color: var(--cream);
+  font-size: clamp(2.7rem, 7vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: -.055em;
+}
+.log-prompt-toggle {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 45px;
+  height: 45px;
+  border: 1px solid rgba(255, 154, 82, .65);
+  border-radius: 999px;
+  background: rgba(255, 106, 0, .16);
+  color: var(--orange-soft);
+  font: 400 1.6rem/1 system-ui, sans-serif;
+  transition: background .3s, color .3s, transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.log-prompt-toggle::after { content: "+"; }
+.log-prompt-disclosure[open] .log-prompt-toggle {
+  transform: rotate(45deg);
+  background: var(--orange);
+  color: var(--ink);
+}
+.log-prompt-disclosure[open] .log-prompt-toggle::after { content: "+"; }
+.log-prompt-glimmer {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  max-height: 2.8em;
+  margin-top: 18px;
+  color: var(--cream);
+  font-size: clamp(.94rem, 1.7vw, 1.22rem);
+  line-height: 1.45;
+  font-weight: 500;
+  letter-spacing: -.015em;
+  opacity: .23;
+  filter: blur(.7px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 98%);
+  transition: opacity .36s ease, max-height .55s ease, margin .55s ease;
+}
+.log-prompt-summary:hover .log-prompt-glimmer,
+.log-prompt-summary:focus-visible .log-prompt-glimmer { opacity: .45; }
+.log-prompt-disclosure[open] .log-prompt-glimmer {
+  opacity: 0;
+  max-height: 0;
+  margin-top: 0;
+}
+.log-prompt-cue {
+  display: block;
+  margin-top: 14px;
+  color: var(--orange-soft);
+  font: 800 .73rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.log-prompt-cue::before { content: "＋  click or tap to expand"; }
+.log-prompt-disclosure[open] .log-prompt-cue::before { content: "－  click or tap to collapse"; }
+.log-prompt-disclosure::details-content {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: height .9s cubic-bezier(.22,.61,.36,1), opacity .6s ease, content-visibility .9s allow-discrete;
+}
+.log-prompt-disclosure[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+.log-prompt-reveal {
+  margin-top: 0;
+  padding: clamp(22px, 3vw, 32px);
+  border: 1px solid rgba(255, 154, 82, .26);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: rgba(30, 18, 13, .36);
+}
+.log-prompt-reveal-label {
+  margin: 0 0 13px;
+  color: var(--orange-soft);
+  font: 800 .74rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+.log-prompt-full-text {
+  max-width: 820px;
+  margin: 0;
+  color: var(--cream);
+  font-size: clamp(1.05rem, 2.1vw, 1.45rem);
+  font-weight: 550;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+@media (prefers-reduced-motion: reduce) {
+  .log-prompt-summary,
+  .log-prompt-toggle,
+  .log-prompt-glimmer,
+  .log-prompt-disclosure::details-content { transition: none; }
+  .log-prompt-summary:hover { transform: none; }
+}
