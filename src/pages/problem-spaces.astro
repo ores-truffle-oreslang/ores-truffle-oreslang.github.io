@@ -3,18 +3,71 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="Oreslang Problem Spaces"
-  description="The core systems problems Oreslang targets: cheap isolation, data safety, actors, and hot-loading trusted or untrusted code."
+  title="Oreslang Problem Domains"
+  description="The domains Oreslang targets: actor runtimes, FaaS, mobile isolation, high-performance computing, data science, web systems, and data-oriented execution."
 >
   <section class="page-hero">
-    <p class="kicker">Problem spaces</p>
-    <h1>Cheap boundaries without cheap guarantees.</h1>
-    <p>Oreslang is designed around places where isolation, lifetime safety, and code mobility collide.</p>
+    <p class="kicker">Problem domains</p>
+    <h1>Where Oreslang is meant to matter.</h1>
+    <p>
+      Oreslang targets workloads where safety, isolation, concurrency, runtime performance,
+      and code mobility all matter at once—from dense numerical kernels to multi-tenant FaaS runtimes.
+    </p>
   </section>
 
   <section class="page-body">
     <div class="prose">
+      <p class="status-note">
+        Some of these are current implementation domains and some are explicit competitive ambitions.
+        “Replacement” targets describe where the project intends to compete; they are not benchmark claims
+        that Oreslang has already surpassed mature ecosystems.
+      </p>
+
       <div class="problem-list">
+        <article class="problem">
+          <h3>High-performance computing + data-oriented programming</h3>
+          <p>
+            Dense numerical work should be organized around the hardware that executes it. Oreslang is
+            exploring columnar and struct-of-arrays layouts, cache-friendly traversal, allocation-conscious
+            kernels, SIMD/vectorization targets, bounded regions, and CPU/GPU placement. Actors own and
+            orchestrate state; dense kernels do the compute without turning every element into an object.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Data science — a Python 3 replacement target</h3>
+          <p>
+            The ambition is Python-class data-science ergonomics with a stronger static and runtime model:
+            typed columnar data, numerical reductions, matrices, pipelines, first-class functions, actors,
+            ownership, AOT/JIT execution, and future GPU acceleration in one language. Oreslang should be
+            able to serve both exploratory data work and production systems without forcing a rewrite at
+            the Python/native boundary.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Erlang / Elixir successor — and a Phoenix-class web target</h3>
+          <p>
+            Oreslang takes the actor model seriously while adding static typing, ownership and borrowing,
+            option types, isolated/untrusted actors, Graal-backed execution, and data-oriented compute.
+            The goal is to preserve the strengths that make Erlang and Elixir compelling for supervision,
+            concurrency, messaging, and hot code while pushing toward a faster, more statically analyzable
+            systems language and a web stack capable of competing with Phoenix.
+          </p>
+        </article>
+
+        <article class="problem">
+          <h3>Building FaaS platforms — a workerd alternative target</h3>
+          <p>
+            Oreslang is also a language/runtime substrate for people building serverless platforms, not only
+            code that runs on them. Shared actors, isolated actors, untrusted actors, capability gates,
+            non-cooperative scheduling, hot-loaded generations, AOT/JIT/hybrid execution, cancellation,
+            quotas, and confined memory are all relevant to building dense multi-tenant FaaS systems.
+            That puts OresVM on a path toward the problem space occupied by runtimes such as Cloudflare
+            workerd, with actors and language-level isolation as first-class primitives.
+          </p>
+        </article>
+
         <article class="problem">
           <h3>Isolation on mobile phones</h3>
           <p>
@@ -90,7 +143,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </p>
         </article>
       </div>
-      <p><a href="/#problem-spaces">← Back to the Problem Spaces section on the home page</a></p>
+
+      <p><a href="/#problem-spaces">← Back to the Problem Domains section on the home page</a></p>
     </div>
   </section>
 </BaseLayout>
