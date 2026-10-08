@@ -38,23 +38,27 @@ const result = await worker.transform(payload);
 `;
 
 const dataCode = `
-const user = infer struct {
-  name: "Ada",
-  enabled: true
-};
-
-define type HasName as trait
-  requires name: string;
+define interface HasName as
+  name: string;
 end
 
-match user over
-  on structural HasName named -> {
-    return Option.some(named.name);
-  }
-  on _ -> {
-    return Option.none();
-  }
-end
+type HN = HasName;
+
+fnc findName(): Option<String> {
+  const user = infer struct {
+    name: "Ada",
+    enabled: true
+  };
+
+  match user over
+    on structural HN named -> {
+      return Option.some(named.name);
+    }
+    on _ -> {
+      return Option.none();
+    }
+  end
+}
 `;
 ---
 
