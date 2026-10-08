@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/logs.css";
+---
+
+<BaseLayout
+  title="Engineering Logs — Oreslang"
+  description="Oreslang engineering logs about compiler architecture, actors, runtime isolation, LLVM, GraalVM, AOT and JIT."
+>
+  <section class="page-hero log-index-hero">
+    <p class="kicker">Field notes from the compiler</p>
+    <h1>Engineering logs.</h1>
+    <p>Decisions, tradeoffs, and works in progress from the Oreslang language and runtime.</p>
+  </section>
+  <section class="page-body log-index-body" aria-label="Published engineering logs">
+    <ol class="log-list">
+      <li>
+        <article class="log-list-entry">
+          <a href="/logs/1/" aria-label="Read log 1: LLVM versus GraalVM"><span class="log-entry-number">Log 001</span><h2>LLVM vs. GraalVM: one Oreslang, two AOT backends</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
+          <p>What's missing, what belongs in a native LLVM runtime, what should stay in the managed Graal/JVM world, and how to make both truly AOT-capable with optional JIT.</p>
+          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-08T21:04:00Z">October 8, 2026 · 21:04 UTC</time></p>
+        </article>
+      </li>
+    </ol>
+  </section>
+</BaseLayout>
