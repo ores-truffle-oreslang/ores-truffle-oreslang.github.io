@@ -742,3 +742,116 @@ footer a {
     font-size: 0.76rem;
   }
 }
+
+
+/* Paradigms */
+.section-paradigms {
+  position: relative;
+}
+
+.paradigm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 30px 0;
+}
+
+.paradigm-card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: rgba(45, 32, 25, 0.24);
+}
+
+.paradigm-card > span {
+  color: var(--orange);
+  font: 800 0.7rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.14em;
+}
+
+.paradigm-card h3 {
+  margin: 11px 0 8px;
+  color: var(--cream);
+  font-size: 1.13rem;
+}
+
+.paradigm-card p {
+  margin: 0;
+  color: var(--paper);
+  font-size: 0.96rem;
+}
+
+.paradigm-flow,
+.generation-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 26px 0 36px;
+  padding: 18px;
+  border: 1px solid rgba(255, 240, 220, 0.14);
+  background: #14100d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.paradigm-flow span,
+.generation-strip span {
+  padding: 6px 9px;
+  border: 1px solid rgba(255, 154, 82, 0.28);
+  color: #ffe0c6;
+  background: rgba(255, 106, 0, 0.05);
+}
+
+.paradigm-flow b,
+.generation-strip b {
+  color: var(--orange);
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.paradigm-compile-grid {
+  margin-top: 24px;
+}
+
+.paradigm-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 46px 0 34px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.paradigm-summary article {
+  display: grid;
+  gap: 7px;
+  min-height: 120px;
+  padding: 18px;
+  background: rgba(45, 32, 25, 0.96);
+}
+
+.paradigm-summary span {
+  color: var(--orange-soft);
+  font: 800 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.paradigm-summary strong {
+  color: var(--cream);
+  font-size: 1rem;
+}
+
+@media (max-width: 820px) {
+  .paradigm-grid,
+  .paradigm-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .paradigm-flow,
+  .generation-strip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
