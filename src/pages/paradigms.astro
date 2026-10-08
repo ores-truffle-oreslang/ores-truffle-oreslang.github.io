@@ -51,15 +51,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <h3>Data-oriented programming</h3>
       <p>
-        Object-oriented APIs are useful, but not every hot path should be forced through object
-        graphs. Oreslang also encourages explicit data shapes, contiguous or compact layouts,
-        predictable traversal, closed structural values, tuples, and transformations that expose
-        data movement to the compiler.
+        Data-oriented programming is about shaping runtime data for the hardware that will process it,
+        not merely making types easier for a compiler to understand. Object-oriented APIs can still be
+        useful at system boundaries, but hot paths should be free to organize data around access
+        patterns, locality, bandwidth, and parallel execution instead of around object graphs.
       </p>
       <p>
-        This matters for cache-sensitive server code, actor mailboxes, serialization, vectorizable
-        workloads, GPU-facing data, and any path where layout and movement matter as much as method
-        dispatch.
+        On CPUs, that means thinking about cache lines, prefetching, branch behavior, pointer chasing,
+        contiguous storage, SIMD/vectorization, and choosing structures such as array-of-structs versus
+        struct-of-arrays based on how the data is actually traversed. The representation should help the
+        CPU spend more time operating on useful data and less time waiting on memory.
+      </p>
+      <p>
+        On GPUs, the same idea becomes even more explicit: use compact buffers, predictable element
+        widths, coalesced access patterns, large batches, and layouts that map efficiently onto GPU
+        threads. Host-to-device copies and format conversion are part of the cost model, so data should
+        be organized to minimize unnecessary transfers and reshaping between CPU and GPU work.
+      </p>
+      <p>
+        Oreslang's static shapes, tuples, structs, actor boundaries, GPU routines, and typed execution
+        model can give the compiler and JIT more information, but that is a secondary advantage. The
+        primary goal is to let developers and the runtime choose data representations that execute well
+        on real CPUs and GPUs while preserving the language's safety guarantees.
       </p>
 
       <h3>Hot-loading as a deployment primitive</h3>
