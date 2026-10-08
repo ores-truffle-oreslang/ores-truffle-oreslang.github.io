@@ -181,9 +181,62 @@ stack trace:
     </div>
   </section>
 
+  <section class="section section-paradigms" id="paradigms">
+    <div class="section-grid">
+      <SectionTitle eyebrow="03 / Paradigms" title="More than one way to be fast" href="/paradigms/" />
+      <div class="prose">
+        <p class="manifesto-lede">
+          Oreslang is intentionally multi-paradigm: actor isolation for concurrency, functional
+          composition for data flow, data-oriented layouts for throughput, hot-loading for change,
+          and contracts for large static codebases.
+        </p>
+
+        <div class="paradigm-grid">
+          <article class="paradigm-card">
+            <span>ACTORS</span>
+            <h3>Actor model + Graal isolates</h3>
+            <p>Use actors as the primary concurrency boundary, with isolated execution available when mutable memory or third-party code must be confined.</p>
+          </article>
+
+          <article class="paradigm-card">
+            <span>FUNCTIONAL</span>
+            <h3>Functions as values</h3>
+            <p>First-class functions, native map/filter/reduce, rx-ores style composition, and tail-call optimization for recursive functional workloads.</p>
+          </article>
+
+          <article class="paradigm-card">
+            <span>DATA</span>
+            <h3>Data-oriented programming</h3>
+            <p>Prefer explicit shapes, compact data, predictable access patterns, and transformations that make memory movement visible to the compiler.</p>
+          </article>
+
+          <article class="paradigm-card">
+            <span>HOT LOAD</span>
+            <h3>Development and production</h3>
+            <p>Reload code during development, or introduce a new isolated actor generation in production and move traffic without mutating the old actor in place.</p>
+          </article>
+
+          <article class="paradigm-card">
+            <span>COMPILE</span>
+            <h3>AOT, JIT, or hybrid</h3>
+            <p>AOT for predictable startup, JIT for hot-path specialization, or a hybrid model that starts from compiled code and optimizes what becomes hot.</p>
+          </article>
+
+          <article class="paradigm-card">
+            <span>CONTRACTS</span>
+            <h3>Static architecture</h3>
+            <p>Module contracts and static-member contracts for classes let APIs and static surfaces be checked without pretending modules and classes are the same thing.</p>
+          </article>
+        </div>
+
+        <p><a href="/paradigms/">Explore Oreslang's programming and runtime paradigms →</a></p>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="examples">
     <div class="section-grid">
-      <SectionTitle eyebrow="03 / Examples" title="The language in motion" href="/examples/" />
+      <SectionTitle eyebrow="04 / Examples" title="The language in motion" href="/examples/" />
       <div class="code-stack">
         <OresCode caption="Actors with explicit lifecycle" code={actorCode} />
         <OresCode caption="Select over channels, futures, timeouts, and cancellation" code={selectCode} />
@@ -194,7 +247,7 @@ stack trace:
 
   <section class="section" id="problem-spaces">
     <div class="section-grid">
-      <SectionTitle eyebrow="04 / Problem spaces" title="Where the sharp edges are" href="/problem-spaces/" />
+      <SectionTitle eyebrow="05 / Problem spaces" title="Where the sharp edges are" href="/problem-spaces/" />
       <div class="prose">
         <p>
           The language is aimed at systems where ordinary process boundaries are too expensive,
@@ -225,7 +278,7 @@ stack trace:
 
   <section class="section" id="links">
     <div class="section-grid">
-      <SectionTitle eyebrow="05 / Links" title="Follow the source" href="/links/" />
+      <SectionTitle eyebrow="06 / Links" title="Follow the source" href="/links/" />
       <div class="prose">
         <p>The project is being designed and implemented in the open.</p>
         <div class="link-list">
