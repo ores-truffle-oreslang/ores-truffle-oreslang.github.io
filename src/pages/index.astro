@@ -247,14 +247,30 @@ stack trace:
 
   <section class="section" id="problem-spaces">
     <div class="section-grid">
-      <SectionTitle eyebrow="05 / Problem spaces" title="Where the sharp edges are" href="/problem-spaces/" />
+      <SectionTitle eyebrow="05 / Problem domains" title="Where Oreslang is meant to matter" href="/problem-spaces/" />
       <div class="prose">
         <p>
-          The language is aimed at systems where ordinary process boundaries are too expensive,
-          ordinary shared memory is too risky, dynamic code loading needs a stronger trust model,
-          and workloads cannot always be trusted to cooperate with a scheduler.
+          Oreslang is aimed at domains where ordinary process boundaries are too expensive,
+          shared memory is too risky, dense compute needs hardware-aware data layouts, or a runtime
+          must safely host code it does not fully trust.
         </p>
         <div class="problem-list">
+          <article class="problem">
+            <h3>HPC + data-oriented systems</h3>
+            <p>Actors orchestrate state and I/O while dense kernels target cache locality, SIMD, columnar/SoA layouts, and CPU/GPU execution.</p>
+          </article>
+          <article class="problem">
+            <h3>Data science beyond Python</h3>
+            <p>Target Python-class ergonomics with static types, ownership, actors, numerical/columnar data, AOT/JIT execution, and a path to GPU acceleration.</p>
+          </article>
+          <article class="problem">
+            <h3>Erlang / Elixir + Phoenix successor</h3>
+            <p>Keep the actor, supervision, messaging, and hot-code strengths while adding stronger static safety, isolation, and data-oriented performance.</p>
+          </article>
+          <article class="problem">
+            <h3>FaaS runtimes + workerd alternative</h3>
+            <p>Build multi-tenant runtimes from shared, isolated, and untrusted actors with capabilities, quotas, hot generations, and non-cooperative scheduling.</p>
+          </article>
           <article class="problem">
             <h3>Isolation on phones and FaaS</h3>
             <p>Use actors and capabilities to create cheap boundaries inside one process, with stronger isolation for workloads that need it.</p>
