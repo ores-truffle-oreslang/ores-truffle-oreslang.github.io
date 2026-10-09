@@ -27,9 +27,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       // Set the saved theme before first paint to avoid an incorrect palette flash.
       (() => {
         try {
-          const theme = localStorage.getItem("oreslang-theme");
-          if (theme === "dark" || theme === "brown" || theme === "light") {
+          const saved = localStorage.getItem("oreslang-theme");
+          // Honor returning visitors while migrating the retired brown palette.
+          const theme = saved === "brown" ? "navy" : saved;
+          if (theme === "dark" || theme === "navy" || theme === "light") {
             document.documentElement.dataset.theme = theme;
+            if (saved === "brown") localStorage.setItem("oreslang-theme", "navy");
           }
         } catch {
           // Private browsing / disabled storage: default to dark.
