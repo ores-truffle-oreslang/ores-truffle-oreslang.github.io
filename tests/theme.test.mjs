@@ -97,18 +97,18 @@ test("each theme defines semantic foreground, accent, background and surfaces", 
       assert.match(block, new RegExp(token + ":"));
     }
   }
-  assert.match(styles, /@media \\(max-width: 700px\\)/);
-  assert.match(styles, /@media \\(max-width: 440px\\)/);
+  assert.match(styles, /@media \(max-width: 700px\)/);
+  assert.match(styles, /@media \(max-width: 440px\)/);
   assert.match(styles, /overflow-x: auto/);
 });
 
 test("brand is mono sans-serif, layout is mobile-aware, and theme buttons are accessible", () => {
-  assert.doesNotMatch(globalStyles, /Brush Script|Segoe Script|cursive|skew\\(-6deg\\)/);
+  assert.doesNotMatch(globalStyles, /Brush Script|Segoe Script|cursive|skew\(-6deg\)/);
   assert.match(globalStyles, /IBM Plex Mono/);
   assert.match(layout, /name="viewport"/);
-  assert.match(layout, /localStorage\\.getItem\\("oreslang-theme"\\)/);
+  assert.match(layout, /localStorage\.getItem\("oreslang-theme"\)/);
   assert.match(nav, /role="group" aria-label="Color theme"/);
   assert.equal((nav.match(/data-theme-choice="/g) || []).length, 3);
   assert.match(nav, /<details class="mobile-navigation">/);
-  assert.match(layout, /src="\\/theme\\.js"/);
+  assert.match(layout, /src="\/theme\.js"/);
 });
