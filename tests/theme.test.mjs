@@ -11,7 +11,7 @@ const globalStyles = readFileSync(new URL("../src/styles/global.css", import.met
 
 function setup({ selected = "dark", failStorage = false } = {}) {
   let stored = null;
-  const buttons = ["dark", "brown", "light"].map((themeChoice) => {
+  const buttons = ["dark", "navy", "light"].map((themeChoice) => {
     const attributes = new Map();
     return {
       dataset: { themeChoice },
@@ -57,7 +57,7 @@ test("dark is the default; only the current choice is pressed", () => {
 
 test("all three theme choices switch instantly and save across pages", () => {
   const app = setup();
-  for (const name of ["brown", "light", "dark"]) {
+  for (const name of ["navy", "light", "dark"]) {
     const button = app.buttons.find((b) => b.dataset.themeChoice === name);
     button.click();
     assert.equal(app.root.dataset.theme, name);
@@ -77,10 +77,10 @@ test("saved theme hydrates buttons before clicking", () => {
 test("switcher works when localStorage is unavailable; unknown theme rejected", () => {
   const app = setup({ failStorage: true });
   app.buttons[1].click();
-  assert.equal(app.root.dataset.theme, "brown");
+  assert.equal(app.root.dataset.theme, "navy");
   app.buttons[1].dataset.themeChoice = "invalid";
   app.buttons[1].click();
-  assert.equal(app.root.dataset.theme, "brown");
+  assert.equal(app.root.dataset.theme, "navy");
 });
 
 test("mobile menu closes after following a link", () => {
@@ -90,7 +90,7 @@ test("mobile menu closes after following a link", () => {
 });
 
 test("each theme defines semantic foreground, accent, background and surfaces", () => {
-  for (const name of ["dark", "brown", "light"]) {
+  for (const name of ["dark", "navy", "light"]) {
     const block = styles.match(new RegExp(`html\\[data-theme="${name}"\\] \\{([^}]+)\\}`))?.[1];
     assert.ok(block, `missing ${name} palette`);
     for (const token of ["--brown", "--orange", "--cream", "--paper", "--surface", "--code-bg", "--page-background"]) {
@@ -111,4 +111,42 @@ test("brand is mono sans-serif, layout is mobile-aware, and theme buttons are ac
   assert.equal((nav.match(/data-theme-choice="/g) || []).length, 3);
   assert.match(nav, /<details class="mobile-navigation">/);
   assert.match(layout, /src="\/theme\.js"/);
+});
+
+test("retired brown preference becomes navy before first paint", () => {
+  const inline = layout.match(/<script is:inline>([\\s\\S]*?)<\\/script>/)?.[1];
+  assert.ok(inline, "pre-paint theme initialization must be inline");
+  const root = { dataset: { theme: "dark" } };
+  const values = new Map([["oreslang-theme", "brown"]]);
+  const storage = {
+    getItem(key) { return values.get(key); },
+    setItem(key, value) { values.set(key, value); },
+  };
+  runInNewContext(inline, { document: { documentElement: root }, localStorage: storage });
+  assert.equal(root.dataset.theme, "navy");
+  assert.equal(values.get("oreslang-theme"), "navy");
+});
+
+test("navy uses steel-blue backgrounds and genuinely orange syntax keywords", () => {
+  const palette = styles.match(/html\\[data-theme="navy"\\] \\{([^}]+)\\}/)?.[1];
+  assert.ok(palette);
+  assert.match(palette, /--brown: #13263d/);
+  assert.match(palette, /--orange: #ff9d4d/);
+  assert.match(styles, /\\.swatch-navy/);
+  assert.match(styles, /\\.tok-keyword \\{ color: var\\(--orange\\); \\}/);
+  assert.doesNotMatch(styles, /data-theme="brown"|swatch-brown/);
+  assert.match(nav, /data-theme-choice="navy"/);
+  assert.doesNotMatch(nav, /data-theme-choice="brown"|Brown theme/);
+  assert.match(script, /navy: "#13263d"/);
+});
+
+test("requested home section links and philosophy detail hero have 33% smaller typography", () => {
+  assert.match(styles, /#about \\.section-heading h2,/);
+  assert.match(styles, /#philosophy \\.section-heading h2,/);
+  assert.match(styles, /\\.philosophy-hero h1/);
+  // Original desktop clamp: (2.8rem, 6vw, 5.8rem). New scale: 67% exactly.
+  assert.match(styles, /font-size: clamp\\(1\\.876rem, 4\\.02vw, 3\\.886rem\\)/);
+  // Also shrink in mobile breakpoints, not merely desktop.
+  assert.match(styles, /font-size: clamp\\(1\\.5075rem, 6\\.03vw, 2\\.546rem\\)/);
+  assert.match(styles, /font-size: clamp\\(1\\.34rem, 6\\.03vw, 1\\.8425rem\\)/);
 });
