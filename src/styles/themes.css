@@ -136,7 +136,7 @@ a { text-underline-offset: .2em; }
 .site-header nav a {
   color: var(--paper);
   font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: .70rem;
+  font-size: .75rem;
   font-weight: 600;
   letter-spacing: .015em;
   text-transform: none;
@@ -292,6 +292,9 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
   .header-actions { grid-column: 2; grid-row: 1; }
   .brand { grid-column: 1; grid-row: 1; }
 }
+@media (max-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+}
 /* Mobile: no crowded multi-line sticky header. Accessible native disclosure
    opens the same primary destinations without custom menu JS. */
 @media (max-width: 700px) {
@@ -363,12 +366,7 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
     font-size: .79rem;
     -webkit-overflow-scrolling: touch;
   }
-  .log-article table {
-    display: block;
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+  .log-table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .log-entry-layout { padding-bottom: 60px; }
   footer { gap: 14px; padding: 28px 0 40px; }
 }
