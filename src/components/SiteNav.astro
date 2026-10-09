@@ -2,17 +2,44 @@
 const { home = false } = Astro.props;
 
 const hrefFor = (anchor: string) => home ? `#${anchor}` : `/#${anchor}`;
+const links = [
+  { label: "about", href: hrefFor("about") },
+  { label: "philosophy", href: hrefFor("philosophy") },
+  { label: "paradigms", href: hrefFor("paradigms") },
+  { label: "examples", href: hrefFor("examples") },
+  { label: "problem domains", href: hrefFor("problem-spaces") },
+  { label: "logs", href: "/logs/" },
+  { label: "links", href: hrefFor("links") },
+];
 ---
 
 <header class="site-header">
-  <a class="brand" href="/" aria-label="Oreslang home">oreslang</a>
-  <nav aria-label="Primary navigation">
-    <a href={hrefFor("about")}>about</a>
-    <a href={hrefFor("philosophy")}>philosophy</a>
-    <a href={hrefFor("paradigms")}>paradigms</a>
-    <a href={hrefFor("examples")}>examples</a>
-    <a href={hrefFor("problem-spaces")}>problem domains</a>
-    <a href="/logs/">logs</a>
-    <a href={hrefFor("links")}>links</a>
+  <div class="header-top">
+    <a class="brand" href="/" aria-label="Oreslang home">oreslang</a>
+    <div class="header-actions">
+      <div class="theme-switcher" role="group" aria-label="Color theme">
+        <button type="button" data-theme-choice="dark" aria-label="Dark theme" aria-pressed="true" title="Dark theme">
+          <span class="theme-swatch swatch-dark" aria-hidden="true"></span>
+          <span class="theme-label">Dark</span>
+        </button>
+        <button type="button" data-theme-choice="brown" aria-label="Brown theme" aria-pressed="false" title="Brown theme">
+          <span class="theme-swatch swatch-brown" aria-hidden="true"></span>
+          <span class="theme-label">Brown</span>
+        </button>
+        <button type="button" data-theme-choice="light" aria-label="White theme" aria-pressed="false" title="White theme">
+          <span class="theme-swatch swatch-light" aria-hidden="true"></span>
+          <span class="theme-label">White</span>
+        </button>
+      </div>
+      <details class="mobile-navigation">
+        <summary aria-label="Toggle navigation menu">Menu</summary>
+        <nav aria-label="Mobile primary navigation">
+          {links.map((link) => <a href={link.href}>{link.label}</a>)}
+        </nav>
+      </details>
+    </div>
+  </div>
+  <nav class="desktop-navigation" aria-label="Primary navigation">
+    {links.map((link) => <a href={link.href}>{link.label}</a>)}
   </nav>
 </header>
