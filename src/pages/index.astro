@@ -69,6 +69,7 @@ end
         A language for actor-based systems where isolation, option-safe data, hot code loading,
         explicit compilation, and predictable concurrency are part of the model—not a pile of conventions added later.
       </p>
+      <p class="hero-platforms">Built for <strong>GraalVM</strong> and <strong>LLVM</strong></p>
       <p class="hero-tldr">
         <span class="hero-tldr-label">In short,</span>
         <code class="hero-equation"><span class="hero-equation-name">oreslang</span><span class="hero-equation-operator"> = ~(</span><span class="hero-equation-language">erlang</span><span class="hero-equation-operator"> + </span><span class="hero-equation-language">rust</span><span class="hero-equation-operator">)</span></code>
@@ -290,7 +291,7 @@ stack trace:
             <p>Load code without duplicating immutable code images across every actor, while whitelisting what untrusted actors are allowed to execute or share.</p>
           </article>
           <article class="problem">
-            <h3>Scheduling code that will not yield</h3>
+            <h3>Cooperative scheduling + scheduling un-cooperative code</h3>
             <p>FaaS and mobile runtimes need a path for CPU-hungry or third-party work that cannot rely on cooperative scheduling alone.</p>
           </article>
         </div>
