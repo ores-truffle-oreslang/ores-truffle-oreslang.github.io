@@ -187,12 +187,14 @@ a {
   align-self: start;
 }
 
+/* Shared 33% reduction for every landing section and interior page hero,
+   rather than a patchwork of per-section exceptions. */
 .section-heading h2,
 .page-hero h1 {
   margin: 0;
-  font-size: clamp(2.8rem, 6vw, 5.8rem);
-  line-height: 0.9;
-  letter-spacing: -0.055em;
+  font-size: clamp(1.876rem, 4.02vw, 3.886rem);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
 }
 
 .section-heading h2 a {
