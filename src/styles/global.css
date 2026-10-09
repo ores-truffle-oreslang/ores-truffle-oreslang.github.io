@@ -1,14 +1,15 @@
 :root {
-  --brown: #765037;
-  --brown-deep: #2d2019;
-  --brown-dark: #4e3527;
-  --brown-soft: #8a6043;
-  --orange: #ff6a00;
-  --orange-soft: #ff9a52;
-  --cream: #fff0dc;
-  --paper: #f4d3ae;
-  --ink: #21150f;
-  --line: rgba(255, 240, 220, 0.22);
+  /* Safe fallback matches the default dark theme if JS or theme CSS is delayed. */
+  --brown: #080b0e;
+  --brown-deep: #05080a;
+  --brown-dark: #111a1b;
+  --brown-soft: #1c292a;
+  --orange: #b4ff68;
+  --orange-soft: #82f5d5;
+  --cream: #f1f9f4;
+  --paper: #c2d4ca;
+  --ink: #07100a;
+  --line: rgba(201, 243, 220, .17);
   --max: 1120px;
 }
 
