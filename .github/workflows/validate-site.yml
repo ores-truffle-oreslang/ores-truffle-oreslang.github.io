@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "src/**"
+      - "public/**"
+      - "tests/**"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/validate-site.yml"
@@ -28,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Test theme switching and responsive styles
+        run: npm test
+
       - name: Check and build static HTML
         run: npm run build
 
@@ -38,3 +43,10 @@ jobs:
           grep -q 'Alex Mills' dist/logs/1/index.html
           grep -q '<table' dist/logs/1/index.html
           grep -q 'href="/logs/"' dist/index.html
+
+      - name: Verify theme assets in generated site
+        run: |
+          test -s dist/theme.js
+          grep -q 'data-theme-choice="brown"' dist/index.html
+          grep -q 'data-theme-choice="light"' dist/about/index.html
+          grep -q 'class="mobile-navigation"' dist/index.html
