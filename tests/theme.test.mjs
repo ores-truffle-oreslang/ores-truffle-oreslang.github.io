@@ -147,9 +147,9 @@ test("all homepage section headings and interior hero titles are 33% smaller", (
   assert.ok(desktop.includes(".page-hero h1"));
   // Source: (2.8rem, 6vw, 5.8rem), scaled to 67%.
   assert.ok(desktop.includes("font-size: clamp(1.876rem, 4.02vw, 3.886rem)"));
-  const mobile = styles.match(/@media \\(max-width: 700px\\) \\{([\\s\\S]*?)\\n\\}/)?.[1];
+  const mobile = styles.split("@media (max-width: 700px) {")[1]?.split("@media (max-width: 440px) {")[0];
   assert.ok(mobile?.includes(".section-heading h2, .page-hero h1 { font-size: clamp(1.5075rem, 6.03vw, 2.546rem)"));
-  const smallMobile = styles.match(/@media \\(max-width: 440px\\) \\{([\\s\\S]*?)\\n\\}/)?.[1];
+  const smallMobile = styles.split("@media (max-width: 440px) {")[1]?.split("@media (prefers-reduced-motion: reduce)")[0];
   assert.ok(smallMobile?.includes(".section-heading h2, .page-hero h1 { font-size: clamp(1.34rem, 6.03vw, 1.8425rem)"));
   assert.ok(!styles.includes("#about .section-heading h2"));
   assert.ok(!styles.includes("#philosophy .section-heading h2"));
