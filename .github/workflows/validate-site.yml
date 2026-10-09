@@ -47,6 +47,11 @@ jobs:
       - name: Verify theme assets in generated site
         run: |
           test -s dist/theme.js
+          test -s dist/editor-themes.js
+          grep -q 'data-code-key="home-runtime-trace"' dist/index.html
+          grep -q 'data-code-key="philosophy-runtime-trace"' dist/philosophy/index.html
+          grep -q 'data-code-key="log-build-configuration"' dist/logs/1/index.html
+          grep -q 'data-code-theme-picker' dist/examples/index.html
           grep -q 'data-theme-choice="navy"' dist/index.html
           grep -q 'data-theme-choice="light"' dist/about/index.html
           grep -q 'class="mobile-navigation"' dist/index.html
