@@ -47,6 +47,6 @@ jobs:
       - name: Verify theme assets in generated site
         run: |
           test -s dist/theme.js
-          grep -q 'data-theme-choice="brown"' dist/index.html
+          grep -q 'data-theme-choice="navy"' dist/index.html
           grep -q 'data-theme-choice="light"' dist/about/index.html
           grep -q 'class="mobile-navigation"' dist/index.html
