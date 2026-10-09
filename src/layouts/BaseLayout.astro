@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import "../styles/themes.css";
+import "../styles/editor-themes.css";
 import SiteNav from "../components/SiteNav.astro";
 
 interface Props {
@@ -61,5 +62,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       </footer>
     </div>
     <script is:inline src="/theme.js" defer></script>
+    <script is:inline src="/editor-themes.js" defer></script>
   </body>
 </html>
