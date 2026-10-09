@@ -1,3 +1,7 @@
+---
+import EditorThemePicker from "./EditorThemePicker.astro";
+---
+
 <p>Yes. I think Oreslang is missing several important features, and we should deliberately give LLVM and GraalVM different runtime strengths while keeping the language identical.</p>
 <p>My proposed architecture is:</p>
 <ul><li>One Oreslang language, type system, ownership model, and actor semantics.</li><li>Two production AOT backends: LLVM and GraalVM Native Image.</li><li>Optional JIT optimizations in both, without requiring JIT to execute compiled Oreslang.</li><li>Backend-specific runtime capabilities, especially for LLVM's native memory, realtime and hardware access.</li></ul>
@@ -12,7 +16,12 @@
 <div class="log-table-scroll" role="region" tabindex="0" aria-label="Comparison table 2"><table><thead><tr><th scope="col">Feature</th><th scope="col">LLVM</th><th scope="col">Graal/JVM</th><th scope="col">Reason</th></tr></thead><tbody><tr><td>Strict bounded no-GC execution regions</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>No equivalent guarantee</td><td>JVM/Native Image GC may still occur</td></tr><tr><td>Deterministic arena allocation and destruction</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Limited native adapter</td><td>LLVM can control native memory lifetimes directly</td></tr><tr><td>Physically pinned async frames</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Logical stable handles</td><td>Moving GC and managed frame semantics differ</td></tr><tr><td>Explicit struct layout, padding and alignment</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Native interop only</td><td>Required for C ABIs, DMA and hardware memory</td></tr><tr><td>CPU affinity, NUMA and realtime thread scheduling</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Limited trusted native service</td><td>Requires OS authority, not ordinary guest code</td></tr><tr><td>Huge pages, memory locking and prefaulting</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Native adapter only</td><td>Supports controlled memory residency</td></tr><tr><td>Direct DMA, AF_XDP, DPDK and RDMA</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Broker/API only</td><td>Direct device access needs resource leases and isolation</td></tr><tr><td>Inline assembly and architecture intrinsics</td><td>Restricted trusted feature</td><td>Not in core guest language</td><td>Hardware-specific and hard to sandbox</td></tr><tr><td>Lock-free native memory layouts</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Logical atomic abstractions</td><td>Direct control over cache lines and atomics</td></tr><tr><td>Native sanitizer integration (ASan/UBSan/TSan)</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Different JVM diagnostics</td><td>Detect low-level native errors</td></tr><tr><td>Native ORC JIT code replacement</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Truffle JIT instead</td><td>Different compiler mechanisms</td></tr><tr><td>Static native libraries with minimal runtime dependencies</td><td><span class="log-unspecified" title="Not specified in the original table">—</span></td><td>Native Image can also support this</td><td>LLVM allows a particularly small runtime</td></tr></tbody></table></div>
 <p>Important: LLVM does not automatically give us hard-realtime behavior, zero allocations or memory safety. Those must be enforced by compiler checks, runtime policies, OS admission and testing.</p>
 <p>For instance, we could eventually allow a trusted native profile:</p>
-<pre><code>@Realtime(
+<div class="code-editor log-code-editor" data-code-editor data-code-key="log-compiler-constraints" data-editor-theme="vscode">
+  <div class="log-code-toolbar">
+    <strong>Oreslang realtime example</strong>
+    <EditorThemePicker label="Oreslang realtime example" />
+  </div>
+  <pre><code>@Realtime(
     maxMemory: 65536,
     maxStack: 8192,
     allocation: &quot;bounded&quot;,
@@ -21,6 +30,7 @@
 shared actor MarketDataProcessor &#123;
     // ...
 &#125;</code></pre>
+</div>
 <p>This is proposed syntax, not implemented Oreslang. The compiler would have to prove the relevant constraints, and a privileged supervisor would have to approve physical resources. An annotation alone must never grant access to CPUs, NUMA nodes or devices.</p>
 </section>
 <section id="graal-jvm-features" class="log-section"><h2>3. Features that should be Graal/JVM-specific, not duplicated in LLVM</h2>
@@ -36,7 +46,12 @@ shared actor MarketDataProcessor &#123;
 <p>LLVM's ORC supports in-memory code compilation and lazy symbol materialization.</p>
 <p>GraalVM Native Image supports configurable AOT optimization and PGO, although advanced PGO availability depends on the GraalVM distribution.</p>
 <p>I'd expose a common configuration like:</p>
-<pre><code># .oreslangc.cfg.toml — proposed compiler configuration
+<div class="code-editor log-code-editor" data-code-editor data-code-key="log-build-configuration" data-editor-theme="vscode">
+  <div class="log-code-toolbar">
+    <strong>compiler configuration example</strong>
+    <EditorThemePicker label="compiler configuration example" />
+  </div>
+  <pre><code># .oreslangc.cfg.toml — proposed compiler configuration
 
 [build]
 backend = &quot;llvm&quot;           # llvm | graal
@@ -48,6 +63,7 @@ pgo = &quot;off&quot;                # off | generate | use
 [runtime]
 jit = &quot;off&quot;                # off | auto | on
 hot_loading = true</code></pre>
+</div>
 <p>AOT binaries must work correctly with <code>jit = &quot;off&quot;</code>.</p>
 <p>For hybrid binaries, enabling JIT should change only the machine-code optimization strategy, never Oreslang's observable semantics. A binary built without a JIT compiler cannot turn JIT on at runtime merely by changing a flag.</p>
 <p>For hot loading, an AOT-only application could load a new, separately AOT-compiled and validated code generation without performing runtime compilation.</p>
