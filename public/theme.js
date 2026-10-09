@@ -1,7 +1,7 @@
 /* Runs on every static Astro page. No framework runtime required. */
 (() => {
-  const themes = new Set(["dark", "brown", "light"]);
-  const themeColors = { dark: "#080b0e", brown: "#563f36", light: "#ffffff" };
+  const themes = new Set(["dark", "navy", "light"]);
+  const themeColors = { dark: "#080b0e", navy: "#13263d", light: "#ffffff" };
   const root = document.documentElement;
   const buttons = [...document.querySelectorAll("[data-theme-choice]")];
 
@@ -15,7 +15,7 @@
     if (meta) meta.setAttribute("content", themeColors[theme]);
   }
 
-  applyTheme(root.dataset.theme || "dark");
+  applyTheme(root.dataset.theme === "brown" ? "navy" : root.dataset.theme || "dark");
 
   for (const button of buttons) {
     button.addEventListener("click", () => {
