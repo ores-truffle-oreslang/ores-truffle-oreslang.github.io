@@ -17,7 +17,7 @@
 .log-entry-header h1{margin:0;color:var(--cream);font-size:clamp(1.8rem,4.3vw,3.75rem);line-height:1.13;letter-spacing:-.047em;overflow-wrap:break-word}
 .log-entry-meta{margin-top:26px;color:var(--paper)}
 .log-entry-meta strong{color:var(--cream)}
-.log-entry-intro{max-width:760px;margin:28px 0 0;color:#ffe1c3;font-size:clamp(1.1rem,2.2vw,1.38rem)}
+.log-entry-intro{max-width:760px;margin:28px 0 0;color:var(--paper);font-size:clamp(1.1rem,2.2vw,1.38rem)}
 .log-entry-layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:52px;border-top:1px solid var(--line);padding:54px 0 100px}
 .log-toc{position:sticky;top:112px;align-self:start}
 .log-toc ol{display:grid;gap:12px;margin:0;padding:0 0 0 18px;color:var(--paper);font-size:.88rem}
@@ -31,16 +31,16 @@
 .log-section{scroll-margin-top:115px;margin-top:66px;padding-top:26px;border-top:1px solid var(--line)}
 .log-section h2{margin:0 0 27px;color:var(--cream);font-size:clamp(1.55rem,3.3vw,2.4rem);line-height:1.16;letter-spacing:-.035em}
 .log-article a{color:var(--orange-soft);text-underline-offset:3px;overflow-wrap:anywhere}
-.log-table-scroll{max-width:100%;overflow-x:auto;margin:30px 0 34px;border:1px solid var(--line);background:rgba(28,17,12,.33)}
+.log-table-scroll{max-width:100%;overflow-x:auto;margin:30px 0 34px;border:1px solid var(--line);background:var(--surface)}
 .log-table-scroll:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 .log-article table{width:100%;min-width:650px;border-collapse:collapse;font-size:.86rem;line-height:1.45}
-.log-article th,.log-article td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(255,240,220,.13)}
-.log-article th{position:relative;background:#39261c;color:var(--cream);font-weight:800;white-space:nowrap}
-.log-article td{color:#ffdfc0}
+.log-article th,.log-article td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.log-article th{position:relative;background:var(--surface-solid);color:var(--cream);font-weight:800;white-space:nowrap}
+.log-article td{color:var(--paper)}
 .log-article tbody tr:last-child td{border-bottom:0}
-.log-article tbody tr:nth-child(even){background:rgba(255,240,220,.035)}
-.log-unspecified{color:#c9a48a}
-.log-article pre{overflow-x:auto;margin:24px 0 31px;padding:21px 24px;border:1px solid rgba(255,240,220,.19);border-radius:10px;background:#211710;color:#f3dcc6;font: .87rem/1.66 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;tab-size:2}
+.log-article tbody tr:nth-child(even){background:var(--accent-glow)}
+.log-unspecified{color:var(--muted)}
+.log-article pre{overflow-x:auto;margin:24px 0 31px;padding:21px 24px;border:1px solid var(--line);border-radius:10px;background:var(--code-bg);color:var(--code-text);font: .87rem/1.66 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;tab-size:2}
 .log-article pre code{padding:0;border:0;background:transparent;color:inherit;font:inherit}
 .log-entry-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;padding:28px 0 70px;border-top:1px solid var(--line)}
 .log-entry-footer a{font-weight:700;color:var(--orange-soft)}
@@ -58,20 +58,18 @@
   display: block;
   cursor: pointer;
   padding: clamp(18px, 3vw, 28px);
-  border: 1px solid rgba(255, 154, 82, .46);
+  border: 1px solid var(--accent-border);
   border-radius: 14px;
-  background:
-    radial-gradient(circle at 92% 0%, rgba(255, 106, 0, .11), transparent 22rem),
-    rgba(38, 23, 17, .42);
-  box-shadow: 0 12px 36px rgba(24, 11, 6, .1);
+  background: var(--surface);
+  box-shadow: none;
   transition: border-color .25s ease, background-color .25s ease, box-shadow .25s ease, transform .25s ease;
 }
 .log-prompt-summary::-webkit-details-marker { display: none; }
 .log-prompt-summary::marker { content: ""; }
 .log-prompt-summary:hover {
   border-color: var(--orange);
-  background-color: rgba(38, 23, 17, .65);
-  box-shadow: 0 18px 54px rgba(24, 11, 6, .24), inset 0 0 0 1px rgba(255, 154, 82, .12);
+  background-color: var(--surface-strong);
+  box-shadow: inset 0 0 0 1px var(--accent-glow);
   transform: translateY(-1px);
 }
 .log-prompt-summary:focus-visible {
@@ -97,9 +95,9 @@
   place-items: center;
   width: 45px;
   height: 45px;
-  border: 1px solid rgba(255, 154, 82, .65);
+  border: 1px solid var(--accent-border);
   border-radius: 999px;
-  background: rgba(255, 106, 0, .16);
+  background: var(--accent-glow);
   color: var(--orange-soft);
   font: 400 1.6rem/1 system-ui, sans-serif;
   transition: background .3s, color .3s, transform .6s cubic-bezier(.2,.7,.2,1);
@@ -160,10 +158,10 @@
 .log-prompt-reveal {
   margin-top: 0;
   padding: clamp(22px, 3vw, 32px);
-  border: 1px solid rgba(255, 154, 82, .26);
+  border: 1px solid var(--accent-border);
   border-top: 0;
   border-radius: 0 0 14px 14px;
-  background: rgba(30, 18, 13, .36);
+  background: var(--surface);
 }
 .log-prompt-reveal-label {
   margin: 0 0 13px;
