@@ -1,4 +1,5 @@
 ---
+import EditorThemePicker from "./EditorThemePicker.astro";
 import { defaultHighlighter } from "@ores-truffle-oreslang/html-js-css-syntax-highlighter";
 import { highlightForAstro } from "@ores-truffle-oreslang/html-js-css-syntax-highlighter/adapters/astro";
 
@@ -11,11 +12,12 @@ const { code, caption = "Oreslang" } = Astro.props;
 const { html } = highlightForAstro(defaultHighlighter, code.trim(), "oreslang");
 ---
 
-<figure class="code-card">
+<figure class="code-card code-editor" data-code-editor data-code-key={caption} data-editor-theme="vscode">
   <figcaption>
     <span class="code-dot" aria-hidden="true"></span>
     <span>{caption}</span>
     <span class="code-lang">.ores</span>
+    <EditorThemePicker label={caption} />
   </figcaption>
   <pre><code set:html={html}></code></pre>
 </figure>
