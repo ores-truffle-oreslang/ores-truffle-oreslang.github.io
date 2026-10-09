@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import EditorThemePicker from "../components/EditorThemePicker.astro";
 ---
 
 <BaseLayout
@@ -18,12 +19,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   <section class="page-body">
     <div class="prose">
-      <div class="terminal-trace" aria-label="Illustrative Oreslang runtime stack trace">
+      <div class="terminal-trace code-editor" data-code-editor="true" data-code-key="philosophy-runtime-trace" data-editor-theme="vscode" aria-label="Illustrative Oreslang runtime stack trace">
         <div class="terminal-bar">
           <span class="terminal-dot"></span>
           <span class="terminal-dot"></span>
           <span class="terminal-dot"></span>
           <strong>ores · runtime</strong>
+          <EditorThemePicker label="philosophy runtime trace" />
         </div>
         <pre><code><span class="term-prompt">$</span> ores run app.ores --mode=hybrid
 <span class="term-dim">[oresvm]</span> loaded code image app.aot <span class="term-tag">AOT</span>

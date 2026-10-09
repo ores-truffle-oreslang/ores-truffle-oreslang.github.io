@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionTitle from "../components/SectionTitle.astro";
 import OresCode from "../components/OresCode.astro";
+import EditorThemePicker from "../components/EditorThemePicker.astro";
 
 const actorCode = `
 define actor Worker as
@@ -120,12 +121,13 @@ end
           JIT specialization faster.
         </p>
 
-        <div class="terminal-trace terminal-trace-home" aria-label="Illustrative Oreslang runtime stack trace">
+        <div class="terminal-trace terminal-trace-home code-editor" data-code-editor="true" data-code-key="home-runtime-trace" data-editor-theme="vscode" aria-label="Illustrative Oreslang runtime stack trace">
           <div class="terminal-bar">
             <span class="terminal-dot"></span>
             <span class="terminal-dot"></span>
             <span class="terminal-dot"></span>
             <strong>ores · runtime</strong>
+            <EditorThemePicker label="home runtime trace" />
           </div>
           <pre><code><span class="term-prompt">$</span> ores run app.ores --mode=hybrid
 <span class="term-dim">[oresvm]</span> loaded code image app.aot <span class="term-tag">AOT</span>

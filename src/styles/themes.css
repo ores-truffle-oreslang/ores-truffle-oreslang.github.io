@@ -356,7 +356,7 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
   .hero-note { padding: 20px; }
   .section { padding: 56px 0; scroll-margin-top: 88px; }
   .section-grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
-  .section-heading h2, .page-hero h1 { font-size: clamp(2.25rem, 9vw, 3.8rem); }
+  .section-heading h2, .page-hero h1 { font-size: clamp(1.5075rem, 6.03vw, 2.546rem); }
   .page-hero { padding: 64px 0 32px; }
   .page-body { padding-bottom: 60px; }
   .prose { font-size: 1rem; }
@@ -380,30 +380,7 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
   .hero { padding-top: 50px; }
   .hero h1 { font-size: clamp(2rem, 8.5vw, 2.9rem); }
   .display-word { font-size: clamp(2rem, 9vw, 3rem); }
-  .section-heading h2 { font-size: clamp(2rem, 9vw, 2.75rem); }
-}
-/* 33% smaller than the pre-existing section headline scale.
-   Only the two requested home links and matching Philosophy page hero change. */
-#about .section-heading h2,
-#philosophy .section-heading h2,
-.philosophy-hero h1 {
-  font-size: clamp(1.876rem, 4.02vw, 3.886rem);
-  line-height: 1.06;
-  letter-spacing: -.04em;
-}
-@media (max-width: 700px) {
-  #about .section-heading h2,
-  #philosophy .section-heading h2,
-  .philosophy-hero h1 {
-    font-size: clamp(1.5075rem, 6.03vw, 2.546rem);
-  }
-}
-@media (max-width: 440px) {
-  #about .section-heading h2,
-  #philosophy .section-heading h2,
-  .philosophy-hero h1 {
-    font-size: clamp(1.34rem, 6.03vw, 1.8425rem);
-  }
+  .section-heading h2, .page-hero h1 { font-size: clamp(1.34rem, 6.03vw, 1.8425rem); }
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-switcher button, .mobile-navigation summary { transition: none; }
