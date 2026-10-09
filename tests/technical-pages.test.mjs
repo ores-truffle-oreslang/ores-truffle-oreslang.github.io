@@ -8,6 +8,7 @@ const nav = read("../src/components/SiteNav.astro");
 const layout = read("../src/layouts/BaseLayout.astro");
 const how = read("../src/pages/how-it-works.astro");
 const perf = read("../src/pages/performance.astro");
+const applicationAreas = read("../src/pages/problem-spaces.astro");
 const css = read("../src/styles/technical.css");
 
 test("home copy names both compilation backends and fixes cooperative scheduling title", () => {
@@ -61,4 +62,11 @@ test("performance page covers six auditable suites and never invents results", (
   assert.ok(perf.includes('role="region" tabindex="0"'));
   assert.ok(css.includes("overflow-x: auto"));
   assert.ok(css.includes("@media (max-width: 580px)"));
+});
+
+test("Application Areas title is consistent on home, destination, and navigation", () => {
+  assert.ok(home.includes('title="Application Areas" href="/problem-spaces/"'));
+  assert.ok(applicationAreas.includes("<h1>Application Areas</h1>"));
+  assert.ok(nav.includes('label: "application areas", href: hrefFor("problem-spaces")'));
+  assert.ok(!home.includes('title="Where Oreslang is meant to matter"'));
 });
