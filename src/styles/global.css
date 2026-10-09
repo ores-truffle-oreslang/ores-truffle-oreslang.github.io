@@ -148,6 +148,41 @@ a {
   font-size: clamp(1.08rem, 2vw, 1.35rem);
 }
 
+/* The one-line Erlang + Rust identity is visually a code expression, not
+   another oversized headline. Semantic tokens follow the current site theme. */
+.hero-tldr {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 22px 0 0;
+  max-width: 100%;
+}
+.hero-tldr-label {
+  color: var(--paper);
+  font-size: .92rem;
+  font-weight: 600;
+}
+.hero-equation {
+  display: inline-block;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  background: linear-gradient(95deg, var(--accent-glow), var(--surface));
+  color: var(--cream);
+  font: 600 clamp(.79rem, 1.55vw, 1.01rem)/1.45 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+.hero-equation-name {
+  color: var(--orange);
+  font-weight: 700;
+}
+.hero-equation-operator { color: var(--orange-soft); }
+.hero-equation-language { color: var(--cream); }
+
+
 .hero-note {
   align-self: end;
   margin-bottom: 14px;

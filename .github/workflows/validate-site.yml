@@ -48,6 +48,7 @@ jobs:
         run: |
           test -s dist/theme.js
           test -s dist/editor-themes.js
+          grep -q 'class="hero-equation"' dist/index.html
           grep -q 'data-code-key="home-runtime-trace"' dist/index.html
           grep -q 'data-code-key="philosophy-runtime-trace"' dist/philosophy/index.html
           grep -q 'data-code-key="log-build-configuration"' dist/logs/1/index.html
