@@ -46,6 +46,16 @@ jobs:
 
       - name: Verify theme assets in generated site
         run: |
+          test -s dist/how-it-works/index.html
+          test -s dist/performance/index.html
+          grep -q 'Built for' dist/index.html
+          grep -q 'GraalVM' dist/index.html
+          grep -q 'Cooperative scheduling + scheduling un-cooperative code' dist/index.html
+          grep -q 'rt cooperate' dist/how-it-works/index.html
+          grep -q 'http-plaintext' dist/performance/index.html
+          grep -q 'No verified Oreslang run' dist/performance/index.html
+          grep -q 'href="/how-it-works/"' dist/index.html
+          grep -q 'href="/performance/"' dist/index.html
           test -s dist/theme.js
           test -s dist/editor-themes.js
           grep -q 'class="hero-equation"' dist/index.html

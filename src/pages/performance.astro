@@ -1,0 +1,127 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const suites = [
+  {
+    id: "http-plaintext",
+    number: "01",
+    title: "HTTP plaintext",
+    description: "Minimal response, no application serialization or database work. Measures the listener, routing and response path.",
+    rows: [
+      ["GET /plaintext, keep-alive, 64-byte body", "sustained requests/s", "p50 / p95 / p99 response time", "No verified Oreslang run"],
+      ["GET /plaintext, 100 → 1,000 concurrent connections", "requests/s at each concurrency", "p99 and errors/timeouts", "No verified Oreslang run"],
+      ["GET /plaintext, forced 1% slow requests", "achieved vs offered rate", "corrected p99.9", "No verified Oreslang run"],
+    ],
+    recipe: "wrk2 -t4 -c128 -d60s -R20000 --latency http://HOST:PORT/plaintext",
+  },
+  {
+    id: "http-json",
+    number: "02",
+    title: "HTTP JSON and serialization",
+    description: "Serialize a deterministic object with real JSON encoding; no hard-coded serialized payload when claiming serializer performance.",
+    rows: [
+      ["GET /json, dynamic {message: 'Hello, World!'}", "successful JSON responses/s", "p50 / p99", "No verified Oreslang run"],
+      ["POST /echo, validated 1 KiB JSON payload", "successful round-trips/s", "p99 + allocation bytes/request", "No verified Oreslang run"],
+      ["POST /echo, validated 16 KiB JSON payload", "MiB/s and responses/s", "p99 + error count", "No verified Oreslang run"],
+    ],
+    recipe: "wrk2 -t4 -c128 -d60s -R10000 --latency http://HOST:PORT/json",
+  },
+  {
+    id: "http-routing",
+    number: "03",
+    title: "Routing, middleware and fan-out",
+    description: "Exercise an actual application stack with equivalent auth/header checks and middleware, not a bare endpoint presented as a framework result.",
+    rows: [
+      ["Three middleware stages + static route", "requests/s and CPU utilization", "p50 / p99", "No verified Oreslang run"],
+      ["Parameterized route + 404/405 handling", "correct responses/s", "p99 and status correctness", "No verified Oreslang run"],
+      ["Fan-out to 4 bounded simulated RPC calls", "completed requests/s", "p99, cancellations, timeout %", "No verified Oreslang run"],
+    ],
+    recipe: "wrk2 -t4 -c128 -d60s -R5000 --latency http://HOST:PORT/routed",
+  },
+  {
+    id: "http-database",
+    number: "04",
+    title: "HTTP + PostgreSQL",
+    description: "A real external PostgreSQL instance with prepared queries, fixed connection pool, seeded rows and documented network placement.",
+    rows: [
+      ["One random-row query + JSON response", "fully completed requests/s", "p99 server + client latency", "No verified Oreslang run"],
+      ["Twenty random-row queries/request", "fully completed requests/s", "p99 + DB pool wait", "No verified Oreslang run"],
+      ["One update transaction/request", "committed transactions/s", "p99 + rollback/error %", "No verified Oreslang run"],
+    ],
+    recipe: "Run the TechEmpower DB/queries/updates workload with pinned PostgreSQL, same dataset and pool size.",
+  },
+  {
+    id: "actor-mailbox",
+    number: "05",
+    title: "Actor messages and isolation overhead",
+    description: "Benchmark the actor execution boundary independently of HTTP and distinguish copy/serialization from same-runtime messages.",
+    rows: [
+      ["Ping-pong, 64-byte message, 1 actor pair", "completed round-trips/s", "p50 / p99 round-trip µs", "No verified OresVM run"],
+      ["64 producer actors → one consumer, bounded inbox", "messages/s", "queue depth, p99, rejects", "No verified OresVM run"],
+      ["Shared vs private actor 4 KiB messages", "messages/s by policy", "copies, bytes, CPU and memory", "No verified OresVM run"],
+    ],
+    recipe: "Use the ActorRuntime harness with frozen 64 B / 4 KiB messages, bounded mailboxes and acknowledged completions.",
+  },
+  {
+    id: "scheduling-and-startup",
+    number: "06",
+    title: "Scheduling, startup and hot generations",
+    description: "Measure tail latency and correctness under adversarial or CPU-heavy neighbors as well as build/runtime lifecycle costs.",
+    rows: [
+      ["CPU-bound loop beside latency-sensitive actor", "heartbeat completions/s", "heartbeat p99/p99.9 + starvation", "No verified OresVM run"],
+      ["Cold start to first successful HTTP response", "starts/s and time-to-ready", "p50 / p95 / p99 by build profile", "No verified Oreslang run"],
+      ["Hot generation load, switch, rollback", "successful cutovers/s", "switch p99, errors, lost requests", "No verified Oreslang run"],
+    ],
+    recipe: "Instrument OresVM/launcher monotonic timestamps; distinguish JVM cold/JIT warm, Native AOT and Native hybrid.",
+  },
+];
+---
+
+<BaseLayout
+  title="Oreslang Performance — reproducible HTTP and systems benchmarks"
+  description="Six reproducible benchmark suites for Oreslang HTTP throughput, JSON, routing, PostgreSQL, actors and OresVM scheduling. Verified measurements only; no invented performance numbers."
+>
+  <section class="page-hero">
+    <p class="kicker">Performance / Evidence</p>
+    <h1>Benchmarks that can be reproduced.</h1>
+    <p>Six workloads across HTTP and OresVM internals. Publish throughput and latency together, with a pinned build, machine, source revision and raw results.</p>
+  </section>
+  <div class="page-body technical-page performance-page">
+    <div class="prose">
+      <p class="status-note"><strong>Measurement status: awaiting audited Oreslang runs.</strong> These are concrete benchmark definitions and reporting tables—not fabricated Oreslang scores. The available repository benchmark matrix contains build/deployment smoke tests, not reproducible runtime latency or throughput observations. We will not imply that the experimental LLVM backend can run the full HTTP or actor suites today.</p>
+      <p>For an apples-to-apples comparison, run Oreslang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
+
+      <nav class="bench-jump" aria-label="Benchmark suites">
+        {suites.map((suite) => <a href={`#${suite.id}`}>{suite.number} · {suite.title}</a>)}
+      </nav>
+      {suites.map((suite) => (
+        <section class="benchmark-section" id={suite.id}>
+          <p class="eyebrow">{suite.number} / Benchmark suite</p>
+          <h2>{suite.title}</h2>
+          <p>{suite.description}</p>
+          <div class="bench-table-scroll" role="region" tabindex="0" aria-label={`${suite.title} benchmark table`}>
+            <table class="tech-table">
+              <thead><tr><th scope="col">Workload</th><th scope="col">Throughput metric</th><th scope="col">Latency / validity</th><th scope="col">Verified result</th></tr></thead>
+              <tbody>
+                {suite.rows.map(([workload, throughput, latency, result]) => (
+                  <tr><th scope="row">{workload}</th><td>{throughput}</td><td>{latency}</td><td class="bench-pending">{result}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="bench-recipe"><strong>Reproduce:</strong> <code>{suite.recipe}</code></p>
+        </section>
+      ))}
+
+      <h2>Minimum evidence for a published number</h2>
+      <p>Every result needs the exact Git SHA for the compiler/runtime and app, OS/kernel, CPU model/core count, RAM, JVM/Graal/LLVM versions, network placement, client and server hardware, build profile, warmup policy, concurrency, offered arrival rate, duration, response validation, errors, and raw output or histogram. Run multiple independent trials and report medians and variability—not one lucky peak.</p>
+      <p>For HTTP tail latency, use an open-loop constant-rate load generator such as <a href="https://github.com/giltene/wrk2">wrk2</a> so stalls do not silently suppress intended arrivals. Specify whether the run targets saturation/maximum throughput or p99 under an offered load. The <a href="https://github.com/TechEmpower/FrameworkBenchmarks">TechEmpower Framework Benchmarks</a> provide established definitions for plaintext, JSON, database and other web-framework tests; matching endpoints alone does not make this an official TechEmpower result.</p>
+      <p>For actor/scheduler tests, an acknowledgement must mark completion and the harness must record dropped messages, blocked producers, cancellation failures and memory growth. For startup/hot-loading, exclude compilation time only when reporting runtime-only metrics, and report full build-to-ready times separately.</p>
+      <div class="performance-note">
+        <strong>Why no numbers yet?</strong>
+        <p><a href="https://github.com/ORESoftware/ores-comparisons/tree/main/benchmarks">Existing comparison harness records build/smoke receipts</a>, not these six measured runtime benchmark suites. The <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/blob/main/README.md">LLVM backend</a> presently supports only a small compiler subset; it cannot honestly be listed as an HTTP/actor implementation. This page distinguishes repeatable benchmark <em>specifications</em> from independently verified <em>results</em>.</p>
+      </div>
+      <p><a href="/how-it-works/">Understand OresVM architecture →</a></p>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="How OresVM Works — Oreslang execution, actors and scheduling"
+  description="Explore OresVM internals: AOT, JIT, hybrid execution, cooperative and non-cooperative scheduling, async/await, select, loop safepoints, and actor isolation."
+>
+  <section class="page-hero">
+    <p class="kicker">Architecture / OresVM</p>
+    <h1>How it works.</h1>
+    <p>One language model for actor ownership, async work and static contracts; different execution engines and isolation backends underneath it.</p>
+  </section>
+
+  <div class="page-body technical-page">
+    <div class="prose">
+      <p class="status-note"><strong>Implementation status matters.</strong> The Java/GraalVM runtime implements substantially more of Oreslang than the experimental LLVM compiler. A GraalVM Native Image executable can be AOT-compiled <em>as a runtime</em> without each Oreslang application handler yet being independently compiled to native machine code. The protected-worker/physical-isolate roadmap is not interchangeable with an already proven hostile-tenant sandbox.</p>
+
+      <h2>Inside OresVM</h2>
+      <p>OresVM separates the source contract from execution and scheduling. The front end parses and checks source; the runtime owns the root scheduler, continuation tasks, actor mailboxes, capability policies and execution carriers. Backend choice changes how work is executed, not what an actor, future or declared type means.</p>
+      <ol class="runtime-flow" aria-label="OresVM execution path">
+        <li><strong>Ores source</strong><span>Parse, type check, borrow/sendability checks and capability admission</span></li>
+        <li><strong>Verified code generation</strong><span>Closed declarations, module identities and the chosen build/execution policy</span></li>
+        <li><strong>OresVM control plane</strong><span>Prestarted control carriers, root scheduler, async futures, cancellation and timers</span></li>
+        <li><strong>Actor runtime</strong><span>Per-actor mailbox and turn lease, private/shared dispatchers, continuation lane and quotas</span></li>
+        <li><strong>Execution backend</strong><span>Graal/Truffle JVM or Native Image today; LLVM source-to-IR compiler is experimental</span></li>
+      </ol>
+      <p>The current Java <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/src/main/java/dev/oreslang/runtime/OresVM.java">OresVM implementation</a> prestarts its control workers before admitting root tasks. Actor dispatcher workers are runtime-owned, not threads created directly by guest programs. An actor has one mailbox and at most one active turn.</p>
+
+      <h2>AOT, JIT and hybrid: the same semantics</h2>
+      <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Compilation modes comparison">
+        <table class="tech-table">
+          <thead><tr><th scope="col">Profile</th><th scope="col">Execution today</th><th scope="col">Trade-off / limitation</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">JVM + Graal/Truffle JIT</th><td>Runs Oreslang via the Truffle evaluator; hot guest paths can be optimized by Graal.</td><td>JVM hosting and warmup; not an ahead-of-time guest binary.</td></tr>
+            <tr><th scope="row">Graal Native Image AOT-only</th><td>Native-compiles the reachable Java interpreter/runtime and disables guest JIT.</td><td>Guest handlers are still interpreted; not yet general guest-code AOT lowering.</td></tr>
+            <tr><th scope="row">Graal Native Image hybrid</th><td>AOT-hosted runtime plus optional guest JIT where the build supports it.</td><td>Hot-code behavior must be measured; requires the hybrid-capable image.</td></tr>
+            <tr><th scope="row">LLVM native backend</th><td>Experimental compiler emitting verified LLVM IR for a small integer-function subset.</td><td>Actor, async, GC and full-language compilation parity remain future work.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Source declarations stay finite and compiler-known in every mode. In the long-term shared typed <strong>HIR → MIR</strong> design, the same semantic checks feed Graal and LLVM lowering; that <a href="https://github.com/ores-truffle-oreslang/oreslang-common-source/blob/main/docs/ARCHITECTURE.md">common compiler core is currently a proposal</a>, not a merged backend. Hot loading installs a validated new code generation instead of allowing ordinary code to manufacture types at runtime.</p>
+      <p><a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/NATIVE_DEPLOYMENT.md">Read current Graal native build guarantees</a> · <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/blob/main/README.md">LLVM feature status</a></p>
+
+      <h2>Cooperative scheduling + scheduling un-cooperative code</h2>
+      <p>Oreslang does not schedule at each source-code line. There are <strong>checkpoints</strong> (observe cancellation, interruption and quotas) and <strong>resumable boundaries</strong> (save a continuation, relinquish the carrier, then schedule the remainder). Confusing those two would make CPU fairness claims that the runtime cannot guarantee.</p>
+      <div class="schedule-grid">
+        <article class="schedule-tile"><strong><code>await</code></strong><p>An incomplete future suspends a compiler-lowered async continuation. Its result or failure resumes through the Ores-owned scheduler; an actor dispatcher should not block a carrier waiting for it. Some actor async source paths are still being hardened.</p></article>
+        <article class="schedule-tile"><strong><code>select</code></strong><p>Waits for channel, future, timeout or cancellation readiness, choosing a ready arm under the select contract. When nothing is ready it can suspend rather than busy-wait.</p></article>
+        <article class="schedule-tile"><strong><code>rt cooperate</code></strong><p>An explicit cooperation request at a valid lowered continuation boundary. The runtime unwinds the old carrier before rescheduling the same logical task, and protects the actor's turn from being overtaken by later mail.</p></article>
+        <article class="schedule-tile"><strong>Ordinary <code>for</code> / <code>loop</code></strong><p>Every iteration includes a compiler-inserted scheduler safepoint, so tight loops check runtime control state without a manual <code>yield</code>. A safepoint can yield carrier execution; it is <em>not automatically</em> full continuation preemption for arbitrary synchronous frames.</p></article>
+      </div>
+      <p>For truly un-cooperative or hostile code, a safepoint cannot be trusted to run at all. The design needs supervised, revocable physical execution boundaries (such as an isolated worker process), bounded resources and out-of-band cancellation. CPU-bound trusted work may instead use the dedicated <code>HungryActor</code> carrier. Force-stopping hostile guest code is a distinct boundary from asking a cooperative task to yield; some protected-worker integrations remain pending.</p>
+      <p><a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/ACTOR_PREEMPTION.md">Resumable scheduling invariants</a> · <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/LANGUAGE.md">Loop safepoints and source syntax</a></p>
+
+      <h2>Four actor execution profiles</h2>
+      <div class="bench-table-scroll" role="region" tabindex="0" aria-label="OresVM actor profiles">
+        <table class="tech-table">
+          <thead><tr><th scope="col">Kind</th><th scope="col">Scheduling and data</th><th scope="col">Boundary and state</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Shared</th><td>Multiplexed shared-actor dispatcher; actor-owned mutable fields; explicitly synchronized sharing where policy grants it.</td><td>Mailbox serialization exists; no automatic OS memory boundary.</td></tr>
+            <tr><th scope="row">Isolated / private</th><td>Separate private dispatcher, copy/sendability checks and actor-identity memory accounting.</td><td>JVM memory slices are logical ownership boundaries, not independent GC heaps. Strong physical isolation needs a different backend.</td></tr>
+            <tr><th scope="row">Untrusted</th><td>Restricted capabilities, quotas, validated messages and fail-closed admission.</td><td>Arbitrary hostile execution requires a dedicated revocable sandbox; the source-worker/full isolation path is still in progress.</td></tr>
+            <tr><th scope="row">Hungry</th><td>Dedicated JNI-attached pthread carrier instead of ordinary multiplexing, bounded inbox and serial turns.</td><td>Expensive host/runtime primitive; not by itself CPU exclusivity, OS security isolation or guaranteed hard realtime.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>All four preserve the key actor idea: communicate through references/mailboxes, keep one active turn per actor, do not casually share writable state, and make capability grants a launcher/supervisor decision rather than a declaration inside downloaded guest code.</p>
+      <p><a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/RUNTIME.md">Runtime design and current boundaries</a> · <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/runtime/actor-physical-boundaries.md">Physical isolation roadmap</a> · <a href="/performance/">How we measure the runtime →</a></p>
+    </div>
+  </div>
+</BaseLayout>
