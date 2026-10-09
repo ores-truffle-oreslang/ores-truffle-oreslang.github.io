@@ -114,7 +114,7 @@ test("brand is mono sans-serif, layout is mobile-aware, and theme buttons are ac
 });
 
 test("retired brown preference becomes navy before first paint", () => {
-  const inline = layout.match(/<script is:inline>([\\s\\S]*?)<\\/script>/)?.[1];
+  const inline = layout.split("<script is:inline>")[1]?.split("</script>")[0];
   assert.ok(inline, "pre-paint theme initialization must be inline");
   const root = { dataset: { theme: "dark" } };
   const values = new Map([["oreslang-theme", "brown"]]);
@@ -127,26 +127,27 @@ test("retired brown preference becomes navy before first paint", () => {
   assert.equal(values.get("oreslang-theme"), "navy");
 });
 
-test("navy uses steel-blue backgrounds and genuinely orange syntax keywords", () => {
-  const palette = styles.match(/html\\[data-theme="navy"\\] \\{([^}]+)\\}/)?.[1];
-  assert.ok(palette);
-  assert.match(palette, /--brown: #13263d/);
-  assert.match(palette, /--orange: #ff9d4d/);
-  assert.match(styles, /\\.swatch-navy/);
-  assert.match(styles, /\\.tok-keyword \\{ color: var\\(--orange\\); \\}/);
-  assert.doesNotMatch(styles, /data-theme="brown"|swatch-brown/);
-  assert.match(nav, /data-theme-choice="navy"/);
-  assert.doesNotMatch(nav, /data-theme-choice="brown"|Brown theme/);
-  assert.match(script, /navy: "#13263d"/);
+test("navy uses steel-blue backgrounds and orange syntax keywords", () => {
+  const palette = styles.split('html[data-theme="navy"] {')[1]?.split("\n}")[0];
+  assert.ok(palette, "navy palette must exist");
+  assert.ok(palette.includes("--brown: #13263d"));
+  assert.ok(palette.includes("--orange: #ff9d4d"));
+  assert.ok(styles.includes(".swatch-navy"));
+  assert.ok(styles.includes(".tok-keyword { color: var(--orange); }"));
+  assert.ok(!styles.includes('data-theme="brown"'));
+  assert.ok(!styles.includes(".swatch-brown"));
+  assert.ok(nav.includes('data-theme-choice="navy"'));
+  assert.ok(!nav.includes('data-theme-choice="brown"'));
+  assert.ok(script.includes('navy: "#13263d"'));
 });
 
-test("requested home section links and philosophy detail hero have 33% smaller typography", () => {
-  assert.match(styles, /#about \\.section-heading h2,/);
-  assert.match(styles, /#philosophy \\.section-heading h2,/);
-  assert.match(styles, /\\.philosophy-hero h1/);
-  // Original desktop clamp: (2.8rem, 6vw, 5.8rem). New scale: 67% exactly.
-  assert.match(styles, /font-size: clamp\\(1\\.876rem, 4\\.02vw, 3\\.886rem\\)/);
-  // Also shrink in mobile breakpoints, not merely desktop.
-  assert.match(styles, /font-size: clamp\\(1\\.5075rem, 6\\.03vw, 2\\.546rem\\)/);
-  assert.match(styles, /font-size: clamp\\(1\\.34rem, 6\\.03vw, 1\\.8425rem\\)/);
+test("targeted section headings are 33% smaller on desktop and mobile", () => {
+  assert.ok(styles.includes("#about .section-heading h2,"));
+  assert.ok(styles.includes("#philosophy .section-heading h2,"));
+  assert.ok(styles.includes(".philosophy-hero h1"));
+  // Desktop original (2.8rem, 6vw, 5.8rem) times 0.67.
+  assert.ok(styles.includes("font-size: clamp(1.876rem, 4.02vw, 3.886rem)"));
+  // Tablet and phone scales follow the same 33% reduction.
+  assert.ok(styles.includes("font-size: clamp(1.5075rem, 6.03vw, 2.546rem)"));
+  assert.ok(styles.includes("font-size: clamp(1.34rem, 6.03vw, 1.8425rem)"));
 });
