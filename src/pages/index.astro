@@ -6,35 +6,38 @@ import EditorThemePicker from "../components/EditorThemePicker.astro";
 
 const actorCode = `
 define actor Worker as
-  pub fnc on_start(): void {
+  on_start(): void {
     stdio.println("worker ready");
+    return;
   }
 
-  pub fnc run(Job job): Result {
-    return process(job);
+  receive(ActorMail<Job> mail): void {
+    process(mail.value);
+    return;
+  }
+
+  static fnc kind_name(): string {
+    return "worker";
   }
 end
 
-const worker = spawn Worker();
-const result = await worker.run(job);
+val worker = spawn Worker();
+worker.send(job);
 `;
 
 const selectCode = `
+// Inside an actor's mailbox handler
 do nb select {
   when readch messages: val msg {
     stdio.println("got: ", msg);
   }
 
-  when await future: val result {
-    consume(result);
-  }
-
-  when timeout 5s {
-    retry();
-  }
-
-  when cancelled token {
+  when readch shutdown: val signal {
     cleanup();
+  }
+
+  when writech acknowledgements, receipt: {
+    stdio.println("ack sent");
   }
 }
 `;
@@ -246,7 +249,7 @@ stack trace:
       <SectionTitle eyebrow="04 / Examples" title="The language in motion" href="/examples/" />
       <div class="code-stack">
         <OresCode caption="Actors with explicit lifecycle" code={actorCode} />
-        <OresCode caption="Select over channels, futures, timeouts, and cancellation" code={selectCode} />
+        <OresCode caption="Nonblocking channel selection with explicit shutdown" code={selectCode} />
         <OresCode caption="Closed inferred structs + structural matching" code={structCode} />
       </div>
     </div>

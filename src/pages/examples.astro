@@ -3,38 +3,42 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import OresCode from "../components/OresCode.astro";
 
 const selectCode = `
+// Inside an actor's mailbox handler
 do nb select {
   when readch messages: val msg {
     stdio.println("got later: ", msg);
   }
 
-  when await future: val result {
-    use(result);
-  }
-
-  when timeout 5s {
-    retry();
-  }
-
-  when cancelled token {
+  when readch shutdown: val signal {
     cleanup();
+  }
+
+  when writech acknowledgements, receipt: {
+    stdio.println("ack sent");
   }
 }
 `;
 
 const actorCode = `
 define actor Worker as
-  pub fnc on_start(): void {
+  on_start(): void {
     warm_cache();
+    return;
   }
 
-  pub async fnc transform(input: Payload): Result {
-    return await pipeline(input);
+  receive(ActorMail<Payload> mail): void {
+    self.transform(mail.value);
+    return;
+  }
+
+  transform(Payload input): void {
+    pipeline(input);
+    return;
   }
 end
 
-const worker: ActorRef<Worker> = spawn Worker();
-const result = await worker.transform(payload);
+val worker: ActorRef<Worker> = spawn Worker();
+worker.send(payload);
 `;
 
 const dataCode = `
@@ -74,7 +78,7 @@ fnc findName(): Option<String> {
 
   <section class="page-body">
     <div class="code-stack">
-      <OresCode caption="Select is broader than channel receive" code={selectCode} />
+      <OresCode caption="Actor-scoped nonblocking select across channel operations" code={selectCode} />
       <OresCode caption="Actors expose references, not raw state pointers" code={actorCode} />
       <OresCode caption="Closed structural values and option-safe returns" code={dataCode} />
     </div>
