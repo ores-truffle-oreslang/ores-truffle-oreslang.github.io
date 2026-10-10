@@ -44,6 +44,17 @@ jobs:
           grep -q '<table' dist/logs/1/index.html
           grep -q 'href="/logs/"' dist/index.html
 
+      - name: Verify second engineering log in generated output
+        run: |
+          test -s dist/logs/2/index.html
+          grep -q 'Beyond GraalVM and LLVM' dist/logs/2/index.html
+          grep -q 'Authored by' dist/logs/2/index.html
+          grep -q 'PR #586' dist/logs/2/index.html
+          grep -q 'PR #74' dist/logs/2/index.html
+          grep -q 'href="/logs/2/"' dist/logs/index.html
+          grep -q 'href="/logs/2/"' dist/logs/1/index.html
+          grep -q 'target-env' dist/logs/2/index.html || grep -q 'ores:targets' dist/logs/2/index.html
+
       - name: Verify theme assets in generated site
         run: |
           test -s dist/how-it-works/index.html
