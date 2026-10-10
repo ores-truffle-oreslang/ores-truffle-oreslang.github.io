@@ -1,17 +1,17 @@
 ---
 import OresCode from "./OresCode.astro";
 
-const headerExample = \`// ores:targets=browser,edge-js,android,ios,server
+const headerExample = `// ores:targets=browser,edge-js,android,ios,server
 // ores:requires=net.client,clock
 
 import fnc fetch_data from "./portable/http.ores";
 
 pub fnc main(): void {
   return;
-}\`;
+}`;
 
-const badImport = \`// ores:targets=browser,server
-import fnc read_secret from "./server/fs.ores";\`;
+const badImport = `// ores:targets=browser,server
+import fnc read_secret from "./server/fs.ores";`;
 ---
 
 <p>What if the same Oreslang source could move from a cloud server to a browser, a phone, an edge worker, or an embedded board—and the compiler could explain <em>before deployment</em> why a particular file cannot go with it?</p>
