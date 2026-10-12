@@ -51,7 +51,6 @@
 /* An accessible, native HTML disclosure: the heading stays short and the
    ghost text hints at the full prompt without acting like a traditional link. */
 .log-prompt-disclosure {
-  interpolate-size: allow-keywords;
   margin: 2px 0 0;
 }
 .log-prompt-summary {
@@ -145,18 +144,30 @@
 }
 .log-prompt-cue::before { content: "＋  click or tap to expand"; }
 .log-prompt-disclosure[open] .log-prompt-cue::before { content: "－  click or tap to collapse"; }
+/* Use track interpolation instead of height:auto: Firefox and Safari (2026)
+   implement ::details-content but not interpolate-size. A zero-minimum grid
+   child lets both edges animate without a guessed max-height or JS. */
 .log-prompt-disclosure::details-content {
-  height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
   opacity: 0;
   overflow: hidden;
-  transition: height .9s cubic-bezier(.22,.61,.36,1), opacity .6s ease, content-visibility .9s allow-discrete;
+  transition:
+    grid-template-rows .9s cubic-bezier(.22,.61,.36,1),
+    opacity .6s ease,
+    content-visibility .9s allow-discrete;
 }
 .log-prompt-disclosure[open]::details-content {
-  height: auto;
+  grid-template-rows: 1fr;
   opacity: 1;
 }
+/* This wrapper has no padding or border, so the 0fr track can reach 0px. */
 .log-prompt-reveal {
-  margin-top: 0;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.log-prompt-reveal-inner {
   padding: clamp(22px, 3vw, 32px);
   border: 1px solid var(--accent-border);
   border-top: 0;
