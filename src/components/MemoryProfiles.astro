@@ -1,0 +1,34 @@
+---
+/** The same backend memory model is displayed on the home and technical pages. */
+---
+
+<div class="memory-profile-grid" aria-label="Oreslang backend memory-management goals">
+  <article class="memory-profile memory-profile-native">
+    <div class="memory-profile-header">
+      <span class="memory-profile-kicker">LLVM · Native</span>
+      <strong class="memory-profile-goal">Zero GC</strong>
+    </div>
+    <h4>No tracing collector in verified native paths.</h4>
+    <p>
+      The target is deterministic reclamation through ownership and borrowing,
+      stack values, region/arena lifetimes, and explicit destruction.
+      A strict no-GC profile must reject unproven escapes, cycles, and
+      unsafe FFI boundaries rather than silently depend on a collector.
+    </p>
+    <p class="memory-profile-foot">Zero GC does not mean zero allocation, zero overhead, or automatic hard real-time behavior.</p>
+  </article>
+  <article class="memory-profile memory-profile-managed">
+    <div class="memory-profile-header">
+      <span class="memory-profile-kicker">JVM / GraalVM · Managed</span>
+      <strong class="memory-profile-goal">Minimal GC</strong>
+    </div>
+    <h4>Allocate less. Keep collection available.</h4>
+    <p>
+      The target is fewer temporary objects, less heap churn, and lower GC
+      pressure through unboxed data, escape analysis when supported,
+      actor-local reuse, and bounded buffers. Managed heaps retain a
+      collector for object graphs and cycles.
+    </p>
+    <p class="memory-profile-foot">This is not a zero-pause guarantee: measure allocation rates, GC pauses, tail latency, and memory footprint.</p>
+  </article>
+</div>
