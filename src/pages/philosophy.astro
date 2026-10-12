@@ -97,20 +97,23 @@ runtime frames:
 
       <h3 id="memory-management">Backend-specific memory strategies</h3>
       <p>
-        Oreslang should not force native and managed runtimes into the same allocator.
-        <strong>Zero GC</strong> means that a verified LLVM execution path requires no tracing
-        collector to reclaim its objects; allocation may still occur, but lifetime and
-        cleanup must be deterministic. <strong>Minimal GC</strong> means that JVM and GraalVM
-        execution minimizes avoidable allocation while keeping the collector available.
-        Both backends retain the same observable ownership, actor isolation, and sendability rules.
+        Oreslang should preserve <strong>actor-owned allocation domains on both LLVM and JVM/GraalVM</strong>.
+        Both backends can use native arenas with deterministic lifetime control;
+        Java/GraalVM additionally has managed Java objects and an enclosing GC heap.
+        <strong>Zero GC</strong> means verified LLVM native paths require no tracing
+        collector. <strong>Minimal GC</strong> means actor-local native storage and
+        allocation-conscious execution reduce pressure on the JVM/GraalVM collector,
+        without promising that it cannot pause.
       </p>
       <MemoryProfiles />
       <p>
-        Native strict mode must be opt-in and fail compilation or admission if references
-        escape approved lifetimes, cycles cannot be safely reclaimed, or FFI and async
-        continuations defeat the lifetime proof. Managed optimization may use allocation
-        elimination and bounded reuse, but must never trade away actor isolation for pooling.
-        These are design goals, not claims of completed backend parity.
+        The actor's <em>logical heap or arena</em> establishes ownership, quotas,
+        and deterministic native-region release; it does not automatically establish
+        a distinct physical tracing collector. Actors sharing one JVM or Graal
+        isolate can still be affected by that collector's pauses. A separately
+        spawned Graal isolate can have its own heap/GC, but choosing a dedicated
+        isolate for each actor is a more expensive, optional deployment policy.
+        These remain implementation and integration goals, not completed backend parity.
       </p>
       <p>
         <a href="/how-it-works/#memory-management">See the backend guarantees, limitations, and verification criteria →</a>
