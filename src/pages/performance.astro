@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import httpProbe from "../data/http-plaintext-probe-2026-10-12.json";
 import httpWrk2 from "../data/http-wrk2-2026-10-12.json";
+import httpSweep from "../data/http-sweep-2026-10-12.json";
 import llvmPipeline from "../data/llvm-pipeline-launch-2026-10-12.json";
 
 const suites = [
@@ -91,7 +92,7 @@ const suites = [
   </section>
   <div class="page-body technical-page performance-page">
     <div class="prose">
-      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; a verified exploratory LLVM pipeline launch-to-completion benchmark for four actor counts; all other suite workloads pending.</strong> A real 60-second open-loop wrk2 measurement now covers the 64-byte plaintext route at 300 offered requests/s, with raw evidence. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
+      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; a verified exploratory LLVM pipeline launch-to-completion benchmark for four actor counts; all other suite workloads pending.</strong> Three 60-second open-loop wrk2 trials cover the 64-byte plaintext route at 300 offered requests/s, and a separate private funded CI run measures 500, 1,000, and 2,000 offered requests/s in independently started JVMs at fixed concurrency. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
       <p>For an apples-to-apples comparison, run Oreslang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
 
       <nav class="bench-jump" aria-label="Benchmark suites">
@@ -114,6 +115,23 @@ const suites = [
         </div>
         <p>All three runs satisfied the requested R300 offered rate, with recorded latency samples and no failures. This is <strong>not a maximum capacity result</strong>: the requested load was deliberately capped at 300 requests/s. Hosted shared virtual hardware, same-host loopback client/server placement and the live JVM across trials limit comparability. Do not treat it as a dedicated-hardware performance claim, a 20,000 RPS saturation test, or an official TechEmpower score.</p>
         <p><strong>Evidence:</strong> <a href={httpWrk2.run_url}>successful GitHub Actions run</a>, <a href={httpWrk2.artifact_url}>raw wrk2 logs, histograms and machine receipt</a>, <a href={httpWrk2.harness_url}>benchmark harness</a>. Runner commit <code>{httpWrk2.test_branch_commit_sha}</code>; mirrored source tree <code>{httpWrk2.source_mirror_tree_sha}</code>; wrk2 commit <code>{httpWrk2.wrk2_upstream_commit_sha}</code>.</p>
+      </section>
+      <section class="benchmark-section" id="ci-plaintext-private-rate-sweep">
+        <p class="eyebrow">Measured observation / independent JVM processes / private funded CI</p>
+        <h2>HTTP plaintext: offered-load sweep to 2,000 requests/second</h2>
+        <p>Real Oreslang guest actor + NativeHttp, HTTP/1.1 GET /plaintext, exact 64-byte body. Each rate uses a separately launched JVM and a 60-second wrk2 run, 4 generator threads and 128 connections, with client and server on the same GitHub-hosted Ubuntu 24.04 runner. The pinned source manifest passed all 403 blob checks; the pinned wrk2 binary also passed an intentionally wrong-HTTP-response negative control.</p>
+        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Private CI Oreslang HTTP offered-load sweep measurements">
+          <table class="tech-table">
+            <thead><tr><th scope="col">Offered RPS</th><th scope="col">Achieved RPS</th><th scope="col">Completed</th><th scope="col">p50</th><th scope="col">p99</th><th scope="col">p99.9</th><th scope="col">Errors</th></tr></thead>
+            <tbody>
+              {httpSweep.measurements.map((t) => (
+                <tr><th scope="row">{t.offered_rps.toLocaleString()}</th><td>{t.achieved_rps.toFixed(2)}</td><td>{t.completed_requests.toLocaleString()}</td><td>{t.p50_ms.toFixed(3)} ms</td><td>{t.p99_ms.toFixed(3)} ms</td><td>{t.p999_ms.toFixed(3)} ms</td><td>{t.errors}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p>These are <strong>three single-trial observations at different offered rates</strong>, not three repetitions per rate. Throughput closely tracked the offered rate, including 1,998.44 achieved RPS at R2000 with zero detected errors. <strong>The saturation point has not been measured.</strong> Short CI runs, shared virtualized CPU and same-host loopback do not establish capacity on dedicated production hardware or an official TechEmpower comparison.</p>
+        <p><strong>Audit:</strong> <a href={httpSweep.public_excerpt_url}>public, sanitized excerpts of the wrk2 output</a>; <a href={httpSweep.run_url}>successful private Actions run (access required)</a>; <a href={httpSweep.artifact_url}>complete raw artifact (access required)</a>. CI workflow revision <code>{httpSweep.runner_commit_sha}</code>, existing source mirror tree <code>{httpSweep.source_mirror_tree_sha}</code>, pinned wrk2 <code>{httpSweep.wrk2_commit_sha}</code>. The security work to remove the pre-existing public source mirror is tracked separately; using a private runner does not erase the prior exposure.</p>
       </section>
       <section class="benchmark-section" id="ci-llvm-pipeline-launch">
         <p class="eyebrow">Measured observation / compiled LLVM guest / exploratory process latency</p>
