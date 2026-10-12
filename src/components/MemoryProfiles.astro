@@ -1,5 +1,5 @@
 ---
-/** The same backend memory model is displayed on the home and technical pages. */
+/** Distinguish actor-local allocation from independently collected VM heaps. */
 ---
 
 <div class="memory-profile-grid" aria-label="Oreslang backend memory-management goals">
@@ -8,27 +8,27 @@
       <span class="memory-profile-kicker">LLVM · Native</span>
       <strong class="memory-profile-goal">Zero GC</strong>
     </div>
-    <h4>No tracing collector in verified native paths.</h4>
+    <h4>Actor-owned native arenas with no tracing collector.</h4>
     <p>
-      The target is deterministic reclamation through ownership and borrowing,
-      stack values, region/arena lifetimes, and explicit destruction.
-      A strict no-GC profile must reject unproven escapes, cycles, and
-      unsafe FFI boundaries rather than silently depend on a collector.
+      Native actor-local slabs, bounded arenas and generational handles are
+      designed for deterministic release at validated lifecycle boundaries.
+      Ownership, borrowing, quiescence and FFI checks must make every lifetime
+      safe without introducing tracing GC.
     </p>
-    <p class="memory-profile-foot">Zero GC does not mean zero allocation, zero overhead, or automatic hard real-time behavior.</p>
+    <p class="memory-profile-foot">LLVM does not ship an allocator or collector for Oreslang; these native arenas are runtime work, and full guest lowering remains unfinished. Zero GC does not mean zero allocation.</p>
   </article>
   <article class="memory-profile memory-profile-managed">
     <div class="memory-profile-header">
-      <span class="memory-profile-kicker">JVM / GraalVM · Managed</span>
+      <span class="memory-profile-kicker">JVM / GraalVM · Managed + native</span>
       <strong class="memory-profile-goal">Minimal GC</strong>
     </div>
-    <h4>Allocate less. Keep collection available.</h4>
+    <h4>Actor-owned FFM arenas, plus managed GC where needed.</h4>
     <p>
-      The target is fewer temporary objects, less heap churn, and lower GC
-      pressure through unboxed data, escape analysis when supported,
-      actor-local reuse, and bounded buffers. Managed heaps retain a
-      collector for object graphs and cycles.
+      Java's Foreign Function &amp; Memory API supports native arenas with
+      deterministic close. Oreslang's actor-local memory slices and FFM
+      prototypes aim to reduce heap churn, alongside escape analysis,
+      allocation elimination and actor-local reuse.
     </p>
-    <p class="memory-profile-foot">This is not a zero-pause guarantee: measure allocation rates, GC pauses, tail latency, and memory footprint.</p>
+    <p class="memory-profile-foot">Per-actor arenas are not separate JVM GC heaps: Java wrappers, actor mailboxes and Truffle objects still participate in the enclosing VM/isolate collector. Fewer allocations may reduce pressure, not guarantee zero pauses.</p>
   </article>
 </div>
