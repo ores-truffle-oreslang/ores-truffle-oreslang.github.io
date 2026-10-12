@@ -63,6 +63,11 @@ jobs:
 
       - name: Verify theme assets in generated site
         run: |
+          grep -q 'Zero GC' dist/index.html
+          grep -q 'Minimal GC' dist/index.html
+          grep -q 'LLVM strict no-GC' dist/how-it-works/index.html
+          grep -q 'JVM / GraalVM minimal-GC' dist/how-it-works/index.html
+          grep -q 'Zero GC' dist/philosophy/index.html
           test -s dist/how-it-works/index.html
           test -s dist/performance/index.html
           grep -q 'Built for' dist/index.html
