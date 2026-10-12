@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import httpProbe from "../data/http-plaintext-probe-2026-10-12.json";
+import httpWrk2 from "../data/http-wrk2-2026-10-12.json";
 
 const suites = [
   {
@@ -9,7 +10,7 @@ const suites = [
     title: "HTTP plaintext",
     description: "Minimal response, no application serialization or database work. Measures the listener, routing and response path.",
     rows: [
-      ["GET /plaintext, keep-alive, 64-byte body", "sustained requests/s", "p50 / p95 / p99 response time", "No verified Oreslang run"],
+      ["GET /plaintext, keep-alive, 64-byte body", "sustained requests/s", "p50 / p95 / p99 response time", `Measured CI at R${httpWrk2.offered_requests_per_second}: ${httpWrk2.trial_median_achieved_rps.toFixed(2)} requests/s; p50 ${httpWrk2.trial_median_p50_ms.toFixed(3)} ms; p99 ${httpWrk2.trial_median_p99_ms.toFixed(3)} ms; ${httpWrk2.total_errors} errors. Shared runner; not max throughput.`],
       ["GET /plaintext, 100 → 1,000 concurrent connections", "requests/s at each concurrency", "p99 and errors/timeouts", "No verified Oreslang run"],
       ["GET /plaintext, forced 1% slow requests", "achieved vs offered rate", "corrected p99.9", "No verified Oreslang run"],
     ],
@@ -89,12 +90,30 @@ const suites = [
   </section>
   <div class="page-body technical-page performance-page">
     <div class="prose">
-      <p class="status-note"><strong>Measurement status: one exploratory JVM/GraalVM HTTP probe measured; full-suite results pending.</strong> The CI probe below has raw evidence but is not comparable to the official 60-second, open-loop suites. The remaining tables contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
+      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; all other suite workloads pending.</strong> A real 60-second open-loop wrk2 measurement now covers the 64-byte plaintext route at 300 offered requests/s, with raw evidence. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
       <p>For an apples-to-apples comparison, run Oreslang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
 
       <nav class="bench-jump" aria-label="Benchmark suites">
         {suites.map((suite) => <a href={`#${suite.id}`}>{suite.number} · {suite.title}</a>)}
       </nav>
+      <section class="benchmark-section" id="ci-plaintext-wrk2">
+        <p class="eyebrow">Measured observation / 60-second open-loop wrk2 on hosted CI</p>
+        <h2>Plaintext HTTP at 300 offered requests/second</h2>
+        <p>A real Oreslang guest actor handler served exact 64-byte HTTP/1.1 plaintext responses, verified by the load generator. GitHub-hosted Ubuntu 24.04; 4 wrk2 threads, 128 persistent-capable connections, 60 seconds per trial, three trials. Source integrity verified across all 403 mirrored Java source blobs before compilation.</p>
+        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="60-second real wrk2 plaintext benchmark results">
+          <table class="tech-table">
+            <thead><tr><th scope="col">Trial</th><th scope="col">Achieved requests/s</th><th scope="col">p50</th><th scope="col">p99</th><th scope="col">p99.9</th><th scope="col">Errors</th></tr></thead>
+            <tbody>
+              {httpWrk2.trials.map((trial) => (
+                <tr><th scope="row">{trial.trial}</th><td>{trial.achieved_rps.toFixed(2)}</td><td>{trial.p50_ms.toFixed(3)} ms</td><td>{trial.p99_ms.toFixed(3)} ms</td><td>{trial.p999_ms.toFixed(3)} ms</td><td>{trial.errors}</td></tr>
+              ))}
+              <tr><th scope="row">Trial median</th><td>{httpWrk2.trial_median_achieved_rps.toFixed(2)}</td><td>{httpWrk2.trial_median_p50_ms.toFixed(3)} ms</td><td>{httpWrk2.trial_median_p99_ms.toFixed(3)} ms</td><td>{httpWrk2.trial_median_p999_ms.toFixed(3)} ms</td><td>{httpWrk2.total_errors} total</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>All three runs satisfied the requested R300 offered rate, with recorded latency samples and no failures. This is <strong>not a maximum capacity result</strong>: the requested load was deliberately capped at 300 requests/s. Hosted shared virtual hardware, same-host loopback client/server placement and the live JVM across trials limit comparability. Do not treat it as a dedicated-hardware performance claim, a 20,000 RPS saturation test, or an official TechEmpower score.</p>
+        <p><strong>Evidence:</strong> <a href={httpWrk2.run_url}>successful GitHub Actions run</a>, <a href={httpWrk2.artifact_url}>raw wrk2 logs, histograms and machine receipt</a>, <a href={httpWrk2.harness_url}>benchmark harness</a>. Runner commit <code>{httpWrk2.test_branch_commit_sha}</code>; mirrored source tree <code>{httpWrk2.source_mirror_tree_sha}</code>; wrk2 commit <code>{httpWrk2.wrk2_upstream_commit_sha}</code>.</p>
+      </section>
       <section class="benchmark-section" id="ci-plaintext-probe">
         <p class="eyebrow">Measured observation / exploratory CI, not an official suite score</p>
         <h2>Real Oreslang HTTP plaintext: first funded-runner measurements</h2>
@@ -138,7 +157,7 @@ const suites = [
       <p>For actor/scheduler tests, an acknowledgement must mark completion and the harness must record dropped messages, blocked producers, cancellation failures and memory growth. For startup/hot-loading, exclude compilation time only when reporting runtime-only metrics, and report full build-to-ready times separately.</p>
       <div class="performance-note">
         <strong>Why are the official suite rows still pending?</strong>
-        <p><a href="https://github.com/ORESoftware/ores-comparisons/tree/main/benchmarks">Existing comparison harness records build/smoke receipts</a>, not these six measured runtime benchmark suites. The <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/blob/main/README.md">LLVM backend</a> presently supports only a small compiler subset; it cannot honestly be listed as an HTTP/actor implementation. This page distinguishes repeatable benchmark <em>specifications</em> from independently verified <em>results</em>.</p>
+        <p><a href="https://github.com/ORESoftware/ores-comparisons/tree/main/benchmarks">Existing comparison harness records build/smoke receipts</a>, not the full six measured runtime suites. The <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/blob/main/README.md">LLVM backend</a> presently supports only a small compiler subset; it cannot honestly be listed as an HTTP/actor implementation. This page distinguishes repeatable benchmark <em>specifications</em> from independently verified <em>results</em>.</p>
       </div>
       <p><a href="/how-it-works/">Understand OresVM architecture →</a></p>
     </div>
