@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import httpProbe from "../data/http-plaintext-probe-2026-10-12.json";
 import httpWrk2 from "../data/http-wrk2-2026-10-12.json";
+import llvmPipeline from "../data/llvm-pipeline-launch-2026-10-12.json";
 
 const suites = [
   {
@@ -90,7 +91,7 @@ const suites = [
   </section>
   <div class="page-body technical-page performance-page">
     <div class="prose">
-      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; all other suite workloads pending.</strong> A real 60-second open-loop wrk2 measurement now covers the 64-byte plaintext route at 300 offered requests/s, with raw evidence. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
+      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; a verified exploratory LLVM pipeline launch-to-completion benchmark for four actor counts; all other suite workloads pending.</strong> A real 60-second open-loop wrk2 measurement now covers the 64-byte plaintext route at 300 offered requests/s, with raw evidence. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
       <p>For an apples-to-apples comparison, run Oreslang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
 
       <nav class="bench-jump" aria-label="Benchmark suites">
@@ -113,6 +114,24 @@ const suites = [
         </div>
         <p>All three runs satisfied the requested R300 offered rate, with recorded latency samples and no failures. This is <strong>not a maximum capacity result</strong>: the requested load was deliberately capped at 300 requests/s. Hosted shared virtual hardware, same-host loopback client/server placement and the live JVM across trials limit comparability. Do not treat it as a dedicated-hardware performance claim, a 20,000 RPS saturation test, or an official TechEmpower score.</p>
         <p><strong>Evidence:</strong> <a href={httpWrk2.run_url}>successful GitHub Actions run</a>, <a href={httpWrk2.artifact_url}>raw wrk2 logs, histograms and machine receipt</a>, <a href={httpWrk2.harness_url}>benchmark harness</a>. Runner commit <code>{httpWrk2.test_branch_commit_sha}</code>; mirrored source tree <code>{httpWrk2.source_mirror_tree_sha}</code>; wrk2 commit <code>{httpWrk2.wrk2_upstream_commit_sha}</code>.</p>
+      </section>
+      <section class="benchmark-section" id="ci-llvm-pipeline-launch">
+        <p class="eyebrow">Measured observation / compiled LLVM guest / exploratory process latency</p>
+        <h2>LLVM typed actor pipelines: launch to validated result</h2>
+        <p>Real source-compiled Oreslang actors exchange typed downstream data with <code>self.forward()</code> and return typed results upstream with <code>self.backward()</code>. Each executable runs exactly one round trip, then stops its actors. Timings include <strong>process startup, actor creation, message scheduling, completion and teardown</strong>, so they are <strong>not</strong> pure mailbox latency or steady-state message throughput.</p>
+        <p>GitHub-hosted Ubuntu 24.04, 4 logical CPUs; 10 warmup invocations per actor configuration, then three trials of 50 validated executions. Every execution's exit code, typed result and all directional hop counters were checked. Percentiles use nearest-rank within each trial, with the median of the three trial values reported below.</p>
+        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Compiled LLVM Oreslang actor pipeline process latency measurements">
+          <table class="tech-table">
+            <thead><tr><th scope="col">Actors</th><th scope="col">Forward / backward hops</th><th scope="col">Median</th><th scope="col">p95</th><th scope="col">p99</th><th scope="col">Validated runs</th><th scope="col">Errors</th></tr></thead>
+            <tbody>
+              {llvmPipeline.results.map((entry) => (
+                <tr><th scope="row">{entry.actors}</th><td>{entry.forward_hops} / {entry.backward_hops}</td><td>{(entry.median_us / 1000).toFixed(3)} ms</td><td>{(entry.p95_us / 1000).toFixed(3)} ms</td><td>{(entry.p99_us / 1000).toFixed(3)} ms</td><td>{entry.validated}</td><td>{entry.errors}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p>This single shared-CI run establishes <strong>observed one-shot completion times</strong>, not the actor suite's 64-byte ping-pong throughput, persistent round-trip p99, maximum capacity, or production-grade tail latency. Those official suite rows remain pending independent measurements.</p>
+        <p><strong>Evidence:</strong> <a href={llvmPipeline.run_url}>completed funded GitHub Actions run</a>, <a href={llvmPipeline.raw_artifact_url}>full raw per-invocation timing samples and runner receipt</a>, <a href={llvmPipeline.harness_url}>benchmark harness</a>. Runner commit <code>{llvmPipeline.runner_commit_sha}</code>; pinned guest source tree <code>{llvmPipeline.llvm_source_tree_sha}</code>; native runtime source tree <code>{llvmPipeline.native_runtime_source_tree_sha}</code>.</p>
       </section>
       <section class="benchmark-section" id="ci-plaintext-probe">
         <p class="eyebrow">Measured observation / exploratory CI, not an official suite score</p>
