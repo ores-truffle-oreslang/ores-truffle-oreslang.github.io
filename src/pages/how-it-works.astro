@@ -43,27 +43,65 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
       <p>Source declarations stay finite and compiler-known in every mode. In the long-term shared typed <strong>HIR → MIR</strong> design, the same semantic checks feed Graal and LLVM lowering; that <a href="https://github.com/ores-truffle-oreslang/oreslang-common-source/blob/main/docs/ARCHITECTURE.md">common compiler core is currently a proposal</a>, not a merged backend. Hot loading installs a validated new code generation instead of allowing ordinary code to manufacture types at runtime.</p>
       <p><a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/NATIVE_DEPLOYMENT.md">Read current Graal native build guarantees</a> · <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/blob/main/README.md">LLVM feature status</a></p>
 
-      <h2 id="memory-management">Zero-GC LLVM vs. minimal-GC JVM/Graal</h2>
+      <h2 id="memory-management">Actor-owned arenas and GC boundaries</h2>
       <p>
         <strong>The language contract stays the same; the memory strategy does not.</strong>
-        The native LLVM path targets deterministic memory lifetimes without relying
-        on a tracing garbage collector. The managed JVM/GraalVM path targets fewer
-        allocations and collections while retaining normal GC support.
-        Neither claim follows automatically from the compiler backend.
+        Both LLVM and GraalVM can use native arenas with deterministic lifetime
+        management. LLVM targets no tracing collector on verified native paths.
+        JVM/GraalVM adds actor-owned native FFM arenas and reduces managed allocation
+        while retaining a garbage collector for Java objects. Neither goal follows
+        automatically from compiler selection.
       </p>
       <MemoryProfiles />
       <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Backend memory strategy comparison">
         <table class="tech-table">
-          <thead><tr><th scope="col">Requirement</th><th scope="col">LLVM strict no-GC (proposed)</th><th scope="col">JVM / GraalVM minimal-GC (target)</th></tr></thead>
+          <thead><tr><th scope="col">Requirement</th><th scope="col">LLVM strict no-GC (proposed)</th><th scope="col">JVM / GraalVM arenas + minimal-GC (target)</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Object lifetimes</th><td>Compiler-proven ownership and borrowing; deterministic destruction, stack or bounded arena storage.</td><td>Escape analysis and allocation elimination where available; managed heap still collects surviving objects.</td></tr>
-            <tr><th scope="row">Actors and messages</th><td>Owned transfer or validated serialization; no borrowed reference may outlive its sender, turn, or arena.</td><td>Reduce mailbox allocation and reuse bounded actor-local buffers without leaking mutable state across actors.</td></tr>
+            <tr><th scope="row">Object lifetimes</th><td>Compiler-proven ownership and borrowing; deterministic destruction, stack or bounded native arena storage.</td><td>Actor-owned FFM arena scopes release native memory deterministically. JVM object wrappers remain subject to managed GC; use escape analysis where supported.</td></tr>
+            <tr><th scope="row">Actors and messages</th><td>Owned transfer or validated serialization; no borrowed reference may outlive its sender, turn, or arena.</td><td>Actor-local memory slices, bounded FFM regions and buffers reduce allocations; Java mailbox and Truffle objects still live in the enclosing managed heap.</td></tr>
             <tr><th scope="row">Cycles and async</th><td>Reject unproven cycles and unsafe escapes, or contain them within a provably reclaimed region; check suspended continuations.</td><td>Allow managed graphs and cycles, but measure retention and ensure cancellation releases references.</td></tr>
             <tr><th scope="row">Failure behavior</th><td>Fail closed on unsupported lifetimes, FFI, or allocation policy; do not silently introduce tracing GC.</td><td>Preserve correct behavior under collections and allocation failures; no promised pause-free execution.</td></tr>
             <tr><th scope="row">Verification</th><td>Audit generated code and linked runtime for collector dependencies; test drops, leaks, fragmentation, and peak memory under stress.</td><td>Track bytes allocated per actor turn/request, collections, p99/p999 pause and response times, RSS, and long-lived retention.</td></tr>
           </tbody>
         </table>
       </div>
+      <h3 id="actor-heap-boundaries">Does a separate actor heap avoid JVM/Graal GC pauses?</h3>
+      <p>
+        <strong>It helps when guest state stays out of the managed heap, but an owned arena is not
+        automatically an independent garbage collector.</strong> The allocation domain
+        determines which actor can access, charge and reclaim its storage. The physical
+        GC domain determines which live Java or Truffle objects are traced together.
+        In the current JVM bootstrap, actor memory slices do not create independent
+        HotSpot collectors. A collection can still pause other actor carriers in
+        the same JVM even when their payload bytes are stored in off-heap arenas.
+      </p>
+      <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Actor heap and GC isolation comparison">
+        <table class="tech-table">
+          <thead><tr><th scope="col">Deployment / memory domain</th><th scope="col">Actor-owned storage</th><th scope="col">Physical tracing-GC boundary</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">LLVM native actor</th><td>One bounded native arena/heap per actor is the target, reclaimed on safe retirement.</td><td>No tracing GC for proven native regions; native source actor lowering is still draft.</td></tr>
+            <tr><th scope="row">Shared / private actor on host JVM or Native Image</th><td>Logical actor-local ownership and quotas; off-heap FFM arenas in draft runtime paths.</td><td>Java wrappers, state and mailboxes share the host heap/collector.</td></tr>
+            <tr><th scope="row">Pooled untrusted Graal isolate</th><td>Many actors retain separate logical arenas within one proposed sandboxed Engine.</td><td>One isolate-level heap/GC shared by those guest actors; isolated from the host's GC, not from each other.</td></tr>
+            <tr><th scope="row">One Graal isolate per untrusted actor (optional)</th><td>A separate Engine and physical heap for each actor, if the isolate image is available.</td><td>Independent GC domains are possible, at a greater memory/startup/scheduling cost. This is a separate draft design, not the selected pooled default.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        For reduced pauses, prioritize moving suitable typed actor payloads into
+        bounded arenas, retaining explicit owner/borrow checks, and benchmarking
+        JVM allocation rate, GC pause distribution and actor-turn p99/p999.
+        Reserve dedicated isolates or processes for workloads that truly need
+        independent collector or security fault domains. Shared CPU, host calls
+        and transport latency can still interfere even across collectors.
+      </p>
+      <p>
+        Current Oreslang work:
+        <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/563">Java/Graal actor FFM regions (draft)</a> ·
+        <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/580">persistent and scratch arenas (draft)</a> ·
+        <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/558">pooled untrusted isolate contract (draft)</a> ·
+        <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/569">dedicated actor isolate alternative (draft)</a> ·
+        <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/pull/51">LLVM native actor arena substrate (draft)</a>.
+      </p>
       <p class="status-note">
         <strong>Implementation status:</strong> This is a proposed profile and validation
         contract, not a declaration that full LLVM no-GC compilation is shipping.
@@ -76,6 +114,8 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
       <p>
         Engineering references:
         <a href="https://llvm.org/docs/GarbageCollection.html">LLVM GC integration model</a> ·
+        <a href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/foreign/Arena.html">Java FFM Arena API</a> ·
+        <a href="https://www.graalvm.org/jdk25/reference-manual/native-image/native-code-interoperability/ffm-api/">GraalVM Native Image FFM</a> ·
         <a href="https://www.graalvm.org/latest/reference-manual/native-image/optimizations-and-performance/MemoryManagement/">GraalVM Native Image collectors</a> ·
         <a href="https://docs.oracle.com/en/java/javase/26/gctuning/garbage-first-garbage-collector-tuning.html">HotSpot GC tuning</a>.
       </p>
