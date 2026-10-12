@@ -5,6 +5,18 @@ import httpWrk2 from "../data/http-wrk2-2026-10-12.json";
 import httpSweep from "../data/http-sweep-2026-10-12.json";
 import llvmPipeline from "../data/llvm-pipeline-launch-2026-10-12.json";
 import crossBackendMatrix from "../data/cross-backend-http-actor-matrix-2026-10-11.json";
+const checkedComparisonRows = (mode: "shared" | "private") =>
+  crossBackendMatrix.test_contract.concurrent_clients.map((clients) => {
+    const llvm = crossBackendMatrix.results.find((r) => r.backend === "llvm" && r.mode === mode && r.concurrency === clients);
+    const graal = crossBackendMatrix.results.find((r) => r.backend === "graal" && r.mode === mode && r.concurrency === clients);
+    if (!llvm || !graal) throw new Error("Benchmark receipt is missing a measured backend/mode/concurrency pair");
+    return { clients, llvm, graal };
+  });
+const sharedComparisonRows = checkedComparisonRows("shared");
+const privateComparisonRows = checkedComparisonRows("private");
+const sharedAt100 = sharedComparisonRows.find((row) => row.clients === 100);
+if (!sharedAt100) throw new Error("Benchmark receipt is missing the SHARED 100-client observation");
+
 
 const suites = [
   {
@@ -145,11 +157,9 @@ const suites = [
           <table class="tech-table">
             <thead><tr><th scope="col">Concurrent clients</th><th scope="col">LLVM native RPS</th><th scope="col">Graal JVM RPS</th><th scope="col">LLVM p99</th><th scope="col">Graal p99</th></tr></thead>
             <tbody>
-              {crossBackendMatrix.test_contract.concurrent_clients.map((clients) => {
-                const llvm = crossBackendMatrix.results.find((r) => r.backend === "llvm" && r.mode === "shared" && r.concurrency === clients);
-                const graal = crossBackendMatrix.results.find((r) => r.backend === "graal" && r.mode === "shared" && r.concurrency === clients);
-                return <tr><th scope="row">{clients.toLocaleString()}</th><td>{llvm.median_rps.toFixed(0)}</td><td>{graal.median_rps.toFixed(0)}</td><td>{llvm.median_p99_ms.toFixed(2)} ms</td><td>{graal.median_p99_ms.toFixed(2)} ms</td></tr>;
-              })}
+              {sharedComparisonRows.map(({ clients, llvm, graal }) => (
+                <tr><th scope="row">{clients.toLocaleString()}</th><td>{llvm.median_rps.toFixed(0)}</td><td>{graal.median_rps.toFixed(0)}</td><td>{llvm.median_p99_ms.toFixed(2)} ms</td><td>{graal.median_p99_ms.toFixed(2)} ms</td></tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -159,15 +169,13 @@ const suites = [
           <table class="tech-table">
             <thead><tr><th scope="col">Concurrent clients</th><th scope="col">LLVM process RPS</th><th scope="col">Graal private RPS</th><th scope="col">LLVM p99</th><th scope="col">Graal p99</th></tr></thead>
             <tbody>
-              {crossBackendMatrix.test_contract.concurrent_clients.map((clients) => {
-                const llvm = crossBackendMatrix.results.find((r) => r.backend === "llvm" && r.mode === "private" && r.concurrency === clients);
-                const graal = crossBackendMatrix.results.find((r) => r.backend === "graal" && r.mode === "private" && r.concurrency === clients);
-                return <tr><th scope="row">{clients.toLocaleString()}</th><td>{llvm.median_rps.toFixed(0)}</td><td>{graal.median_rps.toFixed(0)}</td><td>{llvm.median_p99_ms.toFixed(2)} ms</td><td>{graal.median_p99_ms.toFixed(2)} ms</td></tr>;
-              })}
+              {privateComparisonRows.map(({ clients, llvm, graal }) => (
+                <tr><th scope="row">{clients.toLocaleString()}</th><td>{llvm.median_rps.toFixed(0)}</td><td>{graal.median_rps.toFixed(0)}</td><td>{llvm.median_p99_ms.toFixed(2)} ms</td><td>{graal.median_p99_ms.toFixed(2)} ms</td></tr>
+              ))}
             </tbody>
           </table>
         </div>
-        <p><strong>Variability:</strong> At 100 concurrent clients in SHARED mode, LLVM ranged from {crossBackendMatrix.results.find(r => r.backend === "llvm" && r.mode === "shared" && r.concurrency === 100).min_rps.toFixed(0)} to {crossBackendMatrix.results.find(r => r.backend === "llvm" && r.mode === "shared" && r.concurrency === 100).max_rps.toFixed(0)} RPS, while Graal ranged from {crossBackendMatrix.results.find(r => r.backend === "graal" && r.mode === "shared" && r.concurrency === 100).min_rps.toFixed(0)} to {crossBackendMatrix.results.find(r => r.backend === "graal" && r.mode === "shared" && r.concurrency === 100).max_rps.toFixed(0)} RPS. The spread, particularly Graal's warmup, limits interpreting the medians as hardware-normalized speed ratios.</p>
+        <p><strong>Variability:</strong> At 100 concurrent clients in SHARED mode, LLVM ranged from {sharedAt100.llvm.min_rps.toFixed(0)} to {sharedAt100.llvm.max_rps.toFixed(0)} RPS, while Graal ranged from {sharedAt100.graal.min_rps.toFixed(0)} to {sharedAt100.graal.max_rps.toFixed(0)} RPS. The spread, particularly Graal's warmup, limits interpreting the medians as hardware-normalized speed ratios.</p>
         <p><strong>Evidence:</strong> <a href={crossBackendMatrix.llvm.run_url}>LLVM exact-source funded run</a> and <a href={crossBackendMatrix.llvm.pr_url}>LLVM benchmark PR</a>; <a href={crossBackendMatrix.graal.run_url}>GraalVM 25 exact-source funded run</a> and <a href={crossBackendMatrix.graal.pr_url}>GraalVM benchmark PR</a>. Runs may require repository access. Both PRs remain draft. The site's <a href="#ci-llvm-pipeline-launch">LLVM bidirectional pipeline results</a> are a separate test and <strong>must not</strong> be compared to these HTTP numbers as an actor-hop latency measurement.</p>
         <p><strong>What remains unmeasured:</strong> Identical source-defined guest HTTP server semantics, same-host paired LLVM/Graal runs, steady-state source-level <code>self.forward()</code>/<code>self.backward()</code> parity, persistent actor-mailbox round-trip latency, warmup-independent scaling, and capacity saturation. No LLVM-versus-Graal throughput superiority claim is justified yet.</p>
       </section>
