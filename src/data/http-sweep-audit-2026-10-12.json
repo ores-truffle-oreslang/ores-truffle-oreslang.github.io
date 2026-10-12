@@ -49,5 +49,5 @@
   "run_url": "https://github.com/zed-pkg-test/formal-methods-cross-check/actions/runs/38203312607",
   "artifact_url": "https://github.com/zed-pkg-test/formal-methods-cross-check/actions/runs/38203312607/artifacts/11726775190",
   "public_excerpt_url": "/performance/oreslang-http-sweep-audit-2026-10-12.txt",
-  "limitations": "One trial per rate on virtualized and shared CI hardware, two executed sweeps in total. Tail-latency distributions vary substantially across sweeps. Not a maximum throughput, official TechEmpower result, or dedicated-host production guarantee. Private full evidence requires access. Original public source-mirror confidentiality remains unresolved."
+  "limitations": "One trial per rate on virtualized shared-runner CI hardware, two executed sweeps in total. Tail-latency distributions vary substantially across sweeps. Not a maximum throughput, official TechEmpower result, or dedicated-host production guarantee. Private full evidence requires access. Original public source-mirror confidentiality remains unresolved."
 }
