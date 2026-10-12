@@ -1,0 +1,28 @@
+---
+interface Props {
+  /** This is the single source for the faint preview and expanded question. */
+  prompt: string;
+  label?: string;
+}
+
+const { prompt, label = "The original question" } = Astro.props;
+---
+
+<details class="log-prompt-disclosure">
+  <summary class="log-prompt-summary">
+    <h1 class="log-prompt-heading">
+      <span class="log-prompt-topline">
+        <span class="log-prompt-word">prompt</span>
+        <span class="log-prompt-toggle" aria-hidden="true"></span>
+      </span>
+      <span class="log-prompt-glimmer" aria-hidden="true">{prompt}</span>
+      <span class="log-prompt-cue" aria-hidden="true"></span>
+    </h1>
+  </summary>
+  <div class="log-prompt-reveal">
+    <div class="log-prompt-reveal-inner">
+      <p class="log-prompt-reveal-label">{label}</p>
+      <p class="log-prompt-full-text">{prompt}</p>
+    </div>
+  </div>
+</details>
