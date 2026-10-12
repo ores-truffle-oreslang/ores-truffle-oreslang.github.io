@@ -10,7 +10,7 @@ const profiles = read("../src/components/MemoryProfiles.astro");
 const css = read("../src/styles/technical.css");
 
 test("both memory profiles are explicit and do not promise shipping zero-GC", () => {
-  for (const phrase of ["Zero GC", "Minimal GC", "LLVM", "JVM / GraalVM", "ownership and borrowing",
+  for (const phrase of ["Zero GC", "Minimal GC", "LLVM", "JVM / GraalVM", "Ownership and borrowing",
     "native arenas", "FFM", "not guarantee zero pauses", "Zero GC does not mean zero allocation"]) {
     assert.ok(profiles.includes(phrase), "missing " + phrase);
   }
@@ -25,7 +25,7 @@ test("homepage, philosophy and OresVM architecture share the same static memory 
     assert.match(source, /<MemoryProfiles\s*\/>/, route);
     assert.match(source, /id="memory-management"/, route);
   }
-  assert.match(home, /Zero GC for LLVM\. Minimal GC for JVM\/Graal/);
+  assert.match(home, /Actor-owned arenas on both backends/);
   assert.match(home, /href="\/how-it-works\/#memory-management"/);
 });
 
@@ -42,8 +42,7 @@ test("separate per-actor arenas are not misrepresented as independent JVM GC hea
   for (const x of ["Actor-owned arenas and GC boundaries", "In the current JVM bootstrap",
     "do not create independent", "Pooled untrusted Graal isolate",
     "One Graal isolate per untrusted actor (optional)", "shared by those guest actors",
-    "greater memory/startup/scheduling cost", "src."]) {
-    if (x === "src.") continue;
+    "greater memory/startup/scheduling cost"]) {
     assert.ok(architecture.includes(x), "missing architecture distinction " + x);
   }
   assert.ok(profiles.includes("not separate JVM GC heaps"));
