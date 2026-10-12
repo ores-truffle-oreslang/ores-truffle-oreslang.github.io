@@ -11,7 +11,7 @@ R500
  50.000%    0.99ms
  99.000%    2.86ms
  99.900%    5.84ms
-#[_Summary_ Total count    =        24908]
+HdrHistogram Total count    =        24908]
   30032 requests in 1.00m
 Requests/sec:    500.52
 Detected errors: 0
@@ -20,7 +20,7 @@ R1000
  50.000%    1.47ms
  99.000%   11.11ms
  99.900%   18.33ms
-#[_Summary_ Total count    =        49807]
+HdrHistogram Total count    =        49807]
   59497 requests in 1.00m
 Requests/sec:    991.38
 Detected errors: 0
@@ -29,7 +29,7 @@ R2000
  50.000%    1.04ms
  99.000%    6.44ms
  99.900%   15.64ms
-#[_Summary_ Total count    =        99682]
+HdrHistogram Total count    =        99682]
   119909 requests in 1.00m
 Requests/sec:   1998.49
 Detected errors: 0
