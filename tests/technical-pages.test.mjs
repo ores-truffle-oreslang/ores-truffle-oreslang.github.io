@@ -9,6 +9,7 @@ const layout = read("../src/layouts/BaseLayout.astro");
 const how = read("../src/pages/how-it-works.astro");
 const perf = read("../src/pages/performance.astro");
 const probe = JSON.parse(read("../src/data/http-plaintext-probe-2026-10-12.json"));
+const wrk2 = JSON.parse(read("../src/data/http-wrk2-2026-10-12.json"));
 const applicationAreas = read("../src/pages/problem-spaces.astro");
 const css = read("../src/styles/technical.css");
 
@@ -50,7 +51,7 @@ test("OresVM technical explanation includes all requested scheduling and actor p
 test("performance page covers six auditable suites and never invents results", () => {
   assert.equal((perf.match(/number: "0[1-6]"/g) || []).length, 6);
   assert.equal((perf.match(/rows: \[/g) || []).length, 6);
-  assert.equal((perf.match(/"No verified Ores(?:lang|VM) run"/g) || []).length, 18);
+  assert.equal((perf.match(/"No verified Ores(?:lang|VM) run"/g) || []).length, 17);
   for (const id of ["http-plaintext", "http-json", "http-routing", "http-database",
     "actor-mailbox", "scheduling-and-startup"]) {
     assert.ok(perf.includes('id: "' + id + '"'), "missing suite " + id);
@@ -58,9 +59,23 @@ test("performance page covers six auditable suites and never invents results", (
   assert.ok(perf.includes("wrk2"));
   assert.ok(perf.includes("TechEmpower"));
   assert.ok(perf.includes("source revisions, commands and raw outputs"));
-  assert.ok(perf.includes("one exploratory JVM/GraalVM HTTP probe measured"));
+  assert.ok(perf.includes("one fixed-rate JVM/GraalVM HTTP workload measured in CI"));
   assert.ok(perf.includes("not an official suite score"));
   assert.ok(perf.includes("httpProbe.trials.map"));
+  assert.ok(perf.includes("httpWrk2.trials.map"));
+  assert.ok(perf.includes("Measured CI at R"));
+  assert.equal(wrk2.trials.length, 3);
+  assert.equal(wrk2.duration_seconds_per_trial, 60);
+  assert.equal(wrk2.connections, 128);
+  assert.equal(wrk2.offered_requests_per_second, 300);
+  assert.ok(wrk2.trials.every(t => t.errors === 0 && t.p50_ms > 0 && t.p99_ms > 0 && t.p999_ms > 0));
+  const medianWrk2 = (name) => wrk2.trials.map(t => t[name]).sort((a,b) => a-b)[1];
+  assert.equal(medianWrk2("achieved_rps"), wrk2.trial_median_achieved_rps);
+  assert.equal(medianWrk2("p50_ms"), wrk2.trial_median_p50_ms);
+  assert.equal(medianWrk2("p99_ms"), wrk2.trial_median_p99_ms);
+  assert.equal(medianWrk2("p999_ms"), wrk2.trial_median_p999_ms);
+  assert.match(wrk2.artifact_url, /^https:\/\/github\.com\/zed-pkg-test\/java-app\/actions\/runs\/\d+\/artifacts\/\d+$/);
+  assert.ok(wrk2.limitations.includes("not saturation or maximum capacity"));
   assert.equal(probe.trials.length, 3);
   assert.ok(probe.trials.every((t) => t.requests === 600 && t.errors === 0));
   const median = (name) => probe.trials.map((t) => t[name]).sort((a,b) => a-b)[1];
