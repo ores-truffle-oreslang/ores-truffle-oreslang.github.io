@@ -10,6 +10,7 @@ const how = read("../src/pages/how-it-works.astro");
 const perf = read("../src/pages/performance.astro");
 const probe = JSON.parse(read("../src/data/http-plaintext-probe-2026-10-12.json"));
 const wrk2 = JSON.parse(read("../src/data/http-wrk2-2026-10-12.json"));
+const llvmPipeline = JSON.parse(read("../src/data/llvm-pipeline-launch-2026-10-12.json"));
 const applicationAreas = read("../src/pages/problem-spaces.astro");
 const css = read("../src/styles/technical.css");
 
@@ -95,4 +96,22 @@ test("Application Areas title is consistent on home, destination, and navigation
   assert.ok(applicationAreas.includes("<h1>Application Areas</h1>"));
   assert.ok(nav.includes('label: "application areas", href: hrefFor("problem-spaces")'));
   assert.ok(!home.includes('title="Where Oreslang is meant to matter"'));
+});
+
+
+test("LLVM guest pipeline measurement is real, source-pinned, and not misreported as throughput", () => {
+  assert.ok(perf.includes('id="ci-llvm-pipeline-launch"'));
+  assert.ok(perf.includes("llvmPipeline.results.map"));
+  assert.ok(perf.includes("not</strong> pure mailbox latency or steady-state message throughput"));
+  assert.equal(llvmPipeline.schema, "oreslang-llvm-guest-pipeline-process-summary-v1");
+  assert.equal(llvmPipeline.trials_per_configuration, 3);
+  assert.equal(llvmPipeline.validated_invocations_per_trial, 50);
+  assert.deepEqual(llvmPipeline.results.map(r => r.actors), [2, 3, 4, 16]);
+  assert.deepEqual(llvmPipeline.results.map(r => r.forward_hops), [1, 2, 3, 15]);
+  assert.ok(llvmPipeline.results.every(r => r.forward_hops === r.backward_hops && r.validated === 150 && r.errors === 0));
+  assert.ok(llvmPipeline.results.every(r => r.p99_us >= r.p95_us && r.p95_us >= r.median_us && r.median_us > 0));
+  assert.match(llvmPipeline.run_url, /^https:\/\/github\.com\/zed-pkg-test\/java-app\/actions\/runs\/\d+$/);
+  assert.match(llvmPipeline.raw_artifact_url, /^https:\/\/github\.com\/zed-pkg-test\/java-app\/actions\/runs\/\d+\/artifacts\/\d+$/);
+  assert.ok(llvmPipeline.limitations.includes("not persistent-actor RTT"));
+  assert.ok(perf.includes('"No verified OresVM run"'));
 });
