@@ -38,7 +38,7 @@ function verify(s) {
     assert.ok(m.achieved_rps>0 && m.achieved_rps <= m.offered_rps*1.10);
     assert.ok(m.p50_ms>0 && m.p50_ms<=m.p99_ms && m.p99_ms<=m.p999_ms);
     assert.equal(m.errors,0);
-    assert.ok(Math.abs(m.completed_requests/m.duration_seconds_per_rate - m.achieved_rps)<1);
+    assert.ok(Math.abs(m.completed_requests/s.duration_seconds_per_rate - m.achieved_rps)<1);
     assert.ok(excerpt.includes("R"+m.offered_rps));
     assert.ok(excerpt.includes("Requests/sec:") && excerpt.includes(m.achieved_rps.toFixed(2)));
     assert.ok(excerpt.includes(m.completed_requests+" requests in 1.00m"));
