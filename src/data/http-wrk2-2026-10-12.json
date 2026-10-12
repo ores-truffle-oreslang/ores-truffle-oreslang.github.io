@@ -47,7 +47,7 @@
   "trial_median_p999_ms": 2.7,
   "total_errors": 0,
   "histogram_sample_count_per_trial": 14976,
-  "response_validation": "wrk2 Lua response hook asserts HTTP 200 and exact 64-byte body; empty latency histograms, NaN, socket errors, and invalid responses fail CI",
+  "response_validation": "wrk2 Lua response hook checks HTTP 200 and exact 64-byte body. The Java harness rejects detected non-success responses, socket errors, invalid-body diagnostics, and empty/NaN histograms. No deliberately wrong-response negative control has yet been executed.",
   "run_url": "https://github.com/zed-pkg-test/java-app/actions/runs/38198138513",
   "artifact_url": "https://github.com/zed-pkg-test/java-app/actions/runs/38198138513/artifacts/11724960405",
   "harness_url": "https://github.com/zed-pkg-test/java-app/blob/ci/oreslang-performance-wrk2-20261011/performance-probe/OreslangHttpWrk2Test.java",

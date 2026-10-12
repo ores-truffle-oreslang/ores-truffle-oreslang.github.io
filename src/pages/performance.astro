@@ -142,7 +142,7 @@ const suites = [
               <thead><tr><th scope="col">Workload</th><th scope="col">Throughput metric</th><th scope="col">Latency / validity</th><th scope="col">Verified result</th></tr></thead>
               <tbody>
                 {suite.rows.map(([workload, throughput, latency, result]) => (
-                  <tr><th scope="row">{workload}</th><td>{throughput}</td><td>{latency}</td><td class="bench-pending">{result}</td></tr>
+                  <tr><th scope="row">{workload}</th><td>{throughput}</td><td>{latency}</td><td class={result.startsWith("Measured CI") ? "bench-measured" : "bench-pending"}>{result}</td></tr>
                 ))}
               </tbody>
             </table>
