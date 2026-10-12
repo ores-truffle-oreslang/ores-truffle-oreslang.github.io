@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import httpProbe from "../data/http-plaintext-probe-2026-10-12.json";
 import httpWrk2 from "../data/http-wrk2-2026-10-12.json";
 import httpSweep from "../data/http-sweep-2026-10-12.json";
+import httpSweepAudit from "../data/http-sweep-audit-2026-10-12.json";
 import llvmPipeline from "../data/llvm-pipeline-launch-2026-10-12.json";
 import crossBackendMatrix from "../data/cross-backend-http-actor-matrix-2026-10-11.json";
 const checkedComparisonRows = (mode: "shared" | "private") =>
@@ -146,6 +147,24 @@ const suites = [
         </div>
         <p>These are <strong>three single-trial observations at different offered rates</strong>, not three repetitions per rate. Throughput closely tracked the offered rate, including 1,998.44 achieved RPS at R2000 with zero detected errors. <strong>The saturation point has not been measured.</strong> Short CI runs, shared virtualized CPU and same-host loopback do not establish capacity on dedicated production hardware or an official TechEmpower comparison.</p>
         <p><strong>Audit:</strong> <a href={httpSweep.public_excerpt_url}>public, sanitized excerpts of the wrk2 output</a>; <a href={httpSweep.run_url}>successful private Actions run (access required)</a>; <a href={httpSweep.artifact_url}>complete raw artifact (access required)</a>. CI workflow revision <code>{httpSweep.runner_commit_sha}</code>, existing source mirror tree <code>{httpSweep.source_mirror_tree_sha}</code>, pinned wrk2 <code>{httpSweep.wrk2_commit_sha}</code>. The security work to remove the pre-existing public source mirror is tracked separately; using a private runner does not erase the prior exposure.</p>
+      </section>
+      <section class="benchmark-section" id="ci-plaintext-repeatability-audit">
+        <p class="eyebrow">Independent repeat / CI tail-latency noise audit</p>
+        <h2>HTTP p99 latency varies across two independent sweeps</h2>
+        <p>A second complete, independently launched JVM-per-rate wrk2 sweep passed stricter raw-to-receipt reconciliation and 12 adversarial parser tests. Unlike the first run, this repeat also proved that both an HTTP 200 response with the wrong 64-byte body and an HTTP 404 are rejected. Each result below is still a <strong>single 60-second trial at its offered rate</strong>.</p>
+        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="First CI sweep compared with hardened independent repeat">
+          <table class="tech-table">
+            <thead><tr><th scope="col">Offered RPS</th><th scope="col">Original achieved RPS</th><th scope="col">Repeat achieved RPS</th><th scope="col">Original p99</th><th scope="col">Repeat p99</th><th scope="col">Repeat errors</th></tr></thead>
+            <tbody>
+              {httpSweepAudit.measurements.map((t) => {
+                const original = httpSweep.measurements.find((prior) => prior.offered_rps === t.offered_rps);
+                return <tr><th scope="row">{t.offered_rps.toLocaleString()}</th><td>{original?.achieved_rps.toFixed(2)}</td><td>{t.achieved_rps.toFixed(2)}</td><td>{original?.p99_ms.toFixed(2)} ms</td><td>{t.p99_ms.toFixed(2)} ms</td><td>{t.errors}</td></tr>;
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p>The repeat reached 1,998.49 requests/s at R2000 without detected errors, but its p99 was 6.44 ms versus the earlier 2.93 ms. At R1000, repeat p99 was 11.11 ms versus 2.58 ms previously. This is direct evidence of <strong>substantial tail-latency variability in shared CI</strong>, not a credible production p99 guarantee or capacity estimate. Two independent trials per offered rate are insufficient for stable distributions or a maximum-throughput assertion.</p>
+        <p><strong>Repeat evidence:</strong> <a href={httpSweepAudit.public_excerpt_url}>public sanitized output</a>; <a href={httpSweepAudit.run_url}>successful private CI run (access required)</a>; <a href={httpSweepAudit.artifact_url}>raw evidence artifact (access required)</a>. This report keeps both runs distinct; it does not replace or silently average the first result. The source-visibility remediation remains open.</p>
       </section>
       <section class="benchmark-section" id="ci-cross-backend-kernel-matrix">
         <p class="eyebrow">Measured observations / two separate funded CI runs / limited source-kernel parity</p>
