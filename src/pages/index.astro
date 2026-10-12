@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionTitle from "../components/SectionTitle.astro";
 import OresCode from "../components/OresCode.astro";
 import EditorThemePicker from "../components/EditorThemePicker.astro";
+import MemoryProfiles from "../components/MemoryProfiles.astro";
 
 const actorCode = `
 define actor Worker as
@@ -61,7 +62,7 @@ end
 
 <BaseLayout
   title="Oreslang — isolation-first systems programming"
-  description="Oreslang is an isolation-first language for actors, FaaS, mobile runtimes, memory safety, hot code loading, and explicit compilation."
+  description="Oreslang is an isolation-first language with a zero-GC design goal for LLVM and minimal-GC memory profiles for JVM/GraalVM, plus actors, safety, and AOT/JIT."
   home={true}
 >
   <section class="hero">
@@ -160,12 +161,29 @@ stack trace:
           </p>
         </div>
 
+        <div class="memory-home-intro" id="memory-management">
+          <p class="eyebrow">Memory, deliberately</p>
+          <h3>Zero GC for LLVM. Minimal GC for JVM/Graal.</h3>
+          <p>
+            One safe ownership model, two memory strategies: deterministic native
+            lifetimes where the compiler can prove them, and allocation-conscious
+            managed execution when GC remains the right tool.
+          </p>
+        </div>
+        <MemoryProfiles />
+        <p class="memory-profile-status">
+          <strong>Design target, not a shipping guarantee.</strong>
+          A strict LLVM no-GC profile and a measured low-allocation managed profile
+          both require compiler and runtime validation.
+          <a href="/how-it-works/#memory-management">Read the memory-management contract →</a>
+        </p>
+
         <div class="keyword-rail" aria-label="Oreslang design themes">
           <span>borrow checker</span>
           <span>no nulls</span>
           <span>static types</span>
           <span>exhaustive match</span>
-          <span>hybrid GC</span>
+          <span>backend-specific GC</span>
           <span>hot reload</span>
           <span>non-cooperative scheduling</span>
           <span>GPU / quantum</span>
@@ -173,7 +191,7 @@ stack trace:
 
         <p>
           The safety stack is layered: Rust-class memory-safety goals through ownership and borrowing,
-          option types instead of null, automatic GC for managed graphs, actor confinement for easier
+          option types instead of null, deterministic native lifetimes or GC for managed graphs, actor confinement for easier
           concurrency safety, and explicit effect/error boundaries such as <code>pure</code> and <code>trap</code>.
           <code>alex</code>/<code>nlex</code> lexical modes are designed to expose more optimization intent to the compiler.
         </p>
