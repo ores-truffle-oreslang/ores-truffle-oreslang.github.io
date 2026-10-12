@@ -153,3 +153,11 @@ test("paired-source-kernel observations have explicit non-parity caveats and sou
   assert.ok(perf.includes("must not</strong> be compared"));
   assert.equal((perf.match(/"No verified Ores(?:lang|VM) run"/g)||[]).length, 17);
 });
+
+test("HTTP comparison explicitly limits OresVM integration claims", () => {
+  assert.ok(perf.includes("<strong>OresVM subsystem coverage:</strong>"));
+  assert.ok(perf.includes("partial-stack benchmark"));
+  assert.ok(perf.includes("rather than exercising VM-owned ROOT and supervisor lifecycle"));
+  assert.ok(perf.includes("source-level OresVM supervisor, ActorGroup or Mailman semantics"));
+  assert.ok(perf.includes("No complete all-six-subsystems performance result has been published"));
+});
