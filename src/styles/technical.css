@@ -105,6 +105,10 @@
 .tech-table tbody td { color: var(--paper); }
 .tech-table tbody tr:last-child > * { border-bottom: 0; }
 .tech-table tbody tr:nth-child(even) { background: var(--accent-glow); }
+.bench-measured {
+  color: var(--cream) !important;
+  font-weight: 650;
+}
 .bench-pending {
   color: var(--muted) !important;
   font-style: italic;
