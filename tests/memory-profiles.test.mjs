@@ -11,7 +11,7 @@ const css = read("../src/styles/technical.css");
 
 test("both memory profiles are explicit and do not promise shipping zero-GC", () => {
   for (const phrase of ["Zero GC", "Minimal GC", "LLVM", "JVM / GraalVM", "ownership and borrowing",
-    "region/arena", "escape analysis", "not a zero-pause guarantee", "Zero GC does not mean zero allocation"]) {
+    "native arenas", "FFM", "not guarantee zero pauses", "Zero GC does not mean zero allocation"]) {
     assert.ok(profiles.includes(phrase), "missing " + phrase);
   }
   assert.match(profiles, /proposed|target/i);
@@ -36,6 +36,19 @@ test("strict no-GC model fails closed and does not conflate Epsilon GC with memo
   }
   assert.match(architecture, /do not silently introduce tracing GC/);
   assert.match(architecture, /not a substitute for deterministic reclamation/);
+});
+
+test("separate per-actor arenas are not misrepresented as independent JVM GC heaps", () => {
+  for (const x of ["Actor-owned arenas and GC boundaries", "In the current JVM bootstrap",
+    "do not create independent", "Pooled untrusted Graal isolate",
+    "One Graal isolate per untrusted actor (optional)", "shared by those guest actors",
+    "greater memory/startup/scheduling cost", "src."]) {
+    if (x === "src.") continue;
+    assert.ok(architecture.includes(x), "missing architecture distinction " + x);
+  }
+  assert.ok(profiles.includes("not separate JVM GC heaps"));
+  assert.ok(profiles.includes("FFM"));
+  assert.ok(philosophy.includes("does not automatically establish"));
 });
 
 test("memory cards work at narrow widths and use semantic theme tokens", () => {
