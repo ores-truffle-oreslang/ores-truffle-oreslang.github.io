@@ -8,6 +8,7 @@ const nav = read("../src/components/SiteNav.astro");
 const layout = read("../src/layouts/BaseLayout.astro");
 const how = read("../src/pages/how-it-works.astro");
 const perf = read("../src/pages/performance.astro");
+const probe = JSON.parse(read("../src/data/http-plaintext-probe-2026-10-12.json"));
 const applicationAreas = read("../src/pages/problem-spaces.astro");
 const css = read("../src/styles/technical.css");
 
@@ -57,7 +58,17 @@ test("performance page covers six auditable suites and never invents results", (
   assert.ok(perf.includes("wrk2"));
   assert.ok(perf.includes("TechEmpower"));
   assert.ok(perf.includes("source revisions, commands and raw outputs"));
-  assert.ok(perf.includes("awaiting audited Oreslang runs"));
+  assert.ok(perf.includes("one exploratory JVM/GraalVM HTTP probe measured"));
+  assert.ok(perf.includes("not an official suite score"));
+  assert.ok(perf.includes("httpProbe.trials.map"));
+  assert.equal(probe.trials.length, 3);
+  assert.ok(probe.trials.every((t) => t.requests === 600 && t.errors === 0));
+  const median = (name) => probe.trials.map((t) => t[name]).sort((a,b) => a-b)[1];
+  assert.equal(median("throughput_rps"), probe.median_throughput_rps);
+  assert.equal(median("p50_ms"), probe.median_p50_ms);
+  assert.equal(median("p95_ms"), probe.median_p95_ms);
+  assert.equal(median("p99_ms"), probe.median_p99_ms);
+  assert.match(probe.raw_evidence_artifact_url, /^https:\/\/github\.com\/zed-pkg-test\/java-app\/actions\/runs\/\d+\/artifacts\/\d+$/);
   assert.ok(perf.includes('class="tech-table"'));
   assert.ok(perf.includes('role="region" tabindex="0"'));
   assert.ok(css.includes("overflow-x: auto"));

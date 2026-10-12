@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import httpProbe from "../data/http-plaintext-probe-2026-10-12.json";
 
 const suites = [
   {
@@ -88,12 +89,30 @@ const suites = [
   </section>
   <div class="page-body technical-page performance-page">
     <div class="prose">
-      <p class="status-note"><strong>Measurement status: awaiting audited Oreslang runs.</strong> These are concrete benchmark definitions and reporting tables—not fabricated Oreslang scores. The available repository benchmark matrix contains build/deployment smoke tests, not reproducible runtime latency or throughput observations. We will not imply that the experimental LLVM backend can run the full HTTP or actor suites today.</p>
+      <p class="status-note"><strong>Measurement status: one exploratory JVM/GraalVM HTTP probe measured; full-suite results pending.</strong> The CI probe below has raw evidence but is not comparable to the official 60-second, open-loop suites. The remaining tables contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
       <p>For an apples-to-apples comparison, run Oreslang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
 
       <nav class="bench-jump" aria-label="Benchmark suites">
         {suites.map((suite) => <a href={`#${suite.id}`}>{suite.number} · {suite.title}</a>)}
       </nav>
+      <section class="benchmark-section" id="ci-plaintext-probe">
+        <p class="eyebrow">Measured observation / exploratory CI, not an official suite score</p>
+        <h2>Real Oreslang HTTP plaintext: first funded-runner measurements</h2>
+        <p>Three executions of a genuine Oreslang actor-owned NativeHttp handler on one GitHub-hosted Ubuntu 24.04 runner. Each trial warmed up with 100 requests, then verified 600 successful HTTP/1.1 responses with a 64-byte body over the same host's loopback interface. A fresh guest context was used for each trial, but all trials ran inside one JVM.</p>
+        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Experimental CI HTTP benchmark measured results">
+          <table class="tech-table">
+            <thead><tr><th scope="col">Trial</th><th scope="col">Successful requests/s</th><th scope="col">p50 latency</th><th scope="col">p95 latency</th><th scope="col">p99 latency</th><th scope="col">Errors</th></tr></thead>
+            <tbody>
+              {httpProbe.trials.map((trial) => (
+                <tr><th scope="row">{trial.trial}</th><td>{trial.throughput_rps.toFixed(1)}</td><td>{trial.p50_ms.toFixed(3)} ms</td><td>{trial.p95_ms.toFixed(3)} ms</td><td>{trial.p99_ms.toFixed(3)} ms</td><td>{trial.errors}</td></tr>
+              ))}
+              <tr><th scope="row">Trial median</th><td>{httpProbe.median_throughput_rps.toFixed(1)}</td><td>{httpProbe.median_p50_ms.toFixed(3)} ms</td><td>{httpProbe.median_p95_ms.toFixed(3)} ms</td><td>{httpProbe.median_p99_ms.toFixed(3)} ms</td><td>0 across trials</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The throughput rises substantially across the three short trials (643 → 915 → 1,192 requests/s), which is strong evidence that the JVM/runtime or measurement harness was still warming up. <strong>Do not treat the trial median as sustained capacity.</strong> This single-connection, closed-loop probe does not verify socket reuse, model an offered arrival rate, use wrk2, sample for 60 seconds, or establish the 128-connection result described in suite 01.</p>
+        <p><strong>Reproduce and inspect:</strong> <a href={httpProbe.run_url}>passing GitHub Actions execution</a>, <a href={httpProbe.raw_evidence_artifact_url}>raw timing, validation and machine details</a>, and <a href={httpProbe.reproduce_source_url}>benchmark source</a>. Funded-runner commit <code>{httpProbe.test_commit_sha}</code>; mirrored Java tree <code>{httpProbe.source_mirror_tree_sha}</code>; a runner-side manifest verifies {httpProbe.source_manifest}. No private cross-organization checkout credentials were used.</p>
+      </section>
       {suites.map((suite) => (
         <section class="benchmark-section" id={suite.id}>
           <p class="eyebrow">{suite.number} / Benchmark suite</p>
@@ -118,7 +137,7 @@ const suites = [
       <p>For HTTP tail latency, use an open-loop constant-rate load generator such as <a href="https://github.com/giltene/wrk2">wrk2</a> so stalls do not silently suppress intended arrivals. Specify whether the run targets saturation/maximum throughput or p99 under an offered load. The <a href="https://github.com/TechEmpower/FrameworkBenchmarks">TechEmpower Framework Benchmarks</a> provide established definitions for plaintext, JSON, database and other web-framework tests; matching endpoints alone does not make this an official TechEmpower result.</p>
       <p>For actor/scheduler tests, an acknowledgement must mark completion and the harness must record dropped messages, blocked producers, cancellation failures and memory growth. For startup/hot-loading, exclude compilation time only when reporting runtime-only metrics, and report full build-to-ready times separately.</p>
       <div class="performance-note">
-        <strong>Why no numbers yet?</strong>
+        <strong>Why are the official suite rows still pending?</strong>
         <p><a href="https://github.com/ORESoftware/ores-comparisons/tree/main/benchmarks">Existing comparison harness records build/smoke receipts</a>, not these six measured runtime benchmark suites. The <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/blob/main/README.md">LLVM backend</a> presently supports only a small compiler subset; it cannot honestly be listed as an HTTP/actor implementation. This page distinguishes repeatable benchmark <em>specifications</em> from independently verified <em>results</em>.</p>
       </div>
       <p><a href="/how-it-works/">Understand OresVM architecture →</a></p>
