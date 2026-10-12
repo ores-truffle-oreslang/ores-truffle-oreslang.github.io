@@ -1,6 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Log2Content from "../../components/Log2Content.astro";
+import LogPrompt from "../../components/LogPrompt.astro";
+
+const prompt = "besides graalvm and llvm what else is good for implementing/running a language? if we want the language to run on embedded systems/devices, mobile phones like ios/android, browsers, and edge envs ... every file probably needs a header whitelisting its environments, with imports checked by the compiler?";
 import "../../styles/logs.css";
 ---
 
@@ -11,22 +14,7 @@ import "../../styles/logs.css";
   <nav class="log-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/logs/">Logs</a><span aria-hidden="true">/</span><span aria-current="page">#2</span></nav>
   <header class="log-entry-header">
     <p class="kicker">Engineering log / 002</p>
-    <details class="log-prompt-disclosure">
-      <summary class="log-prompt-summary">
-        <h1 class="log-prompt-heading">
-          <span class="log-prompt-topline">
-            <span class="log-prompt-word">prompt</span>
-            <span class="log-prompt-toggle" aria-hidden="true"></span>
-          </span>
-          <span class="log-prompt-glimmer" aria-hidden="true">besides graalvm and llvm what else is good for implementing/running a language? if we want the language to run on embedded systems/devices, mobile phones like ios/android, browsers, and edge envs ... every file probably needs a header whitelisting its environments, with imports checked by the compiler?</span>
-          <span class="log-prompt-cue" aria-hidden="true"></span>
-        </h1>
-      </summary>
-      <div class="log-prompt-reveal">
-        <p class="log-prompt-reveal-label">The original engineering question</p>
-        <p class="log-prompt-full-text">Besides GraalVM and LLVM, what else is good for implementing or running a language? How do we reach embedded devices, iOS, Android, browsers and edge environments with Wasm or other recognized bytecode? Can every Oreslang file or package declare which environments it supports, more rigorously than “use client” and “use server”, and can the compiler verify that every transitive import complies?</p>
-      </div>
-    </details>
+    <LogPrompt prompt={prompt} label="The original engineering question" />
     <div class="log-entry-meta"><span>Authored by <strong>Alex Mills</strong></span><span aria-hidden="true">·</span><time datetime="2026-10-10">October 10, 2026</time></div>
     <p class="log-entry-intro">One portable language, many backends: Wasm, WASI, native AOT, Android DEX, JavaScript and small-device runtimes—with compile-time environment and capability checks that follow every import.</p>
   </header>
