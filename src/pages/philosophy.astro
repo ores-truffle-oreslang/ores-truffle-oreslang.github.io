@@ -1,11 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EditorThemePicker from "../components/EditorThemePicker.astro";
+import MemoryProfiles from "../components/MemoryProfiles.astro";
 ---
 
 <BaseLayout
   title="Oreslang Philosophy — explicit syntax, safer runtimes"
-  description="Why Oreslang chooses explicit syntax, actor isolation, borrowing, option types, hybrid GC, non-cooperative scheduling, hot code loading, and a path toward location-transparent distributed actors."
+  description="Oreslang philosophy: ownership and borrowing, proof-gated zero GC on LLVM, minimal GC on JVM/GraalVM, safe actors, and portable AOT/JIT semantics."
 >
   <section class="page-hero philosophy-hero">
     <p class="kicker">Philosophy</p>
@@ -92,6 +93,27 @@ runtime frames:
         a reason the runtime can never collect. The model is deliberately hybrid: compile-time
         lifetime information first, automatic collection where useful, plus explicit lifetime/GC
         controls for latency-sensitive runtimes.
+      </p>
+
+      <h3 id="memory-management">Backend-specific memory strategies</h3>
+      <p>
+        Oreslang should not force native and managed runtimes into the same allocator.
+        <strong>Zero GC</strong> means that a verified LLVM execution path requires no tracing
+        collector to reclaim its objects; allocation may still occur, but lifetime and
+        cleanup must be deterministic. <strong>Minimal GC</strong> means that JVM and GraalVM
+        execution minimizes avoidable allocation while keeping the collector available.
+        Both backends retain the same observable ownership, actor isolation, and sendability rules.
+      </p>
+      <MemoryProfiles />
+      <p>
+        Native strict mode must be opt-in and fail compilation or admission if references
+        escape approved lifetimes, cycles cannot be safely reclaimed, or FFI and async
+        continuations defeat the lifetime proof. Managed optimization may use allocation
+        elimination and bounded reuse, but must never trade away actor isolation for pooling.
+        These are design goals, not claims of completed backend parity.
+      </p>
+      <p>
+        <a href="/how-it-works/#memory-management">See the backend guarantees, limitations, and verification criteria →</a>
       </p>
 
       <h3>Actors are a memory-safety primitive</h3>

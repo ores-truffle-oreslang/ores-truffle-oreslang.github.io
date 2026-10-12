@@ -1,10 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import MemoryProfiles from "../components/MemoryProfiles.astro";
 ---
 
 <BaseLayout
   title="How OresVM Works — Oreslang execution, actors and scheduling"
-  description="Explore OresVM internals: AOT, JIT, hybrid execution, cooperative and non-cooperative scheduling, async/await, select, loop safepoints, and actor isolation."
+  description="Explore OresVM architecture, proof-gated LLVM zero-GC memory, minimal-GC JVM/GraalVM execution, AOT/JIT, actor isolation, and scheduling."
 >
   <section class="page-hero">
     <p class="kicker">Architecture / OresVM</p>
@@ -41,6 +42,43 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
       <p>Source declarations stay finite and compiler-known in every mode. In the long-term shared typed <strong>HIR → MIR</strong> design, the same semantic checks feed Graal and LLVM lowering; that <a href="https://github.com/ores-truffle-oreslang/oreslang-common-source/blob/main/docs/ARCHITECTURE.md">common compiler core is currently a proposal</a>, not a merged backend. Hot loading installs a validated new code generation instead of allowing ordinary code to manufacture types at runtime.</p>
       <p><a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/NATIVE_DEPLOYMENT.md">Read current Graal native build guarantees</a> · <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/blob/main/README.md">LLVM feature status</a></p>
+
+      <h2 id="memory-management">Zero-GC LLVM vs. minimal-GC JVM/Graal</h2>
+      <p>
+        <strong>The language contract stays the same; the memory strategy does not.</strong>
+        The native LLVM path targets deterministic memory lifetimes without relying
+        on a tracing garbage collector. The managed JVM/GraalVM path targets fewer
+        allocations and collections while retaining normal GC support.
+        Neither claim follows automatically from the compiler backend.
+      </p>
+      <MemoryProfiles />
+      <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Backend memory strategy comparison">
+        <table class="tech-table">
+          <thead><tr><th scope="col">Requirement</th><th scope="col">LLVM strict no-GC (proposed)</th><th scope="col">JVM / GraalVM minimal-GC (target)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Object lifetimes</th><td>Compiler-proven ownership and borrowing; deterministic destruction, stack or bounded arena storage.</td><td>Escape analysis and allocation elimination where available; managed heap still collects surviving objects.</td></tr>
+            <tr><th scope="row">Actors and messages</th><td>Owned transfer or validated serialization; no borrowed reference may outlive its sender, turn, or arena.</td><td>Reduce mailbox allocation and reuse bounded actor-local buffers without leaking mutable state across actors.</td></tr>
+            <tr><th scope="row">Cycles and async</th><td>Reject unproven cycles and unsafe escapes, or contain them within a provably reclaimed region; check suspended continuations.</td><td>Allow managed graphs and cycles, but measure retention and ensure cancellation releases references.</td></tr>
+            <tr><th scope="row">Failure behavior</th><td>Fail closed on unsupported lifetimes, FFI, or allocation policy; do not silently introduce tracing GC.</td><td>Preserve correct behavior under collections and allocation failures; no promised pause-free execution.</td></tr>
+            <tr><th scope="row">Verification</th><td>Audit generated code and linked runtime for collector dependencies; test drops, leaks, fragmentation, and peak memory under stress.</td><td>Track bytes allocated per actor turn/request, collections, p99/p999 pause and response times, RSS, and long-lived retention.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="status-note">
+        <strong>Implementation status:</strong> This is a proposed profile and validation
+        contract, not a declaration that full LLVM no-GC compilation is shipping.
+        The LLVM compiler remains experimental, and Java/GraalVM guest execution
+        still includes managed runtime allocations. <strong>Zero GC is not zero allocation.</strong>
+        A no-op collector such as GraalVM Native Image <code>--gc=epsilon</code>
+        performs no reclamation and is suited only to tightly bounded or short-lived
+        workloads; it is not a substitute for deterministic reclamation in persistent actors.
+      </p>
+      <p>
+        Engineering references:
+        <a href="https://llvm.org/docs/GarbageCollection.html">LLVM GC integration model</a> ·
+        <a href="https://www.graalvm.org/latest/reference-manual/native-image/optimizations-and-performance/MemoryManagement/">GraalVM Native Image collectors</a> ·
+        <a href="https://docs.oracle.com/en/java/javase/26/gctuning/garbage-first-garbage-collector-tuning.html">HotSpot GC tuning</a>.
+      </p>
 
       <h2>Cooperative scheduling + scheduling un-cooperative code</h2>
       <p>Oreslang does not schedule at each source-code line. There are <strong>checkpoints</strong> (observe cancellation, interruption and quotas) and <strong>resumable boundaries</strong> (save a continuation, relinquish the carrier, then schedule the remainder). Confusing those two would make CPU fairness claims that the runtime cannot guarantee.</p>
