@@ -11,6 +11,7 @@ const perf = read("../src/pages/performance.astro");
 const probe = JSON.parse(read("../src/data/http-plaintext-probe-2026-10-12.json"));
 const wrk2 = JSON.parse(read("../src/data/http-wrk2-2026-10-12.json"));
 const llvmPipeline = JSON.parse(read("../src/data/llvm-pipeline-launch-2026-10-12.json"));
+const crossBackendMatrix = JSON.parse(read("../src/data/cross-backend-http-actor-matrix-2026-10-11.json"));
 const applicationAreas = read("../src/pages/problem-spaces.astro");
 const css = read("../src/styles/technical.css");
 
@@ -114,4 +115,41 @@ test("LLVM guest pipeline measurement is real, source-pinned, and not misreporte
   assert.match(llvmPipeline.raw_artifact_url, /^https:\/\/github\.com\/zed-pkg-test\/java-app\/actions\/runs\/\d+\/artifacts\/\d+$/);
   assert.ok(llvmPipeline.limitations.includes("not persistent-actor RTT"));
   assert.ok(perf.includes('"No verified OresVM run"'));
+});
+
+test("paired-source-kernel observations have explicit non-parity caveats and source-pinned funded receipts", () => {
+  const m = crossBackendMatrix;
+  assert.equal(m.schema, "oreslang-cross-backend-http-source-kernel-observations.v1");
+  assert.equal(m.comparison_class.includes("NON_EQUIVALENT"), true);
+  assert.equal(m.results.length, 16);
+  assert.equal(m.test_contract.total_primary_measured_requests, 64000);
+  assert.equal(m.test_contract.rounds, 4);
+  assert.equal(m.test_contract.actors, 5);
+  assert.equal(m.test_contract.measured_requests_per_scenario, 1000);
+  assert.deepEqual(m.test_contract.concurrent_clients, [1,10,100,1000]);
+  assert.match(m.guest_source_kernel_git_blob_sha, /^[0-9a-f]{40}$/);
+  for (const b of ["llvm","graal"]) {
+    assert.match(m[b].compiler_source_head_sha, /^[0-9a-f]{40}$/);
+    assert.match(m[b].runner_commit_sha, /^[0-9a-f]{40}$/);
+    assert.match(m[b].run_url, /^https:\/\/github\.com\/zed-pkg-test\/java-app\/actions\/runs\/\d+$/);
+    assert.equal(m.results.filter(r => r.backend===b).length, 8);
+  }
+  for (const mode of ["shared","private"]) for(const backend of ["llvm","graal"]) {
+    assert.deepEqual(m.results.filter(r => r.mode===mode && r.backend===backend).map(r => r.concurrency), [1,10,100,1000]);
+  }
+  for(const r of m.results) {
+    assert.equal(r.rounds, 4);
+    assert.equal(r.requests_per_round, 1000);
+    assert.equal(r.total_errors, 0);
+    assert.ok(r.median_rps>=r.min_rps && r.median_rps<=r.max_rps);
+    assert.ok(r.median_p50_ms>0 && r.median_p50_ms<=r.median_p99_ms);
+    assert.ok(Number.isInteger(r.total_gc_collections) && r.total_gc_collections>=0);
+  }
+  assert.ok(m.warnings.some(x=>x.includes("DIFFERENT")));
+  assert.ok(m.warnings.some(x=>x.includes("self.forward()")));
+  assert.ok(perf.includes('id="ci-cross-backend-kernel-matrix"'));
+  assert.ok(perf.includes("separate shared GitHub-hosted runner executions"));
+  assert.ok(perf.includes("not a controlled direct winner/loser comparison"));
+  assert.ok(perf.includes("must not</strong> be compared"));
+  assert.equal((perf.match(/"No verified Ores(?:lang|VM) run"/g)||[]).length, 17);
 });
