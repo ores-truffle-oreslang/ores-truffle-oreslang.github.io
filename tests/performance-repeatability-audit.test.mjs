@@ -31,7 +31,7 @@ test("strict repeatability audit retains both independent raw rate mappings", ()
     const m=repeated.measurements[i];
     assert.equal(m.offered_rps,rate);
     assert.equal(one(text,/^\s*([0-9]+) requests in 1\.00m/gm,"completed requests"),m.completed_requests);
-    assert.equal(one(text,/Total count\s*=\s*([0-9]+)\]/gm,"samples"),m.histogram_sample_count);
+    assert.equal(one(text,/Total count\s*=\s*([0-9]+)/gm,"samples"),m.histogram_sample_count);
     assert.equal(one(text,/^Requests\/sec:\s*([0-9]+(?:\.[0-9]+)?)\s*$/gm,"achieved"),m.achieved_rps);
     for (const [key,p] of [["p50_ms","50.000"],["p99_ms","99.000"],["p999_ms","99.900"]]) {
       assert.equal(one(text,new RegExp("^\\s*"+p.replace(".","\\.")+"%\\s+([0-9]+(?:\\.[0-9]+)?)ms\\s*$","gm"),key),m[key]);
