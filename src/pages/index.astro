@@ -163,18 +163,20 @@ stack trace:
 
         <div class="memory-home-intro" id="memory-management">
           <p class="eyebrow">Memory, deliberately</p>
-          <h3>Zero GC for LLVM. Minimal GC for JVM/Graal.</h3>
+          <h3>Actor-owned arenas on both backends.</h3>
           <p>
-            One safe ownership model, two memory strategies: deterministic native
-            lifetimes where the compiler can prove them, and allocation-conscious
-            managed execution when GC remains the right tool.
+            LLVM targets zero tracing GC in verified native paths. JVM/GraalVM
+            targets minimal managed GC with actor-owned FFM arenas.
+            Per-actor allocation ownership helps reduce heap pressure, but
+            does not by itself create an independent collector per actor.
           </p>
         </div>
         <MemoryProfiles />
         <p class="memory-profile-status">
           <strong>Design target, not a shipping guarantee.</strong>
-          A strict LLVM no-GC profile and a measured low-allocation managed profile
-          both require compiler and runtime validation.
+          LLVM no-GC and GraalVM actor-owned arena work are in draft compiler/runtime
+          PRs. Separate actor-owned memory regions must not be confused with
+          separately collected physical heaps.
           <a href="/how-it-works/#memory-management">Read the memory-management contract →</a>
         </p>
 
