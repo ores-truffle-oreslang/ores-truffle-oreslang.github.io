@@ -41,6 +41,12 @@ jobs:
           test -s dist/logs/index.html
           test -s dist/logs/1/index.html
           grep -q 'Alex Mills' dist/logs/1/index.html
+          grep -q 'class="log-prompt-disclosure"' dist/logs/1/index.html
+          grep -q '<summary class="log-prompt-summary"' dist/logs/1/index.html
+          grep -q 'class="log-prompt-word">prompt</span>' dist/logs/1/index.html
+          grep -q 'class="log-prompt-full-text"' dist/logs/1/index.html
+          grep -q 'class="log-prompt-disclosure"' dist/logs/2/index.html
+          grep -q 'class="log-prompt-full-text"' dist/logs/2/index.html
           grep -q '<table' dist/logs/1/index.html
           grep -q 'href="/logs/"' dist/index.html
 

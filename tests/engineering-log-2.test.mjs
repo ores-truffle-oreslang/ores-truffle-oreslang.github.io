@@ -7,6 +7,7 @@ const index = read("../src/pages/logs/index.astro");
 const log1 = read("../src/pages/logs/1.astro");
 const log2 = read("../src/pages/logs/2.astro");
 const body = read("../src/components/Log2Content.astro");
+const promptDisclosure = read("../src/components/LogPrompt.astro");
 const nav = read("../src/components/SiteNav.astro");
 const layout = read("../src/layouts/BaseLayout.astro");
 
@@ -25,8 +26,9 @@ test("log 2 follows article structure, metadata, original-prompt disclosure, and
   assert.ok(log2.includes('title="Beyond GraalVM and LLVM: Oreslang everywhere'));
   assert.ok(log2.includes('datetime="2026-10-10"'));
   assert.ok(log2.includes("Alex Mills"));
-  assert.ok(log2.includes('class="log-prompt-disclosure"'));
-  assert.ok(log2.includes('class="log-prompt-reveal"'));
+  assert.ok(log2.includes("<LogPrompt prompt={prompt}"));
+  assert.ok(promptDisclosure.includes('class="log-prompt-disclosure"'));
+  assert.ok(promptDisclosure.includes('class="log-prompt-reveal"'));
   assert.ok(log2.includes("<Log2Content />"));
   assert.ok(log2.includes('aria-label="Engineering log #2"'));
   for (const id of ["three-axes", "runtime-landscape", "platform-matrix",
