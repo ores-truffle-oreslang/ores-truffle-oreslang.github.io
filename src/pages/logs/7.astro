@@ -61,8 +61,10 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
         <h2>Wasm belongs in the architecture—but is not a magic sandbox</h2>
         <p>The near-term compilation route is verified Oreslang MIR → LLVM lowering → wasm32 object/module, with a versioned runtime ABI. Later, support component-model interfaces through WIT and explicitly pinned WASI host profiles. A direct MIR → Wasm backend should be considered only if the added maintenance cost is justified by proven advantages over LLVM's Wasm target.</p>
         <figure class="log7-figure">
-          <img src="/logs/7/wasm-profiles.svg" alt="A verified Oreslang Wasm module deploys either inside a browser Worker or inside a WASI server or edge host, with independent import, capability and resource controls." width="1100" height="360" loading="lazy" decoding="async" />
-          <figcaption>Two portable Wasm deployment families, with different host obligations.</figcaption>
+          <div class="log7-diagram-scroller" role="region" aria-label="Wasm deployment profiles: horizontally scrollable diagram" tabindex="0">
+            <img src="/logs/7/wasm-profiles.svg" alt="A verified Oreslang Wasm module deploys either inside a browser Worker or inside a WASI server or edge host, with independent import, capability and resource controls." width="1100" height="360" loading="lazy" decoding="async" />
+          </div>
+          <figcaption>Two portable Wasm deployment families, with different host obligations. <a href="/logs/7/wasm-profiles.svg" aria-label="Open full-size wasm deployment profiles diagram">View full-size diagram ↗</a></figcaption>
         </figure>
         <p>Browser deployment needs explicit Web Worker termination, bounded memories and tables, host-controlled capabilities, and a real asynchronous actor transport. Server and edge deployment additionally needs versioned WASI support and carefully defined resource admission. Wasm linear memory is not, on its own, a complete untrusted-code isolation system: CPU budgets, memory ceilings, imported functions, and host policy still matter.</p>
         <p>More target environments should be handled through the existing <code>oreslang-target-profiles</code> registry—browser, edge, iOS, Android, and embedded—rather than implying that compiling Wasm makes every device compatible. Mobile app integration, native FFI, hardware access, and MCU constraints remain distinct runtime responsibilities.</p>
@@ -72,8 +74,10 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
         <h2>The architectural center: verified HIR/MIR plus an incremental query engine</h2>
         <p>Share language meaning, not backend object representations. The frontend produces typed high-level IR (HIR); lowering produces verified mid-level IR (MIR) with explicit control flow, ownership transfers, cleanup and effects. Backend adapters own platform layout, code emission and runtime bindings.</p>
         <figure class="log7-figure">
-          <img src="/logs/7/compiler-architecture.svg" alt="Oreslang sources pass through a proposed shared incremental semantic core, then a persistent query cache, and finally five adapters: Java GraalVM, .NET Native AOT, LLVM, Forge, and Wasm." width="1100" height="630" loading="lazy" decoding="async" />
-          <figcaption>Proposed end state. The shared semantic engine and full cross-backend integration are not implemented yet.</figcaption>
+          <div class="log7-diagram-scroller" role="region" aria-label="Shared compiler architecture: horizontally scrollable diagram" tabindex="0">
+            <img src="/logs/7/compiler-architecture.svg" alt="Oreslang sources pass through a proposed shared incremental semantic core, then a persistent query cache, and finally five adapters: Java GraalVM, .NET Native AOT, LLVM, Forge, and Wasm." width="1100" height="630" loading="lazy" decoding="async" />
+          </div>
+          <figcaption>Proposed end state. The shared semantic engine and full cross-backend integration are not implemented yet. <a href="/logs/7/compiler-architecture.svg" aria-label="Open full-size shared compiler architecture diagram">View full-size diagram ↗</a></figcaption>
         </figure>
         <p>Do not require all compilers to switch overnight. Java/GraalVM and LLVM should keep their existing independent parsing and borrow-checking paths initially. Introduce a versioned HIR/MIR contract, independent adapters, and executable conformance fixtures before replacing proven semantics. <code>oreslang-common-source</code> can gradually take over shared analysis after demonstrated equivalence.</p>
         <p>The common IR must not quietly inherit LLVM integer widths, JVM object models, undefined overflow, or unsupported source constructs. Every backend should explicitly reject unsupported operations and declare the features and ABI contracts it implements.</p>
@@ -106,8 +110,10 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
         <p>Changing <code>x * 2</code> to <code>x * 3</code> changes the function body, not the public signature. Usually its callers do not need to be type-checked again. But the function must be regenerated, and callers embedding its machine code through inlining might need code regeneration.</p>
         <p>Changing <code>: int</code> to <code>: string</code>, altering generic constraints, or changing an inferred effect or actor capability can invalidate callers' semantic results.</p>
         <figure class="log7-figure">
-          <img src="/logs/7/incremental-invalidation.svg" alt="A body-only edit recompiles the function and body-dependent inlining, while a public contract edit propagates type and effect checks to affected dependents." width="1100" height="475" loading="lazy" decoding="async" />
-          <figcaption>Different change types have different invalidation boundaries.</figcaption>
+          <div class="log7-diagram-scroller" role="region" aria-label="Incremental invalidation: horizontally scrollable diagram" tabindex="0">
+            <img src="/logs/7/incremental-invalidation.svg" alt="A body-only edit recompiles the function and body-dependent inlining, while a public contract edit propagates type and effect checks to affected dependents." width="1100" height="475" loading="lazy" decoding="async" />
+          </div>
+          <figcaption>Different change types have different invalidation boundaries. <a href="/logs/7/incremental-invalidation.svg" aria-label="Open full-size incremental invalidation diagram">View full-size diagram ↗</a></figcaption>
         </figure>
         <p>In addition to dependencies on definitions, track dependencies on <em>absence</em>. Adding an overload, trait implementation, symbol, or candidate import can change resolution even when none of the previously referenced declarations changed. A correct engine must invalidate those negative-lookups too.</p>
       </section>
@@ -195,10 +201,29 @@ Verify:
     border-radius: 14px;
     background: #0b141e;
   }
+  .log7-diagram-scroller {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .log7-diagram-scroller:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: -3px;
+  }
   .log7-figure img {
     display: block;
     width: 100%;
     height: auto;
+  }
+  @media (max-width: 760px) {
+    .log7-diagram-scroller img {
+      min-width: 880px;
+      max-width: none;
+    }
+    .log7-figure figcaption::before {
+      content: "Swipe or scroll diagram horizontally. ";
+      font-weight: 700;
+    }
   }
   .log7-figure figcaption {
     padding: 12px 16px;
