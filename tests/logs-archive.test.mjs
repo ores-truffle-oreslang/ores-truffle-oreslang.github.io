@@ -70,3 +70,18 @@ test("canonical domain, robots and sitemap remain consistent", () => {
   assert.match(read("public/robots.txt"), /Sitemap: https:\/\/ores-truffle-oreslang\.github\.io\/sitemap\.xml/u);
   assert.match(read("src/pages/sitemap.xml.ts"), /import\.meta\.glob\("\.\/\*\*\/\*\.astro"\)/u);
 });
+
+test("catalog dates, titles and author never drift from article metadata", () => {
+  assert.equal(engineeringLogs.length, pages.length);
+  assert.deepEqual(engineeringLogs.map((entry) => entry.number), [7, 6, 5, 4, 3, 2, 1]);
+  for (const entry of engineeringLogs) {
+    const source = pages[entry.number - 1];
+    const match = source.match(/article=\{\{\s*published: "([^"]+)",\s*modified: "([^"]+)",\s*author: "([^"]+)"/u);
+    assert.ok(match, "Missing metadata in log " + entry.number);
+    assert.deepEqual(match.slice(1), [entry.published, entry.modified, entry.author]);
+    assert.ok(!Number.isNaN(Date.parse(entry.published)), "Invalid date for log " + entry.number);
+    assert.ok(entry.modified >= entry.published, "Modified date precedes published date");
+    assert.ok(entry.summary.length >= 65, "Summary too short for log " + entry.number);
+    assert.equal(new Set(engineeringLogs.map((e) => e.number)).size, engineeringLogs.length);
+  }
+});
