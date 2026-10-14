@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { engineeringLogs } from "../src/data/engineering-logs.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFileSync(join(root, path), "utf8");
@@ -12,14 +13,14 @@ const contents = Array.from({ length: 7 }, (_, i) =>
   i < 5 ? read(`src/components/Log${i + 1}Content.astro`) : ""
 );
 const prompts = read("src/components/LogPrompt.astro");
-const archiveEntries = [...index.matchAll(
-  /<a href="\/logs\/(\d+)\/"[^>]*>[\s\S]*?<h2>([^<]+)<\/h2>/gu
-)];
+const archiveEntries = engineeringLogs.map((entry) => [null, String(entry.number), entry.title]);
 const normalize = (value) => value.replace(/\s+/gu, " ").trim().toLowerCase();
 
 test("archive lists each of the seven log articles once, newest first", () => {
   assert.deepEqual(archiveEntries.map((m) => Number(m[1])), [7, 6, 5, 4, 3, 2, 1]);
   assert.equal(new Set(archiveEntries.map((m) => m[1])).size, 7);
+  assert.match(index, /engineeringLogs\.map\(/u);
+  assert.match(index, /src\/data\/engineering-logs|\.\.\/\.\.\/data\/engineering-logs/u);
 });
 
 for (let n = 1; n <= 7; n++) {
