@@ -10,11 +10,13 @@ import "../../styles/logs.css";
 <BaseLayout
   title="Beyond GraalVM and LLVM: Oreslang everywhere — engineering log #2"
   description="Engineering log 002: portable Oreslang backends for browsers, mobile, edge and embedded systems; compiler-enforced environment headers, imports and capability effects."
->
+
+  article={{ published: "2026-10-10", modified: "2026-10-14", author: "Alex Mills" }}>
   <nav class="log-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/logs/">Logs</a><span aria-hidden="true">/</span><span aria-current="page">#2</span></nav>
   <header class="log-entry-header">
     <p class="kicker">Engineering log / 002</p>
-    <LogPrompt prompt={prompt} label="The original engineering question" />
+    <h1>Beyond GraalVM and LLVM: one Oreslang, every environment</h1>
+    <LogPrompt prompt={prompt} label="The original engineering question"  headingTag="span" />
     <div class="log-entry-meta"><span>Authored by <strong>Alex Mills</strong></span><span aria-hidden="true">·</span><time datetime="2026-10-10">October 10, 2026</time></div>
     <p class="log-entry-intro">One portable language, many backends: Wasm, WASI, native AOT, Android DEX, JavaScript and small-device runtimes—with compile-time environment and capability checks that follow every import.</p>
   </header>
