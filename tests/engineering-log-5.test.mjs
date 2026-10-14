@@ -95,7 +95,7 @@ test("log 5 security, provenance and generated semantics are auditable", () => {
     "provenance ledger", "compiler build identity", "prompt injection",
     "restricted filesystem", "nonprivileged identity", "read-only",
     "data-handling", "do not publish confidential", "held-out prompts",
-    "formal proof", "selected settings", "not a complete released Oreslang"
+    "formal proof", "selected settings", "complete released Oreslang language specification"
   ]) {
     assert.ok((body + llms).toLowerCase().includes(term.toLowerCase()), "missing audit protection: " + term);
   }
