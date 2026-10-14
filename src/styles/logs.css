@@ -75,7 +75,7 @@
   outline: 3px solid var(--orange-soft);
   outline-offset: 4px;
 }
-.log-prompt-heading { margin: 0; }
+.log-prompt-heading { display: block; margin: 0; }
 .log-prompt-topline {
   display: flex;
   align-items: center;
