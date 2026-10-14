@@ -52,10 +52,19 @@ jobs:
       - name: Build Astro site
         run: npm run build
 
-      - name: Verify generated log and image assets
+      - name: Verify every generated engineering log and image asset
         run: |
-          test -s dist/logs/7/index.html
+          set -euo pipefail
           test -s dist/logs/index.html
+          for n in 1 2 3 4 5 6 7; do
+            test -s "dist/logs/$n/index.html"
+            grep -qi "<h1" "dist/logs/$n/index.html"
+            grep -q 'application/ld+json' "dist/logs/$n/index.html"
+          done
+          test -s dist/sitemap.xml
+          for n in 1 2 3 4 5 6 7; do
+            grep -q "https://ores-truffle-oreslang.github.io/logs/$n/" dist/sitemap.xml
+          done
           test -s dist/logs/7/compiler-architecture.svg
           test -s dist/logs/7/incremental-invalidation.svg
           test -s dist/logs/7/wasm-profiles.svg
