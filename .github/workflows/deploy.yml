@@ -43,6 +43,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Validate log 007 links, images, accessibility and SVGs
+        run: node --test tests/log7.test.mjs
+
       - name: Build Astro site
         run: npm run build
 
