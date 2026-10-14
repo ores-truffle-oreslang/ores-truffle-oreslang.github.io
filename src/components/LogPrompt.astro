@@ -7,7 +7,7 @@ interface Props {
   headingTag?: "h1" | "span";
 }
 
-const { prompt, label = "The original question", headingTag = "h1" } = Astro.props;
+const { prompt, label = "The original question", headingTag = "span" } = Astro.props;
 const PromptHeading = headingTag;
 ---
 
