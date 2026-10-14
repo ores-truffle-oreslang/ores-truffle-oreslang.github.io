@@ -46,6 +46,9 @@ jobs:
       - name: Validate log 007 links, images, accessibility and SVGs
         run: node --test tests/log7.test.mjs
 
+      - name: Parse log 007 SVGs and reject external references
+        run: python3 tests/log7_svg_test.py
+
       - name: Build Astro site
         run: npm run build
 
