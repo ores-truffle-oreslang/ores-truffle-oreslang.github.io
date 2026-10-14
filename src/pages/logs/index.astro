@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { engineeringLogs } from "../../data/engineering-logs.mjs";
 import "../../styles/logs.css";
 ---
 
@@ -14,55 +15,22 @@ import "../../styles/logs.css";
   </section>
   <section class="page-body log-index-body" aria-label="Published engineering logs">
     <ol class="log-list">
-      <li>
-        <article class="log-list-entry">
-          <a href="/logs/7/" aria-label="Read log 7: Five backends, one incremental compiler"><span class="log-entry-number">Log 007</span><h2>Five backends, one incremental compiler: Oreslang's next architecture</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
-          <p>Wasm and WASI, the shared verified HIR/MIR architecture, function-level incremental compilation, ownership-safe caching, AOT linking and a testable migration plan—with three architecture diagrams.</p>
-          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-14">October 14, 2026</time></p>
-        </article>
-      </li>
-      <li>
-        <article class="log-list-entry">
-          <a href="/logs/6/" aria-label="Read log 6: Actor-native LLM architectures"><span class="log-entry-number">Log 006</span><h2>Actor-native LLM architectures: building neural networks with Oreslang</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
-          <p>Actor-managed Transformers and MoE, typed forward/backward pipelines, GPU tensor kernels, persistent neural memory, and a measurable implementation roadmap.</p>
-          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-14">October 14, 2026</time></p>
-        </article>
-      </li>
-      <li>
-        <article class="log-list-entry">
-          <a href="/logs/5/" aria-label="Read log 5: How to market open-source software"><span class="log-entry-number">Log 005</span><h2>How to market open-source software: an engineering-first playbook</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
-          <p>An engineering-first marketing guide, expanded with AEO for programming languages: how LLMs encounter code, versioned Oreslang references, agent instructions, MCP, and compiler-tested AI generation.</p>
-          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-13">October 13, 2026</time></p>
-        </article>
-      </li>
-      <li>
-        <article class="log-list-entry">
-          <a href="/logs/4/" aria-label="Read log 4: Oreslang style guide"><span class="log-entry-number">Log 004</span><h2>Oreslang style guide: names, formatting, and actor boundaries</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
-          <p>snake_case callables, CamelCase everywhere else, one canonical formatter, optional semicolons, and explicit actor ownership, lifecycle, and recovery conventions.</p>
-          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-12">October 12, 2026</time></p>
-        </article>
-      </li>
-      <li>
-        <article class="log-list-entry">
-          <a href="/logs/3/" aria-label="Read log 3: Actors for AI/ML and data pipelines"><span class="log-entry-number">Log 003</span><h2>Actors for AI/ML and data pipelines</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
-          <p>Warm model workers, bounded CPU/GPU pipelines, tensor ownership, HPC scheduling and supervised agent fleets with multi-party authorization.</p>
-          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-12">October 12, 2026</time></p>
-        </article>
-      </li>
-      <li>
-        <article class="log-list-entry">
-          <a href="/logs/2/" aria-label="Read log 2: Oreslang across browsers, mobile, edge and embedded environments"><span class="log-entry-number">Log 002</span><h2>Beyond GraalVM and LLVM: one Oreslang, every environment</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
-          <p>Wasm, WASI, JavaScript, Android DEX, native AOT and embedded runtimes—and source headers that let the compiler reject incompatible imports and undeclared capabilities.</p>
-          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-10">October 10, 2026</time></p>
-        </article>
-      </li>
-      <li>
-        <article class="log-list-entry">
-          <a href="/logs/1/" aria-label="Read log 1: LLVM versus GraalVM"><span class="log-entry-number">Log 001</span><h2>LLVM vs. GraalVM: one Oreslang, two AOT backends</h2><span class="log-entry-arrow" aria-hidden="true">↗</span></a>
-          <p>What's missing, what belongs in a native LLVM runtime, what should stay in the managed Graal/JVM world, and how to make both truly AOT-capable with optional JIT.</p>
-          <p class="log-list-meta"><span>Alex Mills</span><span aria-hidden="true">·</span><time datetime="2026-10-08T21:04:00Z">October 8, 2026 · 21:04 UTC</time></p>
-        </article>
-      </li>
+      {engineeringLogs.map((entry) => (
+        <li>
+          <article class="log-list-entry">
+            <a href={`/logs/${entry.number}/`} aria-label={`Read log ${entry.number}: ${entry.title}`}>
+              <span class="log-entry-number">{`Log ${String(entry.number).padStart(3, "0")}`}</span>
+              <h2>{entry.title}</h2>
+              <span class="log-entry-arrow" aria-hidden="true">↗</span>
+            </a>
+            <p>{entry.summary}</p>
+            <p class="log-list-meta">
+              <span>{entry.author}</span><span aria-hidden="true">·</span>
+              <time datetime={entry.published}>{entry.displayDate}</time>
+            </p>
+          </article>
+        </li>
+      ))}
     </ol>
   </section>
 </BaseLayout>
