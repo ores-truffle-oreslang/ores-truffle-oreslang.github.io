@@ -10,11 +10,13 @@ const prompt = "Oreslang style guide: functions/methods are snake_case, everythi
 <BaseLayout
   title="Oreslang style guide — engineering log #4"
   description="Engineering log 004: Oreslang naming conventions, the canonical formatter, optional semicolons, actor isolation and lifecycle, and practical source and recovery conventions."
->
+
+  article={{ published: "2026-10-12", modified: "2026-10-14", author: "Alex Mills" }}>
   <nav class="log-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/logs/">Logs</a><span aria-hidden="true">/</span><span aria-current="page">#4</span></nav>
   <header class="log-entry-header">
     <p class="kicker">Engineering log / 004</p>
-    <LogPrompt prompt={prompt} label="The original style-guide brief" />
+    <h1>Oreslang style guide: names, formatting, and actor boundaries</h1>
+    <LogPrompt prompt={prompt} label="The original style-guide brief"  headingTag="span" />
     <div class="log-entry-meta"><span>Authored by <strong>Alex Mills</strong></span><span aria-hidden="true">·</span><time datetime="2026-10-12">October 12, 2026</time></div>
     <p class="log-entry-intro">Oreslang style guide: consistent names, one canonical format, and actor boundaries that make ownership and failure behavior explicit.</p>
   </header>
