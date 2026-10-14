@@ -19,8 +19,8 @@ const getAttribute = (tag, name) => {
 
 test("Log 007 has a unique page h1, article metadata and accessible prompt", () => {
   assert.equal((article.match(/<h1\b/gu) ?? []).length, 1);
-  assert.match(article, /<LogPrompt[^>]+headingTag="div"/u);
-  assert.match(promptComponent, /headingTag\?: "h1" \| "div"/u);
+  assert.match(article, /<LogPrompt[^>]+headingTag="span"/u);
+  assert.match(promptComponent, /headingTag\?: "h1" \| "span"/u);
   assert.match(promptComponent, /<PromptHeading class="log-prompt-heading">/u);
   assert.match(article, /article=\{\{ published: "2026-10-14", modified: "2026-10-14"/u);
   assert.match(article, /<article class="log-article prose"/u);
