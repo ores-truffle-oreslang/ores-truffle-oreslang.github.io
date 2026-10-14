@@ -91,7 +91,7 @@
   <h2>6. Create a canonical, versioned Oreslang knowledge corpus</h2>
   <p>A language evolves faster than general-purpose LLMs are retrained. The single biggest problem is contradictory examples: old syntax in issues, proposed syntax in design threads, and working syntax in compiler tests. Solve this by maintaining a public, machine-readable corpus generated from the same source of truth as the released language.</p>
   <p>As a proposed documentation structure—not a claim that these paths already exist—organize the corpus like this:</p>
-  <pre aria-label="Suggested Oreslang AI documentation layout"><code>docs/
+  <pre aria-label="Suggested Oreslang AI documentation layout" tabindex="0"><code>docs/
   stable/           # Versioned, released language semantics
   experimental/     # Proposals, explicitly not guaranteed to compile
   grammar/          # Formal syntax and parsing rules
@@ -124,7 +124,7 @@ llms.txt            # Curated pointers to authoritative resources</code></pre>
   <p>For a developer who opens a fresh project and asks an assistant to create an Oreslang program, the immediate problem is not whether the model has seen Oreslang in training. It is whether the assistant has an authoritative versioned reference available <em>in this session</em>. Package the reference so users do not have to paste the language manual with every prompt.</p>
   <h3>Agent instructions: small bootstrap, not a copied manual</h3>
   <p>Ship an <code>AGENTS.md</code> template for Oreslang projects and, where useful, a <code>.github/copilot-instructions.md</code> file. Different assistants and IDE integrations support different instruction locations, so test the target products. GitHub documents repository and path-specific custom instructions for Copilot; none of these files is automatically installed into an unrelated chat session.</p>
-  <pre aria-label="Example Oreslang agent guidance"><code># Oreslang coding agent instructions (proposed template)
+  <pre aria-label="Example Oreslang agent guidance" tabindex="0"><code># Oreslang coding agent instructions (proposed template)
 - Identify the installed compiler and its release/commit first.
 - Retrieve the matching stable language spec before writing code.
 - Prefer compiler-verified examples over remembered syntax.

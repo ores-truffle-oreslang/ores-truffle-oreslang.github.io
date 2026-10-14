@@ -34,13 +34,13 @@ fnc classify_count(int ItemCount) -> String {
     </table>
   </div>
   <p>Name callables for their action and other identifiers for what they represent. Prefer <code>read_message</code> and <code>PendingMessage</code> over vague names such as <code>process</code> and <code>Data</code>. Language keywords and existing external API spellings retain their defined spelling.</p>
-  <OresCode code={namingExample} caption="Style guide · formatter-verified Oreslang" />
+  <OresCode code={namingExample} caption="Illustrative Oreslang style · verify with the target compiler and formatter version" />
 </section>
 
 <section id="formatter" class="log-section">
   <h2>2. Use the canonical formatter</h2>
   <p><a href="https://github.com/ores-truffle-oreslang/oreslang-format">ores-truffle-oreslang/oreslang-format</a> is the source of truth for layout. It provides <code>oresfmt</code> and the <code>oreslang-format</code> alias, with one format and no project-specific style configuration.</p>
-  <pre aria-label="Install and run the Oreslang formatter"><code>{`# From a checkout of ores-truffle-oreslang/oreslang-format
+  <pre aria-label="Install and run the Oreslang formatter" tabindex="0"><code>{`# From a checkout of ores-truffle-oreslang/oreslang-format
 cargo install --path .
 
 # Preview changes without modifying source

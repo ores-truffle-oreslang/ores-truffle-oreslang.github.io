@@ -88,7 +88,7 @@ test("SVG diagrams are standalone, accessible, well nested and have no executabl
 });
 
 test("Oreslang code samples are Astro-safe and diagrams work on narrow screens", () => {
-  const codeBlocks = [...article.matchAll(/<pre><code>([\s\S]*?)<\/code><\/pre>/gu)].map((m) => m[1]);
+  const codeBlocks = [...article.matchAll(/<pre\b[^>]*><code>([\s\S]*?)<\/code><\/pre>/gu)].map((m) => m[1]);
   assert.ok(codeBlocks.length >= 3);
   for (const code of codeBlocks) {
     assert.doesNotMatch(code, /[{}]/u, "Astro code text must escape brace tokens");
