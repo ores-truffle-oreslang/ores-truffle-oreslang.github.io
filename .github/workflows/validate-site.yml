@@ -61,6 +61,18 @@ jobs:
           grep -q 'href="/logs/2/"' dist/logs/1/index.html
           grep -q 'target-env' dist/logs/2/index.html || grep -q 'ores:targets' dist/logs/2/index.html
 
+      - name: Validate machine-readable language draft publication
+        run: |
+          test -s dist/language/index.html
+          test -s dist/language/draft-2026-10-14/reference.md
+          test -s dist/language/draft-2026-10-14/features.json
+          test -s dist/language/draft-2026-10-14/agent-guide.md
+          grep -q 'href="/language/"' dist/index.html
+          grep -q 'https://ores-truffle-oreslang.github.io/language/' dist/sitemap.xml
+          grep -q '"normative": false' dist/language/draft-2026-10-14/features.json
+          grep -q '"public_verified_sources": 0' dist/language/draft-2026-10-14/features.json
+          grep -q 'language/draft-2026-10-14/reference.md' dist/llms.txt
+
       - name: Validate log 005 AEO crawlability and article metadata
         run: |
           test -s dist/robots.txt
