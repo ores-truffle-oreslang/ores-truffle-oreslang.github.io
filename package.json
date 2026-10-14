@@ -10,7 +10,9 @@
     "check": "astro check",
     "test": "node --test tests/*.test.mjs",
     "test:blogs:build": "node --test tests/blog-build.mjs",
-    "test:blogs:browser": "node tests/blog-browser.mjs"
+    "test:blogs:browser": "node tests/blog-browser.mjs",
+    "test:site:build": "node --test tests/site-build.mjs",
+    "test:rss:build": "python3 tests/rss_xml_test.py"
   },
   "dependencies": {
     "@ores-truffle-oreslang/html-js-css-syntax-highlighter": "file:vendor/html-js-css-syntax-highlighter",
