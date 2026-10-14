@@ -8,11 +8,11 @@ const log1 = read("../src/pages/logs/1.astro");
 const log2 = read("../src/pages/logs/2.astro");
 const css = read("../src/styles/logs.css");
 
-test("native disclosure has one accessible clickable heading and a single prompt data source", () => {
+test("native disclosure preserves article heading hierarchy and a single prompt data source", () => {
   assert.match(component, /<details class="log-prompt-disclosure">/);
   assert.match(component, /<summary class="log-prompt-summary">/);
   assert.match(component, /<PromptHeading class="log-prompt-heading">/);
-  assert.match(component, /headingTag = "h1"/);
+  assert.match(component, /headingTag = "span"/);
   assert.match(component, /headingTag\?: "h1" \| "span"/);
   const log6 = read("../src/pages/logs/6.astro");
   const log7 = read("../src/pages/logs/7.astro");
