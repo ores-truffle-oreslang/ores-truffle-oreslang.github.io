@@ -18,7 +18,7 @@ const prompt = "Explore whether the Actor Model is a good foundation for buildin
 <section id="transformer" class="log-section">
 <h2>An actor-managed Transformer</h2>
 <p>A decoder-only Transformer still needs token embeddings, attention, feed-forward layers, normalization, output projection, and a training objective. The first actor design should use coarse-grained pipeline stages, not one actor per neuron or tensor operation.</p>
-<pre><code>Tokens → EmbeddingStage → TransformerStageA → TransformerStageB → OutputHead
+<pre tabindex="0"><code>Tokens → EmbeddingStage → TransformerStageA → TransformerStageB → OutputHead
                               │                    │
                           GPU kernels          GPU kernels</code></pre>
 <p>Stage actors own their parameter and execution resources. The scheduler coordinates microbatches and GPU completion events. A baseline implementation without actor boundaries must use the <em>same kernels and precision</em> so we can measure actual actor overhead rather than confounding it with numerical differences.</p>
@@ -27,7 +27,7 @@ const prompt = "Explore whether the Actor Model is a good foundation for buildin
 <section id="moe" class="log-section">
 <h2>Mixture-of-Experts as an actor graph</h2>
 <p>Mixture-of-Experts is a natural fit for explicit routing. A router selects experts for each token; expert actors own their weights; a combine stage assembles weighted outputs. The implementation must dispatch <strong>batches of tokens</strong>, not send millions of tiny actor messages.</p>
-<pre><code>                   Router
+<pre tabindex="0"><code>                   Router
                  /   |   \
             Expert A B    C
                  \   |   /
@@ -38,7 +38,7 @@ const prompt = "Explore whether the Actor Model is a good foundation for buildin
 <section id="forward-backward" class="log-section">
 <h2>Forward routing is not automatic differentiation</h2>
 <p>Oreslang's planned pipeline operations <code>self.forward()</code> and <code>self.backward()</code> provide downstream and upstream <em>message routing</em>. They do not calculate derivatives. A separate autodiff system must compute gradients from the actual tensor operations, retain or recompute required activations, and associate messages with the correct microbatch and parameter version.</p>
-<pre><code>Forward:  Stage A ──activations──▶ Stage B ──activations──▶ Loss
+<pre tabindex="0"><code>Forward:  Stage A ──activations──▶ Stage B ──activations──▶ Loss
 Backward: Stage A ◀──gradients──── Stage B ◀──gradients──── Loss</code></pre>
 <p>A safe training protocol needs explicit step IDs, microbatch IDs, ownership-safe tensor handles, cancellation handling, and barriers before optimizer updates. Asynchronous delivery must not silently mix gradients from incompatible weight versions.</p>
 
