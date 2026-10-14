@@ -45,7 +45,7 @@ test("log 5 covers open-source marketing, AI tooling, verifiability and ethics",
 test("log 5 distinguishes training exposure from reliable inference-time retrieval", () => {
   for (const phrase of ["pretraining", "fine-tuning", "Stack Overflow", "GitHub",
     "package registries", "search-time knowledge", "workspace context",
-    "tool-grounded knowledge", "no public page", "not a magic pretraining",
+    "tool-grounded knowledge", "no public page", "magic pretraining",
     "no universal way", "released docs", "backend", "AGENTS.md",
     "copilot-instructions.md", "llms.txt", "OAI-SearchBot", "GPTBot",
     "ChatGPT-User", "search_language_docs", "oreslang_check",
