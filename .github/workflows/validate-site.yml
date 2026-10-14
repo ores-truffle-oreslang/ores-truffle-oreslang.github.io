@@ -13,6 +13,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: marketing-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,6 +39,24 @@ jobs:
 
       - name: Check and build static HTML
         run: npm run build
+
+      - name: Verify rendered metadata, internal links and all seven engineering logs
+        run: npm run test:blogs:build
+
+      - name: Parse and validate SVG architecture diagrams
+        run: python3 tests/log7_svg_test.py
+
+      - name: Cache Playwright browser binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-1.56.1
+
+      - name: Install browser runtimes
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Test responsive layout, keyboard access and WCAG in Chromium and Firefox
+        run: npm run test:blogs:browser
 
       - name: Verify first engineering log in generated output
         run: |
