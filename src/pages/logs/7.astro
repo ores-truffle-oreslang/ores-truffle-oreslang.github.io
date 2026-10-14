@@ -14,7 +14,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
   <header class="log-entry-header">
     <p class="kicker">Engineering log / 007</p>
     <h1>Five backends, one incremental compiler: Oreslang's next architecture</h1>
-    <LogPrompt prompt={prompt} label="The engineering question" />
+    <LogPrompt prompt={prompt} label="The engineering question" headingTag="div" />
     <div class="log-entry-meta"><span>Authored by <strong>Alex Mills</strong></span><span aria-hidden="true">·</span><time datetime="2026-10-14">October 14, 2026</time></div>
     <p class="log-entry-intro">Wasm is important, but the bigger opportunity is a shared, verified semantic core with function-level incremental compilation. Change one function; rebuild only what truly depends on it—without invalidating ownership proofs or compromising AOT.</p>
   </header>
@@ -52,8 +52,9 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
             <tr><td><code>oreslang-wasm</code></td><td>Wasm runtime ABI, host integration and LLVM bridge</td><td>Runnable proof of concept; no complete Oreslang-to-Wasm compiler</td></tr>
           </tbody></table>
         </div>
+        <p>These descriptions are an engineering snapshot drawn from repository documentation, not independent verification of every advertised feature. Some of the source repositories are private and their READMEs are not accessible to all site visitors.</p>
         <p>Two additional repositories clarify the plan. <code>oreslang-source.wasm</code> exists but was empty at the time of review; <code>oreslang-common-source</code> already contains architecture and IR proposals but no working shared semantic compiler. The latter is the right home for our future common HIR → MIR layer and incremental query engine.</p>
-        <p>Keep <a href="https://github.com/ores-truffle-oreslang/oreslang-wasm">oreslang-wasm</a> responsible for ABI and runtime integration, and eventually use <code>oreslang-source.wasm</code> as the compiler adapter. Keep Forge an independent experimental native compiler unless a tested migration makes it genuinely shared infrastructure. Existing repository visibility and implementation maturity must not be confused with support guarantees.</p>
+        <p>Keep <code>oreslang-wasm</code> responsible for ABI and runtime integration, and eventually use <code>oreslang-source.wasm</code> as the compiler adapter. Keep Forge an independent experimental native compiler unless a tested migration makes it genuinely shared infrastructure. Existing repository visibility and implementation maturity must not be confused with support guarantees.</p>
       </section>
 
       <section class="log-section" id="wasm">
@@ -113,6 +114,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
 
       <section class="log-section" id="query-model">
         <h2>Versioned, persistent, content-addressed queries</h2>
+        <p>Queries that read mutable external state or use nondeterministic inputs must declare those inputs or bypass caching; otherwise, a red/green dependency graph cannot soundly reuse their results.</p>
         <p>Each query result should record its key, actual dependencies and semantic fingerprint. Store immutable results in a content-addressed cache. Validate inputs using a red/green strategy: if an input changed but a query's result is semantically unchanged, dependent results may remain green.</p>
         <pre><code>QueryKey = (
   operation,
@@ -147,7 +149,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
 
       <section class="log-section" id="verification">
         <h2>Correctness first: clean builds are the oracle</h2>
-        <p>Every incremental build must be checked against a clean build for the same source, compiler versions, configuration and target. Admission outcomes and observable execution must agree. For artifact formats promising reproducibility, output hashes should agree as well.</p>
+        <p>For release verification, every incremental build must be checked against a clean build for the same source, compiler versions, configuration and target. Admission outcomes and observable execution must agree. For artifact formats promising reproducibility, output hashes should agree as well.</p>
         <pre><code>incremental_compile(source, target)
   ≡ clean_compile(source, target)
 
