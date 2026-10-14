@@ -9,10 +9,21 @@ interface Props {
   title: string;
   description: string;
   home?: boolean;
+  article?: { published: string; modified: string; author: string };
 }
 
-const { title, description, home = false } = Astro.props;
+const { title, description, home = false, article } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const articleJsonLd = article ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: title,
+  description,
+  datePublished: article.published,
+  dateModified: article.modified,
+  author: { '@type': 'Person', name: article.author },
+  mainEntityOfPage: canonical.href,
+}).replace(/</g, '\\u003c') : null;
 ---
 
 <!doctype html>
@@ -44,7 +55,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={article ? "article" : "website"} />
+    <meta property="og:url" content={canonical.href} />
+    {article && <meta property="article:published_time" content={article.published} />}
+    {article && <meta property="article:modified_time" content={article.modified} />}
+    {articleJsonLd && <script type="application/ld+json" set:html={articleJsonLd} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <title>{title}</title>
