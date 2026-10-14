@@ -9,6 +9,13 @@
 - [Engineering logs](https://ores-truffle-oreslang.github.io/logs/): Design discussion, including unshipped proposals
 - [AI discoverability and open-source marketing](https://ores-truffle-oreslang.github.io/logs/5/): Guidance for building an authoritative language documentation corpus
 
+## Draft language reference and agent context
+- [Language reference portal](https://ores-truffle-oreslang.github.io/language/): Draft, not a released language specification
+- [Public language draft](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/reference.md): High-level language design and evidence boundaries
+- [Feature support matrix](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/features.json): All backend support explicitly not-verified by this publication
+- [AI coding agent bootstrap](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/agent-guide.md): Optional context, not a compiler guarantee
+- [Historical example source inventory](https://github.com/ores-truffle-oreslang/oreslang-demos/blob/main/ai/examples.manifest.json): Eleven public files, Git-pinned, zero compiler-verified
+
 ## Source and verification
 - [Java/GraalVM implementation](https://github.com/ores-truffle-oreslang/oreslang-source.java): Compiler, runtime, and tests
 - [LLVM implementation](https://github.com/ores-truffle-oreslang/oreslang-source.llvm): Native compiler and runtime
