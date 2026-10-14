@@ -19,6 +19,9 @@
 
 A Git blob hash proves the *identity* of the bytes, not that the code is well-typed or runnable. Formatting, parsing, typechecking and executing are different levels of evidence.
 
+The public demo inventory is itself pinned to commit `3acd6ced34dea7ebd85428d885139dd38848d8d4`, while its example `source_commit` refers to the earlier historical source commit `6fd8930e167ff6dbd372a15cd1049427df69569b`. These are **two distinct identities**: the inventory revision and the source revision it records. This page does not require copying private compiler documentation into the public website. The Java/GraalVM, LLVM and formatter source repositories are currently private and cannot be assumed accessible by search crawlers.
+
+
 ## Design topics and current publishing status
 
 ### Modules and visibility
@@ -64,7 +67,7 @@ The publicly accessible `oreslang-demos` repository includes older `fnc ... =>` 
 - [Oreslang AI reference landing page](https://ores-truffle-oreslang.github.io/language/)
 - [Machine-readable feature matrix](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/features.json)
 - [Agent bootstrap guide](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/agent-guide.md)
-- [Historical public example inventory](https://github.com/ores-truffle-oreslang/oreslang-demos/blob/main/ai/examples.manifest.json)
+- [Historical public example inventory](https://github.com/ores-truffle-oreslang/oreslang-demos/blob/3acd6ced34dea7ebd85428d885139dd38848d8d4/ai/examples.manifest.json)
 - [Engineering log 005: AI discoverability](https://ores-truffle-oreslang.github.io/logs/5/)
 
 **Non-goal:** this publication does not disclose or mirror private repositories, certify a language release, or claim that an AI provider will ingest or train on these files.
