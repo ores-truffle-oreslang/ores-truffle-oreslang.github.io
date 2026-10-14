@@ -10,11 +10,13 @@ const prompt = "We want Oreslang to be used heavily in HPC and AI/ML pipelines. 
 <BaseLayout
   title="Actors for AI/ML and data pipelines — Oreslang engineering log #3"
   description="Engineering log 003: Oreslang actors for bounded data pipelines, persistent model workers, tensor ownership, HPC scheduling and supervised AI fleets."
->
+
+  article={{ published: "2026-10-12", modified: "2026-10-14", author: "Alex Mills" }}>
   <nav class="log-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/logs/">Logs</a><span aria-hidden="true">/</span><span aria-current="page">#3</span></nav>
   <header class="log-entry-header">
     <p class="kicker">Engineering log / 003</p>
-    <LogPrompt prompt={prompt} label="The original engineering question" />
+    <h1>Actors for AI/ML and data pipelines</h1>
+    <LogPrompt prompt={prompt} label="The original engineering question"  headingTag="span" />
     <div class="log-entry-meta"><span>Authored by <strong>Alex Mills</strong></span><span aria-hidden="true">·</span><time datetime="2026-10-12">October 12, 2026</time></div>
     <p class="log-entry-intro">Keep models warm, compute busy and state accountable. Oreslang's actor design brings ownership, typed messages and supervised lifetimes to the infrastructure around AI and numerical computing.</p>
   </header>
