@@ -1,7 +1,6 @@
-name: Blog quality gate
+name: Manual independent blog audit
 
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
