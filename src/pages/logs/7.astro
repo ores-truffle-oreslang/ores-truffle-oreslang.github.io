@@ -100,9 +100,9 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
       <section class="log-section" id="invalidations">
         <h2>Track exactly what changed, and exactly who depends on it</h2>
         <p>Consider an existing Oreslang function:</p>
-        <pre><code>pub fnc calculate(int x) : int {
+        <pre><code>pub fnc calculate(int x) : int &#123;
     return x * 2;
-}</code></pre>
+&#125;</code></pre>
         <p>Changing <code>x * 2</code> to <code>x * 3</code> changes the function body, not the public signature. Usually its callers do not need to be type-checked again. But the function must be regenerated, and callers embedding its machine code through inlining might need code regeneration.</p>
         <p>Changing <code>: int</code> to <code>: string</code>, altering generic constraints, or changing an inferred effect or actor capability can invalidate callers' semantic results.</p>
         <figure class="log7-figure">
