@@ -1,0 +1,126 @@
+<p>Open-source software does not grow simply because its source code is public. People adopt a project when they understand the problem it solves, can prove that it works for them, and trust the people maintaining it. Marketing is how those three things become discoverable.</p>
+<p>For an engineering team, that means treating documentation, examples, release quality, and community experience as parts of the product—not as decoration added after the code is finished. The most effective promotion reduces uncertainty and helps a developer reach a useful result.</p>
+
+<section id="positioning" class="log-section">
+  <h2>1. Position the problem before the technology</h2>
+  <p>Lead with the job the software performs, the person who needs it, and the reason to try it. A list of implementation details is useful later, but it is not a substitute for a value proposition.</p>
+  <p>A practical positioning sentence is: <strong>For [specific developer or team] who needs [specific outcome], this project offers [approach and benefit], with [honest tradeoff].</strong></p>
+  <ul>
+    <li><strong>Audience:</strong> Who is it for today? Be narrower than “all developers.”</li>
+    <li><strong>Use case:</strong> What can someone accomplish in one working session?</li>
+    <li><strong>Difference:</strong> What distinguishes the approach from existing tools?</li>
+    <li><strong>Proof:</strong> Which runnable example, benchmark, design note, or test supports the claim?</li>
+    <li><strong>Limit:</strong> What is still experimental, incomplete, or unsupported?</li>
+  </ul>
+  <p>For Oreslang, an honest introduction can describe the language's goals around actors, ownership, and multiple backends while distinguishing those design goals from independently verified, shipping capabilities. A claim that is precise today is more valuable than one that must be walked back tomorrow.</p>
+</section>
+
+<section id="first-run" class="log-section">
+  <h2>2. Make the first successful run the main conversion event</h2>
+  <p>Many repositories explain architecture before they explain how to use the software. Reverse that order. The README and landing page should answer: <em>What is this? Why should I care? How do I try it? What should I expect to see?</em></p>
+  <p>Design a beginner path that works from a clean checkout: prerequisites, one installation method, one minimal example, one command to run it, expected output, and troubleshooting for the most common failure. Pin versions when behavior changes between releases. CI should execute the tutorial so the page cannot silently drift away from the product.</p>
+  <ul>
+    <li>Provide a five-minute quickstart, then a deeper tutorial and an architecture reference.</li>
+    <li>Label examples by supported backend, platform, and release; avoid undocumented prerequisites.</li>
+    <li>Offer a meaningful second step: modify an example, solve a real task, or try a benchmark that can be reproduced.</li>
+    <li>Give visitors a clear destination if a feature is not ready: a roadmap, issue, or working alternative.</li>
+  </ul>
+  <p>Developer adoption is not measured by whether someone read the homepage. It is measured by whether they got the software to do something useful.</p>
+</section>
+
+<section id="github" class="log-section">
+  <h2>3. Treat GitHub as the project's storefront</h2>
+  <p>For open-source software, the repository is often the first due-diligence check. It should communicate ownership, maintenance quality, project health, and a clear path to participate.</p>
+  <ul>
+    <li><strong>Repository profile:</strong> Write a useful description, set a website URL, choose accurate GitHub topics, and provide a legible social preview image.</li>
+    <li><strong>Trust files:</strong> Include a license, CONTRIBUTING guide, code of conduct, support channels, and a security-reporting policy appropriate to the project.</li>
+    <li><strong>Discoverable work:</strong> Keep releases, changelogs, issue templates, milestones, and public design discussions current.</li>
+    <li><strong>Contributor experience:</strong> Explain setup and test commands; tag genuinely approachable issues; respond respectfully and predictably.</li>
+    <li><strong>Visible evidence:</strong> Link to CI checks, supported-platform matrices, test fixtures, and reproducible performance data instead of unsupported claims.</li>
+  </ul>
+  <p>GitHub documents both <a href="https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/about-community-profiles-for-public-repositories">community-health files</a> and <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics">repository topics</a>. Use those conventions before inventing a custom discovery system.</p>
+</section>
+
+<section id="search-ai" class="log-section">
+  <h2>4. Build for search engines and AI coding assistants</h2>
+  <p>Traditional SEO and answer-engine optimization are useful, but the goal is not to trick a ranking algorithm. It is to make accurate technical information easy to find, quote, retrieve, and verify. The same material should help a human reader and a coding agent.</p>
+  <ul>
+    <li><strong>Human-readable pages:</strong> Give each major concept a dedicated, canonical URL, descriptive title, clear heading, examples, limitations, and links to related concepts.</li>
+    <li><strong>Machine-readable documentation:</strong> Publish versioned Markdown alongside HTML, stable permalinks, and a navigable specification index. An optional <code>llms.txt</code> can point to the official documentation, but it is not a universal ingestion standard or a guarantee of model exposure.</li>
+    <li><strong>Agent guidance:</strong> Provide <code>AGENTS.md</code> or tool-specific instructions that identify the authoritative spec, style rules, test commands, and unsupported syntax. Agents only benefit when their environment actually reads those files.</li>
+    <li><strong>Executable truth:</strong> Make examples compiler-checked and backend-labeled. A generated snippet should be formatted, typechecked, run where appropriate, and checked against conformance tests.</li>
+    <li><strong>Tool integration:</strong> Where practical, expose syntax lookup, diagnostics, formatting, and compile/test operations through an editor integration or MCP server. Prefer a live compiler result over a model's remembered guess.</li>
+  </ul>
+  <p>For Oreslang, this suggests an authoritative language-spec index, a public cookbook, and a test suite where each published snippet is validated against the declared compiler/backend version. Publishing experimental syntax without a status label would teach agents the wrong language.</p>
+  <p>Google's <a href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide">SEO Starter Guide</a> emphasizes useful, unique, understandable content rather than guaranteed ranking shortcuts. AI discovery deserves the same discipline.</p>
+</section>
+
+<section id="distribution" class="log-section">
+  <h2>5. Distribute useful technical work, not repetitive announcements</h2>
+  <p>One well-tested feature can produce several genuinely different pieces of content: a short demo, a tutorial, a design tradeoff, a migration guide, and a release note. Each should help a different audience answer a specific question.</p>
+  <ul>
+    <li><strong>Search-driven tutorials:</strong> Write about real developer problems using the language people actually search for.</li>
+    <li><strong>Engineering logs:</strong> Share design decisions, failed approaches, measurements, and what changed after feedback.</li>
+    <li><strong>Communities:</strong> Participate in relevant technical forums, discussion boards, meetups, and newsletters; disclose your affiliation and respect each community's promotion rules.</li>
+    <li><strong>Ecosystem integration:</strong> Ship small, maintained examples with adjacent tools and consider talks, documentation contributions, or collaboration with maintainers.</li>
+    <li><strong>Releases:</strong> Lead with what users can now do, include upgrade details, and link to reproducible evidence.</li>
+  </ul>
+  <p>A credible benchmark write-up can be far more useful than a headline that says “10× faster” without workload, hardware, compiler version, or baseline. Showing limitations makes the data stronger, not weaker.</p>
+</section>
+
+<section id="community" class="log-section">
+  <h2>6. Build a community that earns trust</h2>
+  <p>Marketing creates an introduction; maintenance creates the relationship. Contributors need to know how decisions are made, where to ask questions, and what happens after they open a PR. A sustainable community has boundaries as well as enthusiasm.</p>
+  <ul>
+    <li>Publish contribution standards and explain where proposals belong.</li>
+    <li>Set realistic review expectations instead of promising instant responses.</li>
+    <li>Thank contributors, attribute work, and give credit in release notes.</li>
+    <li>Document compatibility, deprecation, and security-disclosure policies.</li>
+    <li>Make it possible to contribute docs, examples, tests, and translations—not only compiler code.</li>
+  </ul>
+  <p>Avoid fake endorsements, purchased stars, automated forum spam, and undisclosed self-promotion. Those tactics may produce impressions, but they undermine the trust that open source depends on.</p>
+</section>
+
+<section id="metrics" class="log-section">
+  <h2>7. Measure an adoption funnel, not a vanity metric</h2>
+  <p>Repository stars and page views provide context. They do not establish whether developers successfully use the project. Track a small number of actionable signals, ideally with privacy-respecting, aggregate data.</p>
+  <div class="log-table-scroll" role="region" tabindex="0" aria-label="Open-source marketing measurement funnel">
+    <table>
+      <thead><tr><th scope="col">Stage</th><th scope="col">Useful signal</th><th scope="col">Question to answer</th></tr></thead>
+      <tbody>
+        <tr><td>Discovery</td><td>Relevant search visits, qualified referrals</td><td>Are the right people finding us?</td></tr>
+        <tr><td>Activation</td><td>Quickstart completions, working demo feedback</td><td>Can new users get a useful result?</td></tr>
+        <tr><td>Retention</td><td>Repeat use, returning questions, downstream integrations</td><td>Does the project solve an ongoing problem?</td></tr>
+        <tr><td>Contribution</td><td>First PR success, issue resolution, reviewer throughput</td><td>Can the community help improve it?</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Choose a baseline, change one part of the funnel, and compare over time. If ten people find a tutorial but none can run the code, fix the tutorial before buying more traffic. Avoid treating repository clones, CI downloads, and raw traffic as unique human users.</p>
+</section>
+
+<section id="plan" class="log-section">
+  <h2>8. A practical 90-day open-source launch plan</h2>
+  <p><strong>Days 1–30: Make it usable.</strong> Interview a handful of target developers; tighten positioning; publish a verified quickstart and compatibility matrix; audit the README, license, community files, and docs navigation. Test the onboarding path on a clean machine.</p>
+  <p><strong>Days 31–60: Make it findable.</strong> Publish three problem-solving tutorials and two transparent engineering logs; improve titles, internal links, sitemap, and GitHub topics; make public examples reproducible; add canonical versioned reference pages and agent instructions where useful.</p>
+  <p><strong>Days 61–90: Learn through distribution.</strong> Share one meaningful release and demo in a few highly relevant communities; respond to feedback; publish a measured case study or honest comparison; review activation failures and contributor bottlenecks; update the next quarter's roadmap.</p>
+  <p>Keep one weekly publishing rhythm: <em>ship something useful → verify it → explain it → share it where relevant → answer questions → improve the product.</em> A small number of high-quality posts will usually be a better use of a maintainer's time than an indiscriminate daily campaign.</p>
+</section>
+
+<section id="oreslang" class="log-section">
+  <h2>9. Applying the playbook to Oreslang</h2>
+  <p>Oreslang is an especially interesting example because it spans language design, runtime semantics, and multiple implementation targets. Those subjects attract technical curiosity, but curiosity only becomes adoption when examples are correct and current.</p>
+  <ul>
+    <li><strong>Lead with a real task:</strong> Provide a minimal, runnable actor or ownership example tied to a supported compiler release.</li>
+    <li><strong>Document design versus delivery:</strong> Label experimental features, draft proposals, backend differences, and released behavior separately.</li>
+    <li><strong>Build the AI pathway:</strong> Maintain a versioned language specification, <code>AGENTS.md</code>, verified snippets, and compiler-backed feedback for coding assistants.</li>
+    <li><strong>Use engineering logs as evidence:</strong> Connect each claim to design discussions, CI runs, benchmarks, and known limitations.</li>
+    <li><strong>Invite the right contributions:</strong> Seek reproducible bug reports, compiler conformance cases, tutorials, and language tooling—not just stars.</li>
+  </ul>
+  <p>Start with the <a href="https://github.com/ores-truffle-oreslang">Oreslang GitHub organization</a> and the <a href="/logs/">engineering-log archive</a>. The next marketing milestone should be a developer successfully building a real example, not merely a larger audience for a roadmap.</p>
+</section>
+
+<section id="closing" class="log-section">
+  <h2>10. The durable advantage is developer confidence</h2>
+  <p>Good open-source marketing is a public record of promises kept. It makes a useful project easy to discover, quick to evaluate, safe to trust, and rewarding to contribute to. The documentation is part of the interface, examples are executable claims, and the community is part of the developer experience.</p>
+  <p><strong>Build something valuable, prove it works, teach it clearly, and keep showing up.</strong> Everything else should support that loop.</p>
+</section>
