@@ -11,7 +11,15 @@ const css = read("../src/styles/logs.css");
 test("native disclosure has one accessible clickable heading and a single prompt data source", () => {
   assert.match(component, /<details class="log-prompt-disclosure">/);
   assert.match(component, /<summary class="log-prompt-summary">/);
-  assert.match(component, /<h1 class="log-prompt-heading">/);
+  assert.match(component, /<PromptHeading class="log-prompt-heading">/);
+  assert.match(component, /headingTag = "h1"/);
+  assert.match(component, /headingTag\?: "h1" \| "span"/);
+  const log6 = read("../src/pages/logs/6.astro");
+  const log7 = read("../src/pages/logs/7.astro");
+  for (const page of [log6, log7]) {
+    assert.match(page, /<h1\b/);
+    assert.match(page, /<LogPrompt[^>]*headingTag="span"/);
+  }
   assert.match(component, /<span class="log-prompt-word">prompt<\/span>/);
   assert.match(component, /class="log-prompt-glimmer" aria-hidden="true">\{prompt\}/);
   assert.match(component, /class="log-prompt-full-text">\{prompt\}/);
