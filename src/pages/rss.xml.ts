@@ -21,14 +21,14 @@ export const GET: APIRoute = ({ site }) => {
       `      <guid isPermaLink="true">${escapeXml(canonical)}</guid>`,
       `      <description>${escapeXml(entry.summary)}</description>`,
       `      <pubDate>${rfc822(entry.publishedAt ?? entry.published)}</pubDate>`,
-      `      <author>${escapeXml(entry.author)}</author>`,
+      `      <dc:creator>${escapeXml(entry.author)}</dc:creator>`,
       "    </item>",
     ].join("\n");
   }).join("\n");
   const feedUrl = new URL("/rss.xml", root).href;
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">',
     "  <channel>",
     "    <title>Oreslang engineering logs</title>",
     `    <link>${escapeXml(new URL("/logs/", root).href)}</link>`,
