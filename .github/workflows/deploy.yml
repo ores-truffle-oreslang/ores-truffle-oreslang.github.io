@@ -43,14 +43,23 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Validate log 007 links, images, accessibility and SVGs
-        run: node --test tests/log7.test.mjs
+      - name: Run all marketing-site unit tests
+        run: npm test
 
       - name: Parse log 007 SVGs and reject external references
         run: python3 tests/log7_svg_test.py
 
       - name: Build Astro site
         run: npm run build
+
+      - name: Verify generated log and image assets
+        run: |
+          test -s dist/logs/7/index.html
+          test -s dist/logs/index.html
+          test -s dist/logs/7/compiler-architecture.svg
+          test -s dist/logs/7/incremental-invalidation.svg
+          test -s dist/logs/7/wasm-profiles.svg
+          grep -q "Five backends, one incremental compiler" dist/logs/7/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
