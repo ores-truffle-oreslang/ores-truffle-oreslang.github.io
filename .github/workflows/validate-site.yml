@@ -61,6 +61,21 @@ jobs:
           grep -q 'href="/logs/2/"' dist/logs/1/index.html
           grep -q 'target-env' dist/logs/2/index.html || grep -q 'ores:targets' dist/logs/2/index.html
 
+      - name: Validate log 005 AEO crawlability and article metadata
+        run: |
+          test -s dist/robots.txt
+          test -s dist/llms.txt
+          test -s dist/sitemap.xml
+          test -s dist/logs/5/index.html
+          grep -q 'Sitemap: https://ores-truffle-oreslang.github.io/sitemap.xml' dist/robots.txt
+          grep -q 'https://ores-truffle-oreslang.github.io/logs/5/' dist/sitemap.xml
+          grep -q 'https://ores-truffle-oreslang.github.io/' dist/sitemap.xml
+          grep -q 'not a complete or versioned language specification' dist/llms.txt
+          grep -q '"@type":"TechArticle"' dist/logs/5/index.html
+          grep -q '"datePublished":"2026-10-13"' dist/logs/5/index.html
+          grep -q '"dateModified":"2026-10-14"' dist/logs/5/index.html
+          grep -q 'rel="canonical" href="https://ores-truffle-oreslang.github.io/logs/5/"' dist/logs/5/index.html
+
       - name: Verify theme assets in generated site
         run: |
           grep -q 'Zero GC' dist/index.html
