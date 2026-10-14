@@ -101,3 +101,13 @@ test("all seven pages are non-empty and static build contains the three log 7 di
     assert.ok(existsSync(join(dist, "logs/7/" + name + ".svg")), "Missing diagram " + name);
   }
 });
+
+test("all rendered blog code samples are focusable when horizontally scrollable", () => {
+  for (const [index, html] of pages.entries()) {
+    const codeBlocks = [...html.matchAll(/<pre\b[^>]*>/gu)].map((match) => match[0]);
+    for (const block of codeBlocks) {
+      assert.ok(/\btabindex="0"/u.test(block),
+        "Log " + (index + 1) + " has a keyboard-inaccessible pre element: " + block);
+    }
+  }
+});
