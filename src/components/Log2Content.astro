@@ -109,7 +109,7 @@ import fnc read_secret from "./server/fs.ores";`;
   <h2>6. Package manifests should set the upper bound</h2>
   <p>Headers alone become repetitive. A package can declare defaults and limits, and individual files can narrow their supported environments. No child file should widen a package's allowed targets or obtain more authority than the build or host grants.</p>
   <p><strong>Proposed manifest shape only:</strong> these fields are not accepted by the current <code>.oreslangc.cfg.toml</code> schema and should not be treated as a shipping configuration.</p>
-  <pre><code># Future .oreslangc.cfg.toml schema — illustrative, not supported today
+  <pre tabindex="0"><code># Future .oreslangc.cfg.toml schema — illustrative, not supported today
 [target]
 environment = "browser"
 backend = "wasm"
