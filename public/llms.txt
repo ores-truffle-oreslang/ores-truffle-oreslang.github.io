@@ -7,6 +7,7 @@
 - [How it works](https://ores-truffle-oreslang.github.io/how-it-works/): Architectural goals and runtime design
 - [Examples](https://ores-truffle-oreslang.github.io/examples/): Illustrative code; verify every sample against a specific compiler version
 - [Engineering logs](https://ores-truffle-oreslang.github.io/logs/): Design discussion, including unshipped proposals
+- [Engineering logs RSS](https://ores-truffle-oreslang.github.io/rss.xml): Chronological publication metadata and summaries, not a compiler conformance source
 - [AI discoverability and open-source marketing](https://ores-truffle-oreslang.github.io/logs/5/): Guidance for building an authoritative language documentation corpus
 
 ## Draft language reference and agent context

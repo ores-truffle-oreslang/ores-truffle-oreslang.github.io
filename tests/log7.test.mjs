@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { engineeringLogs } from "../src/data/engineering-logs.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFileSync(join(root, path), "utf8");
@@ -103,8 +104,9 @@ test("Oreslang code samples are Astro-safe and diagrams work on narrow screens",
 });
 
 test("Log 007 is discoverable and adjacent articles link correctly", () => {
-  assert.match(index, /href="\/logs\/7\/"/u);
-  assert.match(index, /Log 007/u);
+  assert.match(index, /engineeringLogs\.map\(/u);
+  assert.ok(engineeringLogs.some((entry) => entry.number === 7));
+  assert.equal(engineeringLogs[0].number, 7);
   assert.match(previous, /href="\/logs\/7\/"/u);
   assert.match(article, /href="\/logs\/6\/"/u);
   assert.match(article, /href="\/logs\/"/u);

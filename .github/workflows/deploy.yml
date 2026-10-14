@@ -52,6 +52,12 @@ jobs:
       - name: Build Astro site
         run: npm run build
 
+      - name: Crawl all generated pages and verify internal links and fragments
+        run: npm run test:site:build
+
+      - name: Validate RSS feed and sitemap as XML
+        run: npm run test:rss:build
+
       - name: Verify every generated engineering log and image asset
         run: |
           set -euo pipefail

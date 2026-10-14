@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { engineeringLogs } from "../src/data/engineering-logs.mjs";
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const index = read("../src/pages/logs/index.astro");
@@ -12,8 +13,9 @@ const nav = read("../src/components/SiteNav.astro");
 const layout = read("../src/layouts/BaseLayout.astro");
 
 test("engineering log 2 is indexed, canonical, and navigable from log 1", () => {
-  assert.ok(index.includes('href="/logs/2/"'));
-  assert.ok(index.indexOf('Log 002') < index.indexOf('Log 001'), "newest entry first");
+  assert.ok(index.includes("engineeringLogs.map("));
+  assert.ok(engineeringLogs.some((entry) => entry.number === 2));
+  assert.ok(engineeringLogs.findIndex((entry) => entry.number === 2) < engineeringLogs.findIndex((entry) => entry.number === 1), "newest entry first");
   assert.ok(log1.includes('href="/logs/2/"'));
   assert.ok(log2.includes('href="/logs/1/"'));
   assert.ok(log2.includes('href="/logs/"'));

@@ -40,6 +40,12 @@ jobs:
       - name: Check and build static HTML
         run: npm run build
 
+      - name: Crawl all generated pages and verify internal links and fragments
+        run: npm run test:site:build
+
+      - name: Validate RSS feed and sitemap as XML
+        run: npm run test:rss:build
+
       - name: Verify rendered metadata, internal links and all seven engineering logs
         run: npm run test:blogs:build
 

@@ -1,6 +1,9 @@
 /* Engineering log pages: static HTML content inside Astro's existing layout. */
 .log-index-hero{padding-bottom:72px}
 .log-index-body{min-height:32vh}
+.log-feed-link{margin:18px 0 0;font-size:.95rem}
+.log-feed-link a{color:var(--orange-soft);text-underline-offset:3px}
+.log-feed-link a:focus-visible{outline:3px solid var(--orange-soft);outline-offset:3px}
 .log-list{margin:0;padding:0;list-style:none}
 .log-list-entry{padding:30px 0 36px;border-bottom:1px solid var(--line)}
 .log-list-entry>a{display:grid;grid-template-columns:110px minmax(0,1fr) 32px;align-items:start;gap:24px;color:var(--cream);text-decoration:none}

@@ -30,6 +30,29 @@ The homepage is intentionally both a landing page and a table of contents:
 - nav links scroll to `/#about`, `/#examples`, `/#problem-spaces`, and `/#links`
 - section headings open the dedicated `/about/`, `/examples/`, `/problem-spaces/`, and `/links/` pages
 
+
+## Engineering logs and publishing
+
+Engineering-log titles, dates, summaries and archive ordering live in
+`src/data/engineering-logs.mjs`. The archive and
+[`/rss.xml`](https://ores-truffle-oreslang.github.io/rss.xml) use that catalog,
+and CI checks that it matches the metadata inside the individual posts.
+
+After editing a log or publishing a new one, run:
+
+```sh
+npm test
+npm run build
+npm run test:blogs:build
+npm run test:site:build
+npm run test:rss:build
+npx playwright install --with-deps chromium firefox
+npm run test:blogs:browser
+```
+
+See [engineering-log publication standards](docs/ENGINEERING_LOG_PUBLICATION.md)
+for verification, accessibility, and evidence requirements.
+
 ## Oreslang syntax highlighting
 
 Syntax highlighting lives in the pinned submodule at
