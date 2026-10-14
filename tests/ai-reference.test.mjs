@@ -51,3 +51,32 @@ test("Agent guide and public reference identify source/evidence boundaries", () 
     assert.ok(guide.toLowerCase().includes(token.toLowerCase()), "missing " + token);
   }
 });
+
+test("public AI reference pins inventory revision and historical source separately", () => {
+  const inventoryCommit = "3acd6ced34dea7ebd85428d885139dd38848d8d4";
+  const historicalCommit = "6fd8930e167ff6dbd372a15cd1049427df69569b";
+  const immutableUrl = `https://github.com/ores-truffle-oreslang/oreslang-demos/blob/${inventoryCommit}/ai/examples.manifest.json`;
+  assert.notEqual(inventoryCommit, historicalCommit);
+  assert.equal(matrix.examples.inventory_commit, inventoryCommit);
+  assert.equal(matrix.examples.source_commit, historicalCommit);
+  assert.equal(matrix.examples.inventory_url, immutableUrl);
+  assert.equal(matrix.examples.verification_scope, "historical-source-integrity-only");
+  assert.equal(matrix.examples.has_verified_compilation, false);
+  for (const text of [page, reference, guide, llms]) {
+    assert.ok(text.includes(immutableUrl), "unversioned demo URL found");
+    assert.ok(!text.includes("oreslang-demos/blob/main/"), "moving branch used as evidence");
+  }
+  assert.ok(reference.includes(historicalCommit));
+  assert.ok(guide.includes(historicalCommit));
+});
+
+test("public index does not imply private compiler sources are crawlable", () => {
+  for (const name of ["Java/GraalVM", "LLVM", "formatter"]) {
+    assert.ok(llms.toLowerCase().includes(name.toLowerCase()));
+  }
+  assert.match(llms, /Private repository.*public crawlers/);
+  assert.match(llms, /Private repository.*native backend support/);
+  assert.match(llms, /Private repository.*independent evidence/);
+  assert.ok(page.includes("repositories are currently private"));
+  assert.equal(matrix.examples.public_verified_sources, 0);
+});
