@@ -33,6 +33,8 @@ try {
           for (let n = 1; n <= 7; n++) {
             const page = await context.newPage();
             const label = engine + " " + width + "px log " + n;
+            const pageErrors = [];
+            page.on("pageerror", (error) => pageErrors.push(error.message));
             try {
               const response = await page.goto(base + "/logs/" + n + "/", {
                 waitUntil: "domcontentloaded",
@@ -64,10 +66,33 @@ try {
                   id: v.id, targets: v.nodes.map((node) => node.target).slice(0, 4)
                 })), [], label + " accessibility");
               }
+              await page.waitForLoadState("load");
+              assert.deepEqual(pageErrors, [], label + " uncaught browser errors");
               console.log("PASS " + label);
             } finally {
               await page.close();
             }
+          }
+          const archive = await context.newPage();
+          try {
+            const response = await archive.goto(base + "/logs/", { waitUntil: "load" });
+            assert.equal(response.status(), 200, engine + " archive status");
+            assert.equal(await archive.locator(".log-list-entry").count(), 7);
+            assert.equal(await archive.locator(".log-list-entry a").first().getAttribute("href"), "/logs/7/");
+            assert.equal(await archive.locator(".log-list-entry a").last().getAttribute("href"), "/logs/1/");
+            assert.equal(await archive.locator(".log-feed-link a").getAttribute("href"), "/rss.xml");
+            const overflow = await archive.evaluate(() =>
+              document.documentElement.scrollWidth - window.innerWidth
+            );
+            assert.ok(overflow <= 2, engine + " archive overflow at " + width + "px");
+            if (width === 375) {
+              await archive.locator(".mobile-navigation summary").click();
+              assert.equal(await archive.locator(".mobile-navigation").evaluate((el) => el.open), true);
+              assert.equal(await archive.locator(".mobile-navigation a[href='/logs/']").count(), 1);
+            }
+            console.log("PASS " + engine + " " + width + "px archive");
+          } finally {
+            await archive.close();
           }
         } finally {
           await context.close();
