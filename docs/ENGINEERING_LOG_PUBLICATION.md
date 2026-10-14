@@ -26,6 +26,8 @@ Before publishing or substantially revising a technical claim:
 - Maintain article publication and modification dates, author, canonical link,
   and `TechArticle` structured data.
 - Keep `/logs/` reverse chronological, and wire previous/next/archive links.
+- Register each entry in `src/data/engineering-logs.mjs`; archive and RSS
+  read the catalog, and tests verify its metadata against the Astro article.
 - Every table-of-contents entry must resolve to a unique semantic section.
 - Include alt text and dimensions for figures. Scrolling diagrams and code
   blocks must remain keyboard-focusable.
