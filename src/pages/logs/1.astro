@@ -10,11 +10,13 @@ import "../../styles/logs.css";
 <BaseLayout
   title="LLVM vs. GraalVM — Oreslang engineering log #1"
   description="Alex Mills compares missing Oreslang features, LLVM and GraalVM runtime strengths, true guest-code AOT, optional JIT, and a shared compiler architecture."
->
+
+  article={{ published: "2026-10-08", modified: "2026-10-14", author: "Alex Mills" }}>
   <nav class="log-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/logs/">Logs</a><span aria-hidden="true">/</span><span aria-current="page">#1</span></nav>
   <header class="log-entry-header">
     <p class="kicker">Engineering log / 001</p>
-    <LogPrompt prompt={prompt} />
+    <h1>LLVM vs. GraalVM: one Oreslang, two AOT backends</h1>
+    <LogPrompt prompt={prompt}  headingTag="span" />
     <div class="log-entry-meta"><span>Authored by <strong>Alex Mills</strong></span><span aria-hidden="true">·</span><time datetime="2026-10-08T21:04:00Z">October 8, 2026 · 21:04 UTC</time></div>
     <p class="log-entry-intro">One language, two production AOT backends, and a deliberate choice about what belongs in LLVM versus GraalVM.</p>
   </header>
