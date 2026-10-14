@@ -87,6 +87,21 @@ test("SVG diagrams are standalone, accessible, well nested and have no executabl
   }
 });
 
+test("Oreslang code samples are Astro-safe and diagrams work on narrow screens", () => {
+  const codeBlocks = [...article.matchAll(/<pre><code>([\s\S]*?)<\/code><\/pre>/gu)].map((m) => m[1]);
+  assert.ok(codeBlocks.length >= 3);
+  for (const code of codeBlocks) {
+    assert.doesNotMatch(code, /[{}]/u, "Astro code text must escape brace tokens");
+  }
+  assert.match(article, /pub fnc calculate\(int x\) : int &#123;/u);
+  assert.match(article, /&#125;<\/code><\/pre>/u);
+  assert.equal((article.match(/class="log7-diagram-scroller"/gu) ?? []).length, 3);
+  assert.equal((article.match(/tabindex="0"/gu) ?? []).length >= 3, true);
+  assert.equal((article.match(/View full-size diagram/gu) ?? []).length, 3);
+  assert.match(article, /min-width: 880px;/u);
+  assert.match(article, /overflow-x: auto;/u);
+});
+
 test("Log 007 is discoverable and adjacent articles link correctly", () => {
   assert.match(index, /href="\/logs\/7\/"/u);
   assert.match(index, /Log 007/u);
