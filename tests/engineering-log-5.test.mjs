@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { engineeringLogs } from "../src/data/engineering-logs.mjs";
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const index = read("../src/pages/logs/index.astro");
@@ -9,8 +10,9 @@ const log5 = read("../src/pages/logs/5.astro");
 const body = read("../src/components/Log5Content.astro");
 
 test("log 5 is indexed newest-first and navigable from log 4", () => {
-  assert.ok(index.includes('href="/logs/5/"'));
-  assert.ok(index.indexOf("Log 005") < index.indexOf("Log 004"));
+  assert.ok(index.includes("engineeringLogs.map("));
+  assert.ok(engineeringLogs.some((entry) => entry.number === 5));
+  assert.ok(engineeringLogs.findIndex((entry) => entry.number === 5) < engineeringLogs.findIndex((entry) => entry.number === 4));
   assert.ok(log4.includes('href="/logs/5/"'));
   assert.ok(log5.includes('href="/logs/4/"'));
   assert.ok(log5.includes('href="/logs/"'));
@@ -65,7 +67,7 @@ test("log 5 includes grounding, crawl, and tooling references with no fake deplo
   }
   assert.ok(body.includes("design proposal"));
   assert.ok(body.includes("not an assertion that the services are already available"));
-  assert.ok(index.includes("versioned Oreslang references"));
+  assert.ok(engineeringLogs.find((entry) => entry.number === 5)?.summary.includes("versioned Oreslang references"));
   assert.ok(log5.includes("before code generation"));
 });
 
