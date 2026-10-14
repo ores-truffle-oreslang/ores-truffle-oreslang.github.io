@@ -20,7 +20,7 @@ export const GET: APIRoute = ({ site }) => {
       `      <link>${escapeXml(canonical)}</link>`,
       `      <guid isPermaLink="true">${escapeXml(canonical)}</guid>`,
       `      <description>${escapeXml(entry.summary)}</description>`,
-      `      <pubDate>${rfc822(entry.publishedAt ?? entry.published)}</pubDate>`,
+      `      <pubDate>${rfc822(entry.publishedAt)}</pubDate>`,
       `      <dc:creator>${escapeXml(entry.author)}</dc:creator>`,
       "    </item>",
     ].join("\n");
