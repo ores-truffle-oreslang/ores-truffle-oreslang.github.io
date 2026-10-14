@@ -24,7 +24,7 @@ for index, item in enumerate(items):
     published = parsedate_to_datetime(item.findtext("pubDate"))
     assert published is not None and published.tzinfo is not None
     assert published.astimezone(timezone.utc).year == 2026
-    assert item.findtext("author") == "Alex Mills"
+    assert item.findtext("{http://purl.org/dc/elements/1.1/}creator") == "Alex Mills"
     links.append(expected_url)
 assert len(set(links)) == 7
 
