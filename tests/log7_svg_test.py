@@ -1,6 +1,7 @@
 """Validate that engineering log 007 diagrams are safe, well-formed, standalone SVG."""
 
 from pathlib import Path
+import re
 from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +32,9 @@ for name in IMAGES:
             attr = key.rpartition("}")[2].lower()
             assert not attr.startswith("on"), f"{name}: event handler {attr}"
             assert attr not in {"href", "src"}, f"{name}: external reference {attr}"
-            assert "url(" not in value.lower(), f"{name}: unsupported external paint reference"
+            for reference in re.findall(r"url\(([^)]*)\)", value, flags=re.IGNORECASE):
+                assert re.fullmatch(r"#[A-Za-z_][\w.-]*", reference), (
+                    f"{name}: external or malformed reference {reference}"
+                )
 
     print(f"PASS {name}: valid, accessible, self-contained SVG")
