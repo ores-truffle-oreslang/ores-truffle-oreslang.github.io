@@ -86,7 +86,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
       <section class="log-section" id="incrementality">
         <h2>What “total incremental compilation” should mean</h2>
         <p>The goal is <strong>incremental reuse at every compiler stage</strong>—not the impossible promise that every source edit has zero downstream work. Files, declarations, functions and specialization instances should be independently cached whenever their semantics permit it.</p>
-        <pre><code>source_text(file)
+        <pre tabindex="0"><code>source_text(file)
   → tokens(file)
   → syntax_tree(file)
   → symbols(module)
@@ -104,7 +104,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
       <section class="log-section" id="invalidations">
         <h2>Track exactly what changed, and exactly who depends on it</h2>
         <p>Consider an existing Oreslang function:</p>
-        <pre><code>pub fnc calculate(int x) : int &#123;
+        <pre tabindex="0"><code>pub fnc calculate(int x) : int &#123;
     return x * 2;
 &#125;</code></pre>
         <p>Changing <code>x * 2</code> to <code>x * 3</code> changes the function body, not the public signature. Usually its callers do not need to be type-checked again. But the function must be regenerated, and callers embedding its machine code through inlining might need code regeneration.</p>
@@ -122,7 +122,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
         <h2>Versioned, persistent, content-addressed queries</h2>
         <p>Queries that read mutable external state or use nondeterministic inputs must declare those inputs or bypass caching; otherwise, a red/green dependency graph cannot soundly reuse their results.</p>
         <p>Each query result should record its key, actual dependencies and semantic fingerprint. Store immutable results in a content-addressed cache. Validate inputs using a red/green strategy: if an input changed but a query's result is semantically unchanged, dependent results may remain green.</p>
-        <pre><code>QueryKey = (
+        <pre tabindex="0"><code>QueryKey = (
   operation,
   stable_symbol_id,
   relevant_inputs,
@@ -156,7 +156,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
       <section class="log-section" id="verification">
         <h2>Correctness first: clean builds are the oracle</h2>
         <p>For release verification, every incremental build must be checked against a clean build for the same source, compiler versions, configuration and target. Admission outcomes and observable execution must agree. For artifact formats promising reproducibility, output hashes should agree as well.</p>
-        <pre><code>incremental_compile(source, target)
+        <pre tabindex="0"><code>incremental_compile(source, target)
   ≡ clean_compile(source, target)
 
 Verify:
