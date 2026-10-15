@@ -82,7 +82,9 @@ highlighter submodule before installing dependencies. Use `npm ci` (not
 The PR workflow checks NPM package integrity, the exact submodule gitlink,
 read-only build permissions, high/critical production dependency advisories,
 static page references, all seven engineering logs, and browser behavior on
-Chromium, Firefox and WebKit.
+Chromium, Firefox and WebKit. High/critical advisories are gated for the
+complete dependency tree (not only production packages); moderate advisories
+remain visible in npm's report.
 
 ```sh
 npm ci
