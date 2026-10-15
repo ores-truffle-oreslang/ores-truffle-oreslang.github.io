@@ -27,6 +27,7 @@
 .log-toc a{text-decoration:none}
 .log-toc a:hover,.log-toc a:focus-visible{color:var(--orange)}
 .log-article{max-width:none;min-width:0;font-size:1.015rem}
+.log-article .log-section{min-width:0;max-width:100%}
 .log-article>p:first-child{color:var(--cream);font-size:1.2rem;font-weight:600}
 .log-article p{margin:0 0 21px}
 .log-article ul{padding-left:1.4em;margin:0 0 29px}
@@ -34,7 +35,7 @@
 .log-section{scroll-margin-top:115px;margin-top:66px;padding-top:26px;border-top:1px solid var(--line)}
 .log-section h2{margin:0 0 27px;color:var(--cream);font-size:clamp(1.55rem,3.3vw,2.4rem);line-height:1.16;letter-spacing:-.035em}
 .log-article a{color:var(--orange-soft);text-underline-offset:3px;overflow-wrap:anywhere}
-.log-table-scroll{max-width:100%;overflow-x:auto;margin:30px 0 34px;border:1px solid var(--line);background:var(--surface)}
+.log-table-scroll{width:100%;min-width:0;max-width:100%;overflow-x:auto;contain:layout paint;margin:30px 0 34px;border:1px solid var(--line);background:var(--surface)}
 .log-table-scroll:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 .log-article table{width:100%;min-width:650px;border-collapse:collapse;font-size:.86rem;line-height:1.45}
 .log-article th,.log-article td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
@@ -43,11 +44,11 @@
 .log-article tbody tr:last-child td{border-bottom:0}
 .log-article tbody tr:nth-child(even){background:var(--accent-glow)}
 .log-unspecified{color:var(--muted)}
-.log-article pre{overflow-x:auto;margin:24px 0 31px;padding:21px 24px;border:1px solid var(--line);border-radius:10px;background:var(--code-bg);color:var(--code-text);font: .87rem/1.66 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;tab-size:2}
+.log-article pre{max-width:100%;overflow-x:auto;margin:24px 0 31px;padding:21px 24px;border:1px solid var(--line);border-radius:10px;background:var(--code-bg);color:var(--code-text);font: .87rem/1.66 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;tab-size:2}
 .log-article pre code{padding:0;border:0;background:transparent;color:inherit;font:inherit}
 .log-entry-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;padding:28px 0 70px;border-top:1px solid var(--line)}
 .log-entry-footer a{font-weight:700;color:var(--orange-soft)}
-@media(max-width:900px){.log-entry-layout{grid-template-columns:1fr;gap:30px}.log-toc{position:static;padding:18px 20px;border:1px solid var(--line)}.log-toc ol{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 20px}.log-entry-header{padding:55px 0 45px}}
+@media(max-width:900px){.log-entry-layout{grid-template-columns:minmax(0,1fr);gap:30px}.log-toc{position:static;padding:18px 20px;border:1px solid var(--line)}.log-toc ol{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 20px}.log-entry-header{padding:55px 0 45px}}
 @media(max-width:600px){.log-list-entry>a{grid-template-columns:1fr 30px;gap:10px}.log-entry-number{grid-column:1 / -1}.log-list-entry>p{margin-left:0}.log-toc ol{grid-template-columns:1fr}.log-article table{min-width:620px}.log-entry-meta{gap:7px}}
 
 

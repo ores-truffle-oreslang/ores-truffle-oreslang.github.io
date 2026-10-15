@@ -170,6 +170,8 @@
 }
 .code-editor.code-card .code-lang { margin-left: 0; }
 .code-editor.log-code-editor {
+  min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   margin: 24px 0 31px;
   border: 1px solid var(--ed-border);
@@ -177,6 +179,7 @@
 }
 .code-editor .log-code-toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   padding: 8px 12px;

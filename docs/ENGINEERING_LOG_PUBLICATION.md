@@ -70,3 +70,41 @@ tree identity (including submodule gitlinks) and record the tested PR head,
 source tree SHA, mirror tree SHA and workflow URL. A run on a similar branch,
 a rebuilt patch, or a nonidentical tree is not evidence that the PR passed.
 If an exact mirror cannot be established, report CI as unverified.
+
+## Phase 3: compiler sample provenance and reproducible publishing
+
+All sixteen rendered `<pre>` / highlighted Oreslang sample blocks across the
+seven logs are enumerated in `src/data/engineering-log-examples.json`, with
+source file, ordinal, example type, and verification status. The inventory is a
+**truth-in-labeling mechanism**, not a substitute for compiling examples.
+
+For a future `verified` example, record:
+- Exact snippet bytes, immutable compiler commit, compiler build identity and backend.
+- The versioned command or test fixture that ran the snippet.
+- A passing CI run that checked this exact source, without a mirrored-tree mismatch.
+- Whether the result includes JVM guest interpretation, Native Image runtime
+  compilation, LLVM guest AOT, or actual guest-code AOT. Do not conflate these.
+- A recheck and update of the inventory when the sample changes.
+
+Until that evidence exists, source blocks remain classified as illustrative.
+Marketing-site TypeScript/build/browser checks cannot establish compiler semantics.
+
+## Dependency and performance verification
+
+`npm ci` requires the committed npm v3 lockfile and the matching pinned
+highlighter submodule. PR and Pages workflows pin GitHub Actions by full SHA,
+verify the submodule gitlink, and audit high/critical advisories across both production and development tooling.
+PR CI covers WebKit as well as Chromium/Firefox, tests three viewport sizes,
+and attaches short-lived visual-review screenshots.
+
+`npm run test:lighthouse` collects pinned Lighthouse 13.5.0 performance,
+accessibility, best-practices and SEO scores for three representative pages.
+Treat these as baseline observations, not established SLA gates. Chrome/headless
+runner scores fluctuate with machine resources; promote any threshold only
+after repeated measurements and review.
+
+The Lighthouse CLI is pinned to 13.5.0 (Node.js 22.19+). This replaces an
+older 12.x dependency chain carrying high-severity development advisories.
+Lighthouse major-version scores are not directly comparable; retain the tool
+version with every baseline report. CI uses immutable SHA-pinned Node24-native
+GitHub Actions where available.

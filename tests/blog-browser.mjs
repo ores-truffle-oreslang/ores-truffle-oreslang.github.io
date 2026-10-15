@@ -1,13 +1,17 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chromium, firefox } from "playwright";
+import { chromium, firefox, webkit } from "playwright";
+import { mkdir } from "node:fs/promises";
+import { resolve, join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 
 const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4321"], {
   stdio: "inherit",
-  detached: false,
+  detached: process.platform !== "win32",
 });
 const base = "http://127.0.0.1:4321";
+const screenshotDirectory = resolve("test-artifacts/screenshots");
+await mkdir(screenshotDirectory, { recursive: true });
 async function ready() {
   for (let attempt = 0; attempt < 80; attempt++) {
     if (preview.exitCode !== null) throw new Error("Astro preview exited before listening");
@@ -21,7 +25,7 @@ async function ready() {
 }
 try {
   await ready();
-  for (const [engine, launcher] of [["chromium", chromium], ["firefox", firefox]]) {
+  for (const [engine, launcher] of [["chromium", chromium], ["firefox", firefox], ["webkit", webkit]]) {
     const browser = await launcher.launch({ headless: true });
     try {
       for (const width of [375, 768, 1440]) {
@@ -51,6 +55,38 @@ try {
               const overflow = await page.evaluate(() =>
                 document.documentElement.scrollWidth - window.innerWidth
               );
+              if (overflow > 2) {
+                const offenders = await page.evaluate(() => [...document.querySelectorAll("body *")]
+                  .map((el) => {
+                    const box = el.getBoundingClientRect();
+                    return {
+                      element: el.tagName.toLowerCase(),
+                      className: typeof el.className === "string" ? el.className.slice(0, 100) : "",
+                      x: Math.round(box.x),
+                      right: Math.round(box.right),
+                      width: Math.round(box.width),
+                      scrollWidth: el.scrollWidth,
+                      overflowX: getComputedStyle(el).overflowX,
+                    };
+                  })
+                  .filter((item) => item.right > window.innerWidth + 2 && item.x < window.innerWidth)
+                  .slice(0, 20));
+                console.error("OVERFLOW_DIAGNOSTICS " + label + " " + JSON.stringify(offenders));
+                await page.screenshot({
+                  path: join(screenshotDirectory, "overflow-" + engine + "-" + width + "-log-" + n + ".png"),
+                  fullPage: false,
+                }).catch(() => {});
+              }
+              for (const wrapper of await page.locator(".log-table-scroll").all()) {
+                const bounds = await wrapper.evaluate((el) => ({
+                  width: el.getBoundingClientRect().width,
+                  viewport: innerWidth,
+                  scrollWidth: el.scrollWidth,
+                  overflowX: getComputedStyle(el).overflowX,
+                }));
+                assert.ok(bounds.width <= bounds.viewport + 2, label + " uncontained table wrapper");
+                assert.equal(bounds.overflowX, "auto", label + " table must remain horizontally scrollable");
+              }
               assert.ok(overflow <= 2, label + " horizontal overflow " + overflow);
               await page.locator(".log-prompt-summary").focus();
               await page.keyboard.press("Enter");
@@ -68,6 +104,13 @@ try {
               }
               await page.waitForLoadState("load");
               assert.deepEqual(pageErrors, [], label + " uncaught browser errors");
+              if ((n === 6 || n === 7) && (width === 375 || width === 1440)) {
+                await page.screenshot({
+                  path: join(screenshotDirectory, engine + "-" + width + "-log-" + n + ".png"),
+                  fullPage: false,
+                  animations: "disabled",
+                });
+              }
               console.log("PASS " + label);
             } finally {
               await page.close();
@@ -90,6 +133,18 @@ try {
               assert.equal(await archive.locator(".mobile-navigation").evaluate((el) => el.open), true);
               assert.equal(await archive.locator(".mobile-navigation a[href='/logs/']").count(), 1);
             }
+            await archive.locator('[data-theme-choice="light"]').click();
+            assert.equal(await archive.locator("html").getAttribute("data-theme"), "light");
+            assert.equal(await archive.locator('[data-theme-choice="light"]').getAttribute("aria-pressed"), "true");
+            await archive.locator('[data-theme-choice="dark"]').click();
+            assert.equal(await archive.locator("html").getAttribute("data-theme"), "dark");
+            if (width === 375 || width === 1440) {
+              await archive.screenshot({
+                path: join(screenshotDirectory, engine + "-" + width + "-archive.png"),
+                fullPage: false,
+                animations: "disabled",
+              });
+            }
             console.log("PASS " + engine + " " + width + "px archive");
           } finally {
             await archive.close();
@@ -103,5 +158,13 @@ try {
     }
   }
 } finally {
-  preview.kill("SIGTERM");
+  if (process.platform !== "win32" && preview.pid) {
+    try {
+      process.kill(-preview.pid, "SIGTERM");
+    } catch {
+      preview.kill("SIGTERM");
+    }
+  } else {
+    preview.kill("SIGTERM");
+  }
 }

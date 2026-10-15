@@ -12,17 +12,18 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Checkout exact PR source and syntax highlighter
-        uses: actions/checkout@v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           submodules: recursive
+          persist-credentials: false
 
       - name: Setup Node 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: "22.20.0"
 
       - name: Install site dependencies
-        run: npm install
+        run: npm ci --no-fund
 
       - name: Check marketing site source tests
         run: npm test
@@ -37,7 +38,7 @@ jobs:
         run: npm run test:blogs:build
 
       - name: Install supported headless browsers
-        run: npx playwright install --with-deps chromium firefox
+        run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Verify all seven articles on desktop and mobile in Chromium and Firefox
+      - name: Verify all seven articles on desktop and mobile in Chromium, Firefox and WebKit
         run: npm run test:blogs:browser

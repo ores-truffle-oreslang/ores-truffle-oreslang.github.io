@@ -9,7 +9,7 @@ Requires Node.js 22.20.0 or newer.
 ```bash
 git clone --recurse-submodules https://github.com/ores-truffle-oreslang/ores-truffle-oreslang.github.io.git
 cd ores-truffle-oreslang.github.io
-npm install
+npm ci
 npm run dev
 ```
 
@@ -71,3 +71,38 @@ to a tested highlighter commit and commit that pointer change here.
 `.github/workflows/deploy.yml` checks out submodules, runs the highlighter's own test
 suite, builds Astro, and deploys `dist/` to GitHub Pages.
 `public/.nojekyll` explicitly disables Jekyll processing.
+
+## Reproducible website verification
+
+The source repository commits `package-lock.json` and pins its GitHub Actions
+to immutable commit SHAs. Use Node 22.20.0 and check out the exact pinned syntax
+highlighter submodule before installing dependencies. Use `npm ci` (not
+`npm install`) to build the same dependency tree as CI.
+
+The PR workflow checks NPM package integrity, the exact submodule gitlink,
+read-only build permissions, high/critical production dependency advisories,
+static page references, all seven engineering logs, and browser behavior on
+Chromium, Firefox and WebKit. High/critical advisories are gated for the
+complete dependency tree (not only production packages); moderate advisories
+remain visible in npm's report.
+
+```sh
+npm ci
+npm test
+npm run build
+npm run test:blogs:build
+npm run test:site:build
+npm run test:rss:build
+npx playwright install --with-deps chromium firefox webkit
+npm run test:blogs:browser
+npm run test:lighthouse
+```
+
+Lighthouse reports are **baselines**, not proof that performance targets pass:
+the pinned Lighthouse 13.5.0 runner measures the homepage, archive, and actor-LLM
+article, saves machine-readable JSON, and prints scores. PR CI retains these
+reports and cross-browser visual review captures for seven days. The screenshots
+are for review; no pixel-diff baseline is asserted yet.
+
+See [engineering-log publication standards](docs/ENGINEERING_LOG_PUBLICATION.md)
+and [example evidence inventory](src/data/engineering-log-examples.json).
