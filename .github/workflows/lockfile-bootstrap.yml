@@ -6,6 +6,7 @@ on:
       - hardening/reproducible-ci-browser-evidence-20261014
     paths:
       - .github/workflows/lockfile-bootstrap.yml
+      - package.json
 
 permissions:
   contents: read
