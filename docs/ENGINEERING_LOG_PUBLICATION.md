@@ -97,7 +97,7 @@ verify the submodule gitlink, and audit high/critical production advisories.
 PR CI covers WebKit as well as Chromium/Firefox, tests three viewport sizes,
 and attaches short-lived visual-review screenshots.
 
-`npm run test:lighthouse` collects pinned Lighthouse 12.8.2 performance,
+`npm run test:lighthouse` collects pinned Lighthouse 13.5.0 performance,
 accessibility, best-practices and SEO scores for three representative pages.
 Treat these as baseline observations, not established SLA gates. Chrome/headless
 runner scores fluctuate with machine resources; promote any threshold only
