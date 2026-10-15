@@ -55,6 +55,8 @@ test("deployment uses least privilege; CI has read-only repository access", () =
   assert.match(validation, /test:lighthouse/u);
   assert.match(validation, /chromium firefox webkit/u);
   assert.match(deploy, /npm audit --omit=dev --audit-level=high/u);
+  assert.match(deploy, /npm audit --audit-level=high/u);
   assert.match(validation, /npm audit --omit=dev --audit-level=high/u);
+  assert.match(validation, /npm audit --audit-level=high/u);
   assert.ok(!existsSync(join(process.cwd(), ".github/workflows/lockfile-bootstrap.yml")), "Bootstrap must not be shipped");
 });
