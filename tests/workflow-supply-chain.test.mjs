@@ -20,7 +20,7 @@ test("locked dependency graph includes the exact toolchain for blog CI", () => {
   for (const [name, version] of Object.entries({
     astro: "7.3.6",
     playwright: "1.56.1",
-    lighthouse: "12.8.2",
+    lighthouse: "13.5.0",
   })) {
     assert.equal(lock.packages["node_modules/" + name].version, version);
   }
