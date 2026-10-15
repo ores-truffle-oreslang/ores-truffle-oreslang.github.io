@@ -1,0 +1,36 @@
+name: Bootstrap reproducible npm lockfile
+
+on:
+  push:
+    branches:
+      - hardening/reproducible-ci-browser-evidence-20261014
+    paths:
+      - .github/workflows/lockfile-bootstrap.yml
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22.20.0"
+      - name: Generate lockfile from pinned submodule and declared dependencies
+        run: |
+          set -euo pipefail
+          test -f vendor/html-js-css-syntax-highlighter/package.json
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          node -e 'const p=require("./package-lock.json"); if(p.lockfileVersion!==3) process.exit(1); console.log("LOCK_VALID packages="+Object.keys(p.packages).length)'
+      - name: Emit reproducible public lockfile for connector import
+        run: |
+          set -euo pipefail
+          echo LOCKFILE_BEGIN
+          sed 's/^/LOCKFILE_LINE:/' package-lock.json
+          echo LOCKFILE_END
