@@ -55,6 +55,28 @@ try {
               const overflow = await page.evaluate(() =>
                 document.documentElement.scrollWidth - window.innerWidth
               );
+              if (overflow > 2) {
+                const offenders = await page.evaluate(() => [...document.querySelectorAll("body *")]
+                  .map((el) => {
+                    const box = el.getBoundingClientRect();
+                    return {
+                      element: el.tagName.toLowerCase(),
+                      className: typeof el.className === "string" ? el.className.slice(0, 100) : "",
+                      x: Math.round(box.x),
+                      right: Math.round(box.right),
+                      width: Math.round(box.width),
+                      scrollWidth: el.scrollWidth,
+                      overflowX: getComputedStyle(el).overflowX,
+                    };
+                  })
+                  .filter((item) => item.right > window.innerWidth + 2 && item.x < window.innerWidth)
+                  .slice(0, 20));
+                console.error("OVERFLOW_DIAGNOSTICS " + label + " " + JSON.stringify(offenders));
+                await page.screenshot({
+                  path: join(screenshotDirectory, "overflow-" + engine + "-" + width + "-log-" + n + ".png"),
+                  fullPage: false,
+                }).catch(() => {});
+              }
               assert.ok(overflow <= 2, label + " horizontal overflow " + overflow);
               await page.locator(".log-prompt-summary").focus();
               await page.keyboard.press("Enter");
