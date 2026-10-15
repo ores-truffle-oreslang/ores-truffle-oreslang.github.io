@@ -11,7 +11,7 @@ const routes = [
   { name: "archive", path: "/logs/" },
   { name: "actor-llm", path: "/logs/6/" },
 ];
-const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4322", "--strictPort"], {
+const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4322"], {
   stdio: "inherit",
 });
 
