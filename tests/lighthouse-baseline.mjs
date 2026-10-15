@@ -53,7 +53,7 @@ await mkdir(outputDirectory, { recursive: true });
 const summary = {
   generatedAt: new Date().toISOString(),
   commit: process.env.GITHUB_SHA ?? "local",
-  lighthouseVersion: "12.8.2",
+  lighthouseVersion: "13.5.0",
   chromePath: chromium.executablePath(),
   results: [],
 };
