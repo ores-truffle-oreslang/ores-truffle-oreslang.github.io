@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chromium, firefox } from "playwright";
+import { chromium, firefox, webkit } from "playwright";
+import { mkdir } from "node:fs/promises";
+import { resolve, join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 
 const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4321"], {
@@ -8,6 +10,8 @@ const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--
   detached: false,
 });
 const base = "http://127.0.0.1:4321";
+const screenshotDirectory = resolve("test-artifacts/screenshots");
+await mkdir(screenshotDirectory, { recursive: true });
 async function ready() {
   for (let attempt = 0; attempt < 80; attempt++) {
     if (preview.exitCode !== null) throw new Error("Astro preview exited before listening");
@@ -21,7 +25,7 @@ async function ready() {
 }
 try {
   await ready();
-  for (const [engine, launcher] of [["chromium", chromium], ["firefox", firefox]]) {
+  for (const [engine, launcher] of [["chromium", chromium], ["firefox", firefox], ["webkit", webkit]]) {
     const browser = await launcher.launch({ headless: true });
     try {
       for (const width of [375, 768, 1440]) {
@@ -68,6 +72,13 @@ try {
               }
               await page.waitForLoadState("load");
               assert.deepEqual(pageErrors, [], label + " uncaught browser errors");
+              if ((n === 6 || n === 7) && (width === 375 || width === 1440)) {
+                await page.screenshot({
+                  path: join(screenshotDirectory, engine + "-" + width + "-log-" + n + ".png"),
+                  fullPage: false,
+                  animations: "disabled",
+                });
+              }
               console.log("PASS " + label);
             } finally {
               await page.close();
@@ -89,6 +100,18 @@ try {
               await archive.locator(".mobile-navigation summary").click();
               assert.equal(await archive.locator(".mobile-navigation").evaluate((el) => el.open), true);
               assert.equal(await archive.locator(".mobile-navigation a[href='/logs/']").count(), 1);
+            }
+            await archive.locator('[data-theme-choice="light"]').click();
+            assert.equal(await archive.locator("html").getAttribute("data-theme"), "light");
+            assert.equal(await archive.locator('[data-theme-choice="light"]').getAttribute("aria-pressed"), "true");
+            await archive.locator('[data-theme-choice="dark"]').click();
+            assert.equal(await archive.locator("html").getAttribute("data-theme"), "dark");
+            if (width === 375 || width === 1440) {
+              await archive.screenshot({
+                path: join(screenshotDirectory, engine + "-" + width + "-archive.png"),
+                fullPage: false,
+                animations: "disabled",
+              });
             }
             console.log("PASS " + engine + " " + width + "px archive");
           } finally {
