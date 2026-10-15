@@ -97,7 +97,7 @@ npm run test:lighthouse
 ```
 
 Lighthouse reports are **baselines**, not proof that performance targets pass:
-the pinned Lighthouse 12.8.2 runner measures the homepage, archive, and actor-LLM
+the pinned Lighthouse 13.5.0 runner measures the homepage, archive, and actor-LLM
 article, saves machine-readable JSON, and prints scores. PR CI retains these
 reports and cross-browser visual review captures for seven days. The screenshots
 are for review; no pixel-diff baseline is asserted yet.
