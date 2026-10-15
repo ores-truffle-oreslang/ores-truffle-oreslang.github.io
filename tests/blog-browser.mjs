@@ -7,7 +7,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4321"], {
   stdio: "inherit",
-  detached: false,
+  detached: process.platform !== "win32",
 });
 const base = "http://127.0.0.1:4321";
 const screenshotDirectory = resolve("test-artifacts/screenshots");
@@ -126,5 +126,13 @@ try {
     }
   }
 } finally {
-  preview.kill("SIGTERM");
+  if (process.platform !== "win32" && preview.pid) {
+    try {
+      process.kill(-preview.pid, "SIGTERM");
+    } catch {
+      preview.kill("SIGTERM");
+    }
+  } else {
+    preview.kill("SIGTERM");
+  }
 }
