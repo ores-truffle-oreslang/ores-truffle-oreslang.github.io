@@ -62,7 +62,7 @@ test("compiler candidate's published bytes match the private test's SHA-256 fixt
   assert.equal(entry.compilerVerified, false, "Compiler run has not been established yet");
   assert.deepEqual(entry.verifiedBackends, []);
   const html = read(entry.source);
-  const raw = html.match(/<pre tabindex="0"><code>(pub fnc calculate[\\s\\S]*?)<\\/code><\\/pre>/u)?.[1];
+  const raw = html.match(/<pre tabindex="0"><code>(pub fnc calculate[\s\S]*?)<\/code><\/pre>/u)?.[1];
   assert.ok(raw, "Log 007 function snippet missing");
   const decoded = raw.replaceAll("&#123;", "{").replaceAll("&#125;", "}")
     .replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&");
