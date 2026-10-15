@@ -35,7 +35,7 @@
 .log-section{scroll-margin-top:115px;margin-top:66px;padding-top:26px;border-top:1px solid var(--line)}
 .log-section h2{margin:0 0 27px;color:var(--cream);font-size:clamp(1.55rem,3.3vw,2.4rem);line-height:1.16;letter-spacing:-.035em}
 .log-article a{color:var(--orange-soft);text-underline-offset:3px;overflow-wrap:anywhere}
-.log-table-scroll{max-width:100%;overflow-x:auto;margin:30px 0 34px;border:1px solid var(--line);background:var(--surface)}
+.log-table-scroll{width:100%;min-width:0;max-width:100%;overflow-x:auto;contain:layout paint;margin:30px 0 34px;border:1px solid var(--line);background:var(--surface)}
 .log-table-scroll:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 .log-article table{width:100%;min-width:650px;border-collapse:collapse;font-size:.86rem;line-height:1.45}
 .log-article th,.log-article td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
