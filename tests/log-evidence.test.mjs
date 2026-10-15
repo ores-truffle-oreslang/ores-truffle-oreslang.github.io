@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 
 const root = process.cwd();
 const read = (file) => readFileSync(join(root, file), "utf8");
@@ -9,7 +10,7 @@ const inventory = JSON.parse(read("src/data/engineering-log-examples.json"));
 const entries = inventory.examples;
 
 test("every rendered or highlighted blog sample is accounted for in an evidence inventory", () => {
-  assert.equal(inventory.schemaVersion, 1);
+  assert.equal(inventory.schemaVersion, 2);
   assert.equal(entries.length, 16);
   assert.equal(new Set(entries.map((x) => x.id)).size, entries.length);
   for (let log = 1; log <= 7; log++) {
@@ -25,6 +26,14 @@ test("every rendered or highlighted blog sample is accounted for in an evidence 
       assert.ok(entry.kind && entry.note.length >= 20);
       assert.ok(["illustrative", "experimental", "verified"].includes(entry.status));
       assert.equal(typeof entry.compilerVerified, "boolean");
+      assert.ok(["proposed-source", "source-requires-imports", "intentionally-invalid-source",
+        "style-illustration", "candidate-source", "non-compiler-artifact"]
+        .includes(entry.validationClass));
+      assert.ok(Array.isArray(entry.verifiedBackends));
+      if (entry.validationClass === "non-compiler-artifact" ||
+          entry.validationClass === "intentionally-invalid-source") {
+        assert.equal(entry.compilerVerified, false, "Non-executable/invalid snippet cannot be certified");
+      }
       if (entry.status === "verified" || entry.compilerVerified) {
         assert.equal(entry.status, "verified");
         assert.ok(/^[0-9a-f]{40}$/u.test(entry.compilerCommit ?? ""), "No pinned compiler commit");
@@ -45,4 +54,19 @@ test("production blog prose must not imply unchecked examples were compiler-veri
   assert.match(llvm, /proposed syntax, not implemented Oreslang/u);
   const actor = read("src/pages/logs/6.astro");
   assert.match(actor, /They do not calculate derivatives/u);
+});
+
+test("compiler candidate's published bytes match the private test's SHA-256 fixture", () => {
+  const entry = entries.find((item) => item.id === "log-007-sample-02");
+  assert.equal(entry.validationClass, "candidate-source");
+  assert.equal(entry.compilerVerified, false, "Compiler run has not been established yet");
+  assert.deepEqual(entry.verifiedBackends, []);
+  const html = read(entry.source);
+  const raw = html.match(/<pre tabindex="0"><code>(pub fnc calculate[\\s\\S]*?)<\\/code><\\/pre>/u)?.[1];
+  assert.ok(raw, "Log 007 function snippet missing");
+  const decoded = raw.replaceAll("&#123;", "{").replaceAll("&#125;", "}")
+    .replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&");
+  const digest = createHash("sha256").update(decoded, "utf8").digest("hex");
+  assert.equal(digest, entry.publishedSourceSha256,
+    "Published snippet drifted from pinned compiler evidence candidate");
 });
