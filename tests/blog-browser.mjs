@@ -17,13 +17,16 @@ const screenshotDirectory = resolve("test-artifacts/screenshots");
 const approvedVisuals = JSON.parse(readFileSync(new URL("./visual-baselines.json", import.meta.url), "utf8"));
 const compared = [];
 async function checkVisual(page, name, screenshot) {
-  const signature = await normalizedPixels(page, screenshot);
+  // Decode every engine's PNG with the same Chromium canvas implementation.
+  const signature = await normalizedPixels(signaturePage, screenshot);
   const result = compareVisual(name, screenshot, signature, approvedVisuals.images[name]);
   compared.push(name);
   console.log("VISUAL_PASS " + name + " " + JSON.stringify(result));
 }
 
 await mkdir(screenshotDirectory, { recursive: true });
+const signatureBrowser = await chromium.launch({ headless: true });
+const signaturePage = await signatureBrowser.newPage({ viewport: { width: 1440, height: 900 } });
 async function ready() {
   for (let attempt = 0; attempt < 80; attempt++) {
     if (preview.exitCode !== null) throw new Error("Astro preview exited before listening");
@@ -178,6 +181,8 @@ try {
   assert.deepEqual([...compared].sort(), Object.keys(approvedVisuals.images).sort(),
     "Every approved visual baseline must be checked exactly once");
 } finally {
+  await signaturePage.close();
+  await signatureBrowser.close();
   if (process.platform !== "win32" && preview.pid) {
     try {
       process.kill(-preview.pid, "SIGTERM");
