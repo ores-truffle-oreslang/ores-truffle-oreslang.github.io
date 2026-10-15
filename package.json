@@ -12,7 +12,8 @@
     "test:blogs:build": "node --test tests/blog-build.mjs",
     "test:blogs:browser": "node tests/blog-browser.mjs",
     "test:site:build": "node --test tests/site-build.mjs",
-    "test:rss:build": "python3 tests/rss_xml_test.py"
+    "test:rss:build": "python3 tests/rss_xml_test.py",
+    "test:lighthouse": "node tests/lighthouse-baseline.mjs"
   },
   "dependencies": {
     "@ores-truffle-oreslang/html-js-css-syntax-highlighter": "file:vendor/html-js-css-syntax-highlighter",
@@ -22,6 +23,7 @@
     "@astrojs/check": "^0.9.4",
     "typescript": "^5.9.3",
     "@axe-core/playwright": "4.10.2",
-    "playwright": "1.56.1"
+    "playwright": "1.56.1",
+    "lighthouse": "12.8.2"
   }
 }
