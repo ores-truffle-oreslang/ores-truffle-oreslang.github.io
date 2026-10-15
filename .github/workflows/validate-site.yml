@@ -9,6 +9,10 @@ on:
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/validate-site.yml"
+      - ".github/workflows/deploy.yml"
+      - ".github/workflows/blog-quality.yml"
+      - ".gitmodules"
+      - "docs/**"
 
 permissions:
   contents: read
@@ -20,22 +24,40 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout site and pinned submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
+          persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22.20.0"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci --no-fund
+
+      - name: Verify pinned highlighter submodule identity
+        run: |
+          set -euo pipefail
+          test -f vendor/html-js-css-syntax-highlighter/package.json
+          expected="$(git ls-tree HEAD vendor/html-js-css-syntax-highlighter | awk '{print $3}')"
+          actual="$(git -C vendor/html-js-css-syntax-highlighter rev-parse HEAD)"
+          test -n "$expected" && test "$expected" = "$actual"
+          git submodule status --recursive | tee /tmp/oreslang-submodules.txt
+          if grep -Eq '^[+\-U]' /tmp/oreslang-submodules.txt; then
+            echo "Unexpected submodule checkout status"
+            exit 1
+          fi
 
       - name: Test theme switching and responsive styles
         run: npm test
+
+      - name: Audit production dependency advisories (high or critical)
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Check and build static HTML
         run: npm run build
@@ -53,16 +75,28 @@ jobs:
         run: python3 tests/log7_svg_test.py
 
       - name: Cache Playwright browser binaries
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-1.56.1
+          key: playwright-${{ runner.os }}-1.56.1-chromium-firefox-webkit
 
       - name: Install browser runtimes
-        run: npx playwright install --with-deps chromium firefox
+        run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Test responsive layout, keyboard access and WCAG in Chromium and Firefox
+      - name: Test responsive layout, keyboard access and WCAG in Chromium, Firefox and WebKit
         run: npm run test:blogs:browser
+
+      - name: Collect pinned Lighthouse baselines without score gates
+        run: npm run test:lighthouse
+
+      - name: Upload Lighthouse baseline artifacts
+        if: always()
+        uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4
+        with:
+          name: lighthouse-baseline
+          path: test-artifacts/lighthouse/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Verify first engineering log in generated output
         run: |
