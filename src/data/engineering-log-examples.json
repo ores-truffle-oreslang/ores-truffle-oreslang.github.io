@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedFor": "2026-10-14 marketing source snapshot",
-  "policy": "No snippet may be labeled compiler-verified without immutable source, compiler identity and a passing run.",
+  "policy": "Every rendered code/diagram block is inventoried. Only standalone Oreslang source can become compiler-verified; attach exact source digest and backend-specific execution evidence first.",
   "examples": [
     {
       "id": "log-001-sample-01",
@@ -13,7 +13,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "proposed actor real-time annotation; not currently implemented"
+      "note": "proposed actor real-time annotation; not currently implemented",
+      "validationClass": "proposed-source",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-001-sample-02",
@@ -25,7 +28,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "proposed compiler configuration; not shipping schema"
+      "note": "proposed compiler configuration; not shipping schema",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-002-sample-01",
@@ -37,7 +43,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "proposed source header admission contract"
+      "note": "proposed source header admission contract",
+      "validationClass": "source-requires-imports",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-002-sample-02",
@@ -49,7 +58,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "deliberately invalid browser-to-server import illustration"
+      "note": "deliberately invalid browser-to-server import illustration",
+      "validationClass": "intentionally-invalid-source",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-002-sample-03",
@@ -61,7 +73,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "future target/capability compiler configuration"
+      "note": "future target/capability compiler configuration",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-004-sample-01",
@@ -73,7 +88,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "naming and formatting illustration; compiler/formatter revision not pinned"
+      "note": "naming and formatting illustration; compiler/formatter revision not pinned",
+      "validationClass": "style-illustration",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-004-sample-02",
@@ -85,7 +103,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "formatter command usage; not compiled Oreslang code"
+      "note": "formatter command usage; not compiled Oreslang code",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-005-sample-01",
@@ -97,7 +118,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "proposed language-reference directory layout"
+      "note": "proposed language-reference directory layout",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-005-sample-02",
@@ -109,7 +133,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "proposed coding-agent instruction template"
+      "note": "proposed coding-agent instruction template",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-006-sample-01",
@@ -121,7 +148,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "actor-managed Transformer topology diagram"
+      "note": "actor-managed Transformer topology diagram",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-006-sample-02",
@@ -133,7 +163,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "expert router architecture diagram"
+      "note": "expert router architecture diagram",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-006-sample-03",
@@ -145,7 +178,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "typed forward/backward message routing diagram; not autodiff"
+      "note": "typed forward/backward message routing diagram; not autodiff",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-007-sample-01",
@@ -157,7 +193,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "proposed compiler query pipeline"
+      "note": "proposed compiler query pipeline",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-007-sample-02",
@@ -169,7 +208,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "sample function used to illustrate incremental invalidation"
+      "note": "sample function used to illustrate incremental invalidation",
+      "validationClass": "candidate-source",
+      "publishedSourceSha256": "26d17ee717f453a1c6d08d53a14e05b262cfe3cbc98c919b0c907f3dea5fe175",
+      "verifiedBackends": []
     },
     {
       "id": "log-007-sample-03",
@@ -181,7 +223,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "conceptual semantic cache-key tuple"
+      "note": "conceptual semantic cache-key tuple",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     },
     {
       "id": "log-007-sample-04",
@@ -193,7 +238,10 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "incremental-versus-clean parity testing plan"
+      "note": "incremental-versus-clean parity testing plan",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     }
   ]
 }

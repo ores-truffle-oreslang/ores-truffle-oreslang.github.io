@@ -4,6 +4,9 @@ import { chromium, firefox, webkit } from "playwright";
 import { mkdir } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
+import { readFileSync } from "node:fs";
+import { engineeringLogs } from "../src/data/engineering-logs.mjs";
+import { normalizedPixels, compareVisual } from "./visual-signatures.mjs";
 
 const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4321"], {
   stdio: "inherit",
@@ -11,7 +14,19 @@ const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--
 });
 const base = "http://127.0.0.1:4321";
 const screenshotDirectory = resolve("test-artifacts/screenshots");
+const approvedVisuals = JSON.parse(readFileSync(new URL("./visual-baselines.json", import.meta.url), "utf8"));
+const compared = [];
+async function checkVisual(page, name, screenshot) {
+  // Decode every engine's PNG with the same Chromium canvas implementation.
+  const signature = await normalizedPixels(signaturePage, screenshot);
+  const result = compareVisual(name, screenshot, signature, approvedVisuals.images[name]);
+  compared.push(name);
+  console.log("VISUAL_PASS " + name + " " + JSON.stringify(result));
+}
+
 await mkdir(screenshotDirectory, { recursive: true });
+const signatureBrowser = await chromium.launch({ headless: true });
+const signaturePage = await signatureBrowser.newPage({ viewport: { width: 1440, height: 900 } });
 async function ready() {
   for (let attempt = 0; attempt < 80; attempt++) {
     if (preview.exitCode !== null) throw new Error("Astro preview exited before listening");
@@ -45,6 +60,8 @@ try {
               });
               assert.equal(response.status(), 200, label + " response");
               assert.equal(await page.locator(".log-entry-header h1").count(), 1, label + " h1");
+              assert.equal((await page.locator(".log-entry-header h1").innerText()).trim(),
+                engineeringLogs.find((item) => item.number === n).title, label + " changed headline");
               const ids = await page.locator(".log-toc a").evaluateAll((nodes) =>
                 nodes.map((node) => node.getAttribute("href").slice(1))
               );
@@ -105,11 +122,13 @@ try {
               await page.waitForLoadState("load");
               assert.deepEqual(pageErrors, [], label + " uncaught browser errors");
               if ((n === 6 || n === 7) && (width === 375 || width === 1440)) {
-                await page.screenshot({
-                  path: join(screenshotDirectory, engine + "-" + width + "-log-" + n + ".png"),
+                const name = engine + "-" + width + "-log-" + n + ".png";
+                const screenshot = await page.screenshot({
+                  path: join(screenshotDirectory, name),
                   fullPage: false,
                   animations: "disabled",
                 });
+                await checkVisual(page, name, screenshot);
               }
               console.log("PASS " + label);
             } finally {
@@ -139,11 +158,13 @@ try {
             await archive.locator('[data-theme-choice="dark"]').click();
             assert.equal(await archive.locator("html").getAttribute("data-theme"), "dark");
             if (width === 375 || width === 1440) {
-              await archive.screenshot({
-                path: join(screenshotDirectory, engine + "-" + width + "-archive.png"),
+              const name = engine + "-" + width + "-archive.png";
+              const screenshot = await archive.screenshot({
+                path: join(screenshotDirectory, name),
                 fullPage: false,
                 animations: "disabled",
               });
+              await checkVisual(archive, name, screenshot);
             }
             console.log("PASS " + engine + " " + width + "px archive");
           } finally {
@@ -157,7 +178,11 @@ try {
       await browser.close();
     }
   }
+  assert.deepEqual([...compared].sort(), Object.keys(approvedVisuals.images).sort(),
+    "Every approved visual baseline must be checked exactly once");
 } finally {
+  await signaturePage.close();
+  await signatureBrowser.close();
   if (process.platform !== "win32" && preview.pid) {
     try {
       process.kill(-preview.pid, "SIGTERM");

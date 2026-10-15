@@ -42,18 +42,18 @@ From the repository root, with Node.js 22.20.0 and the pinned syntax-highlighter
 submodule:
 
 ```sh
-npm install
+npm ci
 npm test
 python3 tests/log7_svg_test.py
 npm run build
 npm run test:blogs:build
-npx playwright install --with-deps chromium firefox
+npx playwright install --with-deps chromium firefox webkit
 npm run test:blogs:browser
 ```
 
 The rendered-output gate validates all seven published routes, their sitemap
 entries, article metadata/JSON-LD, local assets and table-of-contents anchors.
-The browser gate loads each log in Chromium and Firefox at 375, 768, and 1440px,
+The browser gate loads each log in Chromium, Firefox and WebKit at 375, 768, and 1440px,
 checks keyboard-operated disclosures and horizontal overflow, and runs axe-core
 WCAG serious/critical checks on mobile Chromium.
 
@@ -108,3 +108,12 @@ older 12.x dependency chain carrying high-severity development advisories.
 Lighthouse major-version scores are not directly comparable; retain the tool
 version with every baseline report. CI uses immutable SHA-pinned Node24-native
 GitHub Actions where available.
+
+## Reviewed visual evidence and source identity
+
+The site now checks approved screenshots against 18 tolerance-based visual
+signatures (three engines × two widths × three routes), seeded from a verified
+CI run. It also verifies the precise source digest of the only standalone
+Oreslang compiler candidate in the engineering logs. See
+[compiler evidence and visual baseline rules](ENGINEERING_LOG_EVIDENCE_AND_VISUALS.md)
+for reproducibility, limitations, and how to review any baseline refresh.
