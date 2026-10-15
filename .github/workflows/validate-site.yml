@@ -27,13 +27,13 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout site and pinned submodules
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           submodules: recursive
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: "22.20.0"
 
@@ -59,6 +59,9 @@ jobs:
       - name: Audit production dependency advisories (high or critical)
         run: npm audit --omit=dev --audit-level=high
 
+      - name: Audit all dependencies, including CI development tooling (high or critical)
+        run: npm audit --audit-level=high
+
       - name: Check and build static HTML
         run: npm run build
 
@@ -75,7 +78,7 @@ jobs:
         run: python3 tests/log7_svg_test.py
 
       - name: Cache Playwright browser binaries
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-1.56.1-chromium-firefox-webkit
@@ -88,7 +91,7 @@ jobs:
 
       - name: Upload cross-browser visual review captures
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: browser-visual-review
           path: test-artifacts/screenshots/
@@ -100,7 +103,7 @@ jobs:
 
       - name: Upload Lighthouse baseline artifacts
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: lighthouse-baseline
           path: test-artifacts/lighthouse/
