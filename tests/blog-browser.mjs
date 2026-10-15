@@ -1,22 +1,38 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { createServer } from "node:net";
 import { chromium, firefox, webkit } from "playwright";
 import { mkdir } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { engineeringLogs } from "../src/data/engineering-logs.mjs";
-import { normalizedPixels, compareVisual } from "./visual-signatures.mjs";
+import { normalizedPixels, compareVisual, checkScreenshotPng } from "./visual-signatures.mjs";
 
-const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4321"], {
+// Never silently attach to a stale preview process already listening on 4321.
+async function unusedLoopbackPort() {
+  return new Promise((resolvePort, rejectPort) => {
+    const server = createServer();
+    server.once("error", rejectPort);
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      server.close((error) => error ? rejectPort(error) : resolvePort(address.port));
+    });
+  });
+}
+const port = await unusedLoopbackPort();
+const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", String(port)], {
   stdio: "inherit",
   detached: process.platform !== "win32",
 });
-const base = "http://127.0.0.1:4321";
+const base = "http://127.0.0.1:" + port;
 const screenshotDirectory = resolve("test-artifacts/screenshots");
 const approvedVisuals = JSON.parse(readFileSync(new URL("./visual-baselines.json", import.meta.url), "utf8"));
 const compared = [];
-async function checkVisual(page, name, screenshot) {
+async function checkVisual(name, screenshot) {
+  const expectedWidth = Number(name.split("-")[1]);
+  assert.ok([375, 1440].includes(expectedWidth), "Unexpected visual viewport " + name);
+  checkScreenshotPng(name, screenshot, expectedWidth, 900);
   // Decode every engine's PNG with the same Chromium canvas implementation.
   const signature = await normalizedPixels(signaturePage, screenshot);
   const result = compareVisual(name, screenshot, signature, approvedVisuals.images[name]);
@@ -25,8 +41,7 @@ async function checkVisual(page, name, screenshot) {
 }
 
 await mkdir(screenshotDirectory, { recursive: true });
-const signatureBrowser = await chromium.launch({ headless: true });
-const signaturePage = await signatureBrowser.newPage({ viewport: { width: 1440, height: 900 } });
+let signatureBrowser, signaturePage;
 async function ready() {
   for (let attempt = 0; attempt < 80; attempt++) {
     if (preview.exitCode !== null) throw new Error("Astro preview exited before listening");
@@ -39,6 +54,8 @@ async function ready() {
   throw new Error("Astro preview did not start");
 }
 try {
+  signatureBrowser = await chromium.launch({ headless: true });
+  signaturePage = await signatureBrowser.newPage({ viewport: { width: 1440, height: 900 } });
   await ready();
   for (const [engine, launcher] of [["chromium", chromium], ["firefox", firefox], ["webkit", webkit]]) {
     const browser = await launcher.launch({ headless: true });
@@ -120,6 +137,7 @@ try {
                 })), [], label + " accessibility");
               }
               await page.waitForLoadState("load");
+              await page.evaluate(async () => { if (document.fonts) await document.fonts.ready; });
               assert.deepEqual(pageErrors, [], label + " uncaught browser errors");
               if ((n === 6 || n === 7) && (width === 375 || width === 1440)) {
                 const name = engine + "-" + width + "-log-" + n + ".png";
@@ -128,7 +146,7 @@ try {
                   fullPage: false,
                   animations: "disabled",
                 });
-                await checkVisual(page, name, screenshot);
+                await checkVisual(name, screenshot);
               }
               console.log("PASS " + label);
             } finally {
@@ -157,6 +175,7 @@ try {
             assert.equal(await archive.locator('[data-theme-choice="light"]').getAttribute("aria-pressed"), "true");
             await archive.locator('[data-theme-choice="dark"]').click();
             assert.equal(await archive.locator("html").getAttribute("data-theme"), "dark");
+            await archive.evaluate(async () => { if (document.fonts) await document.fonts.ready; });
             if (width === 375 || width === 1440) {
               const name = engine + "-" + width + "-archive.png";
               const screenshot = await archive.screenshot({
@@ -164,7 +183,7 @@ try {
                 fullPage: false,
                 animations: "disabled",
               });
-              await checkVisual(archive, name, screenshot);
+              await checkVisual(name, screenshot);
             }
             console.log("PASS " + engine + " " + width + "px archive");
           } finally {
@@ -181,8 +200,8 @@ try {
   assert.deepEqual([...compared].sort(), Object.keys(approvedVisuals.images).sort(),
     "Every approved visual baseline must be checked exactly once");
 } finally {
-  await signaturePage.close();
-  await signatureBrowser.close();
+  if (signaturePage) await signaturePage.close().catch(() => {});
+  if (signatureBrowser) await signatureBrowser.close().catch(() => {});
   if (process.platform !== "win32" && preview.pid) {
     try {
       process.kill(-preview.pid, "SIGTERM");
