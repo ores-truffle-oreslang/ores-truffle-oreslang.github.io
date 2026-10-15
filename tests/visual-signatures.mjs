@@ -7,6 +7,26 @@ export const HEIGHT = 24;
 const COMPONENTS = 3;
 export const BYTE_COUNT = WIDTH * HEIGHT * COMPONENTS;
 
+const PNG_MAGIC = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+const MAX_VISUAL_BYTES = 4 * 1024 * 1024;
+const MAX_SIGNATURE_BYTES = 10 * 1024;
+
+/** Reject corrupt, wrong-sized or unexpectedly huge artifacts before comparison. */
+export function checkScreenshotPng(name, screenshot, expectedWidth, expectedHeight = 900) {
+  assert.ok(Buffer.isBuffer(screenshot), name + " must be a PNG Buffer");
+  assert.ok(screenshot.length >= 33 && screenshot.length <= MAX_VISUAL_BYTES,
+    name + " invalid or excessive PNG byte length " + screenshot.length);
+  assert.ok(screenshot.subarray(0, PNG_MAGIC.length).equals(PNG_MAGIC),
+    name + " invalid PNG magic bytes");
+  assert.equal(screenshot.toString("ascii", 12, 16), "IHDR", name + " missing PNG IHDR");
+  assert.equal(screenshot.readUInt32BE(16), expectedWidth, name + " screenshot width");
+  assert.equal(screenshot.readUInt32BE(20), expectedHeight, name + " screenshot height");
+  // Only canonical 8-bit PNG color representations are accepted.
+  assert.equal(screenshot[24], 8, name + " unexpected PNG color bit depth");
+  assert.ok([2, 6].includes(screenshot[25]), name + " unsupported PNG color type");
+}
+
+
 export async function normalizedPixels(page, screenshot) {
   // Decode actual Playwright PNGs through a pinned browser; no optional native
   // image libraries or system-specific screenshot converter are required.
@@ -45,11 +65,21 @@ export function makeBaseline(imageBytes, pixels) {
 export function compareVisual(name, imageBytes, pixels, entry) {
   assert.ok(entry, "No approved visual baseline for " + name);
   assert.match(entry.pngSha256, /^[a-f0-9]{64}$/u);
-  const actualHash = createHash("sha256").update(imageBytes).digest("hex");
-  if (actualHash === entry.pngSha256) return { exact: true, mean: 0, changed: 0 };
-
-  const original = inflateSync(Buffer.from(entry.sampleZlibBase64, "base64"));
+  assert.ok(Buffer.isBuffer(pixels) && pixels.length === BYTE_COUNT,
+    name + " incomplete normalized pixel buffer");
+  assert.ok(typeof entry.sampleZlibBase64 === "string" &&
+    entry.sampleZlibBase64.length > 0 && entry.sampleZlibBase64.length <= MAX_SIGNATURE_BYTES,
+    name + " invalid visual baseline signature");
+  const original = inflateSync(Buffer.from(entry.sampleZlibBase64, "base64"), {
+    maxOutputLength: BYTE_COUNT,
+  });
   assert.equal(original.length, BYTE_COUNT, "Corrupt baseline for " + name);
+  const actualHash = createHash("sha256").update(imageBytes).digest("hex");
+  if (actualHash === entry.pngSha256) {
+    // Do not allow an inconsistent baseline to bypass the semantic pixel check.
+    assert.ok(pixels.equals(original), name + " screenshot digest matches but visual signature differs");
+    return { exact: true, mean: 0, changed: 0 };
+  }
   let total = 0, changedCells = 0, largest = 0;
   for (let i = 0; i < BYTE_COUNT; i += COMPONENTS) {
     const cell = (
