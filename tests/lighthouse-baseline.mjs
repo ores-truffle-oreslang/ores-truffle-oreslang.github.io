@@ -11,7 +11,7 @@ const routes = [
   { name: "archive", path: "/logs/" },
   { name: "actor-llm", path: "/logs/6/" },
 ];
-const preview = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4322"], {
+const preview = spawn("python3", ["-m", "http.server", "4322", "--bind", "127.0.0.1", "--directory", "dist"], {
   stdio: "inherit",
 });
 
@@ -20,14 +20,14 @@ function closePreview() {
 }
 async function ready() {
   for (let attempt = 0; attempt < 100; attempt++) {
-    if (preview.exitCode !== null) throw new Error("Astro preview exited before Lighthouse");
+    if (preview.exitCode !== null) throw new Error("Static server exited before Lighthouse");
     try {
       const response = await fetch(base + "/");
       if (response.ok) return;
     } catch {}
     await new Promise((done) => setTimeout(done, 200));
   }
-  throw new Error("Astro preview did not start for Lighthouse");
+  throw new Error("Static server did not start for Lighthouse");
 }
 async function runLighthouse(url, report) {
   const binary = resolve("node_modules/lighthouse/cli/index.js");
