@@ -102,7 +102,8 @@ Lighthouse reports are **baselines**, not proof that performance targets pass:
 the pinned Lighthouse 13.5.0 runner measures the homepage, archive, and actor-LLM
 article, saves machine-readable JSON, and prints scores. PR CI retains these
 reports and cross-browser visual review captures for seven days. The screenshots
-are for review; no pixel-diff baseline is asserted yet.
+are also checked against 18 reviewed, tolerance-based pixel signatures.
 
 See [engineering-log publication standards](docs/ENGINEERING_LOG_PUBLICATION.md)
-and [example evidence inventory](src/data/engineering-log-examples.json).
+and [example evidence inventory](src/data/engineering-log-examples.json), and
+[compiler/visual verification policy](docs/ENGINEERING_LOG_EVIDENCE_AND_VISUALS.md).
