@@ -77,6 +77,16 @@ try {
                   fullPage: false,
                 }).catch(() => {});
               }
+              for (const wrapper of await page.locator(".log-table-scroll").all()) {
+                const bounds = await wrapper.evaluate((el) => ({
+                  width: el.getBoundingClientRect().width,
+                  viewport: innerWidth,
+                  scrollWidth: el.scrollWidth,
+                  overflowX: getComputedStyle(el).overflowX,
+                }));
+                assert.ok(bounds.width <= bounds.viewport + 2, label + " uncontained table wrapper");
+                assert.equal(bounds.overflowX, "auto", label + " table must remain horizontally scrollable");
+              }
               assert.ok(overflow <= 2, label + " horizontal overflow " + overflow);
               await page.locator(".log-prompt-summary").focus();
               await page.keyboard.press("Enter");
