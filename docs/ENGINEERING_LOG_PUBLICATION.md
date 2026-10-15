@@ -93,7 +93,7 @@ Marketing-site TypeScript/build/browser checks cannot establish compiler semanti
 
 `npm ci` requires the committed npm v3 lockfile and the matching pinned
 highlighter submodule. PR and Pages workflows pin GitHub Actions by full SHA,
-verify the submodule gitlink, and audit high/critical production advisories.
+verify the submodule gitlink, and audit high/critical advisories across both production and development tooling.
 PR CI covers WebKit as well as Chromium/Firefox, tests three viewport sizes,
 and attaches short-lived visual-review screenshots.
 
@@ -102,3 +102,9 @@ accessibility, best-practices and SEO scores for three representative pages.
 Treat these as baseline observations, not established SLA gates. Chrome/headless
 runner scores fluctuate with machine resources; promote any threshold only
 after repeated measurements and review.
+
+The Lighthouse CLI is pinned to 13.5.0 (Node.js 22.19+). This replaces an
+older 12.x dependency chain carrying high-severity development advisories.
+Lighthouse major-version scores are not directly comparable; retain the tool
+version with every baseline report. CI uses immutable SHA-pinned Node24-native
+GitHub Actions where available.
