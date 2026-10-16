@@ -7,7 +7,7 @@ import { resolve, join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { engineeringLogs } from "../src/data/engineering-logs.mjs";
-import { normalizedPixels, compareVisual, checkScreenshotPng, makeBaseline } from "./visual-signatures.mjs";
+import { normalizedPixels, compareVisual, checkScreenshotPng } from "./visual-signatures.mjs";
 
 // Never silently attach to a stale preview process already listening on 4321.
 async function unusedLoopbackPort() {
@@ -29,26 +29,15 @@ const base = "http://127.0.0.1:" + port;
 const screenshotDirectory = resolve("test-artifacts/screenshots");
 const approvedVisuals = JSON.parse(readFileSync(new URL("./visual-baselines.json", import.meta.url), "utf8"));
 const compared = [];
-const visualMismatches = [];
 async function checkVisual(name, screenshot) {
   const expectedWidth = Number(name.split("-")[1]);
   assert.ok([375, 1440].includes(expectedWidth), "Unexpected visual viewport " + name);
   checkScreenshotPng(name, screenshot, expectedWidth, 900);
   // Decode every engine's PNG with the same Chromium canvas implementation.
   const signature = await normalizedPixels(signaturePage, screenshot);
-  // Capture the exact browser-decoded signature of every tested screenshot.
-  // Candidate data is for review only; failures still fail this CI run.
-  console.log("VISUAL_BASELINE_CANDIDATE " + JSON.stringify({
-    name, ...makeBaseline(screenshot, signature),
-  }));
+  const result = compareVisual(name, screenshot, signature, approvedVisuals.images[name]);
   compared.push(name);
-  try {
-    const result = compareVisual(name, screenshot, signature, approvedVisuals.images[name]);
-    console.log("VISUAL_PASS " + name + " " + JSON.stringify(result));
-  } catch (error) {
-    visualMismatches.push({ name, message: String(error.message ?? error) });
-    console.error("VISUAL_MISMATCH " + name + " " + String(error.message ?? error));
-  }
+  console.log("VISUAL_PASS " + name + " " + JSON.stringify(result));
 }
 
 await mkdir(screenshotDirectory, { recursive: true });
@@ -210,7 +199,6 @@ try {
   }
   assert.deepEqual([...compared].sort(), Object.keys(approvedVisuals.images).sort(),
     "Every approved visual baseline must be checked exactly once");
-  assert.deepEqual(visualMismatches, [], "Visual regressions must be reviewed before baseline changes");
 } finally {
   if (signaturePage) await signaturePage.close().catch(() => {});
   if (signatureBrowser) await signatureBrowser.close().catch(() => {});
