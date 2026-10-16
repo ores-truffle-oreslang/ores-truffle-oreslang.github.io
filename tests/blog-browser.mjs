@@ -84,7 +84,7 @@ try {
             page.on("pageerror", (error) => pageErrors.push(error.message));
             try {
               const response = await page.goto(base + "/logs/" + n + "/", {
-                waitUntil: "domcontentloaded",
+                waitUntil: "load",
               });
               assert.equal(response.status(), 200, label + " response");
               assert.equal(await page.locator(".log-entry-header h1").count(), 1, label + " h1");
