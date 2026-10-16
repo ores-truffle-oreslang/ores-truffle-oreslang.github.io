@@ -35,8 +35,8 @@ const manifest = {
   description: "Reviewed real browser PNGs; normalized 32x24 RGB for bounded CI comparisons",
   source: {
     repository: "ores-truffle-oreslang/ores-truffle-oreslang.github.io",
-    workflowRun: 38661442077,
-    artifactId: 11938553812,
+    workflowRun: 38948068851,
+    artifactId: 12067237575,
     gitCommit: "b4067c6a97258e6177fa397442c9607729020748",
   },
   environment: {
