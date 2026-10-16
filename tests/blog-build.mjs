@@ -7,7 +7,7 @@ const root = process.cwd();
 const dist = join(root, "dist");
 const site = "https://ores-truffle-oreslang.github.io";
 const read = (p) => readFileSync(join(dist, p), "utf8");
-const pagePaths = Array.from({ length: 7 }, (_, i) => "logs/" + (i + 1) + "/index.html");
+const pagePaths = Array.from({ length: 8 }, (_, i) => "logs/" + (i + 1) + "/index.html");
 const pages = pagePaths.map(read);
 const archive = read("logs/index.html");
 const sitemap = read("sitemap.xml");
@@ -26,13 +26,13 @@ function localOutput(pathname) {
   return clean.endsWith("/") || extname(p) === "" ? join(p, "index.html") : p;
 }
 
-test("archive, sitemap, and canonical origin agree on all seven routes", () => {
+test("archive, sitemap, and canonical origin agree on all eight routes", () => {
   const hrefs = [...archive.matchAll(/href="\/logs\/(\d+)\/"/gu)].map((m) => Number(m[1]));
-  assert.deepEqual(hrefs.slice(0, 7), [7, 6, 5, 4, 3, 2, 1]);
-  for (let n = 1; n <= 7; n++) {
+  assert.deepEqual(hrefs.slice(0, 8), [8, 7, 6, 5, 4, 3, 2, 1]);
+  for (let n = 1; n <= 8; n++) {
     assert.ok(sitemap.includes("<loc>" + site + "/logs/" + n + "/</loc>"));
   }
-  assert.equal(new Set(hrefs).size, 7);
+  assert.equal(new Set(hrefs).size, 8);
 });
 
 for (const [i, html] of pages.entries()) {
@@ -95,7 +95,7 @@ for (const [i, html] of pages.entries()) {
   });
 }
 
-test("all seven pages are non-empty and static build contains the three log 7 diagrams", () => {
+test("all eight pages are non-empty and static build contains the three log 7 diagrams", () => {
   for (const path of pagePaths) assert.ok(read(path).length > 1200, "Unexpectedly empty " + path);
   for (const name of ["compiler-architecture", "incremental-invalidation", "wasm-profiles"]) {
     assert.ok(existsSync(join(dist, "logs/7/" + name + ".svg")), "Missing diagram " + name);
