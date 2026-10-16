@@ -22,12 +22,13 @@
       <span class="memory-profile-kicker">JVM / GraalVM · Managed + native</span>
       <strong class="memory-profile-goal">Minimal GC</strong>
     </div>
-    <h4>Actor-owned FFM arenas, plus managed GC where needed.</h4>
+    <h4>One actor-local arena per actor, plus managed GC where needed.</h4>
     <p>
-      Java's Foreign Function &amp; Memory API supports native arenas with
-      deterministic close. Oreslang's actor-local memory slices and FFM
-      prototypes aim to reduce heap churn, alongside escape analysis,
-      allocation elimination and actor-local reuse.
+      Shared, private/isolated and untrusted actors all get a default local
+      allocation arena. Java's Foreign Function &amp; Memory API supports native
+      arenas with deterministic close, letting suitable actor payloads use cheap
+      local allocation, bulk reclamation and actor-local reuse. Explicit shared
+      regions remain a separate capability rather than becoming the actor heap.
     </p>
     <p class="memory-profile-foot">Per-actor arenas are not separate JVM GC heaps: Java wrappers, actor mailboxes and Truffle objects still participate in the enclosing VM/isolate collector. Fewer allocations may reduce pressure, not guarantee zero pauses.</p>
   </article>
