@@ -40,5 +40,5 @@ jobs:
       - name: Install supported headless browsers
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Verify all seven articles on desktop and mobile in Chromium, Firefox and WebKit
+      - name: Verify all eight articles on desktop and mobile in Chromium, Firefox and WebKit
         run: npm run test:blogs:browser

@@ -66,14 +66,14 @@ try {
           reducedMotion: "reduce",
         });
         try {
-          for (let n = 1; n <= 7; n++) {
+          for (let n = 1; n <= 8; n++) {
             const page = await context.newPage();
             const label = engine + " " + width + "px log " + n;
             const pageErrors = [];
             page.on("pageerror", (error) => pageErrors.push(error.message));
             try {
               const response = await page.goto(base + "/logs/" + n + "/", {
-                waitUntil: "domcontentloaded",
+                waitUntil: "load",
               });
               assert.equal(response.status(), 200, label + " response");
               assert.equal(await page.locator(".log-entry-header h1").count(), 1, label + " h1");
@@ -157,8 +157,8 @@ try {
           try {
             const response = await archive.goto(base + "/logs/", { waitUntil: "load" });
             assert.equal(response.status(), 200, engine + " archive status");
-            assert.equal(await archive.locator(".log-list-entry").count(), 7);
-            assert.equal(await archive.locator(".log-list-entry a").first().getAttribute("href"), "/logs/7/");
+            assert.equal(await archive.locator(".log-list-entry").count(), 8);
+            assert.equal(await archive.locator(".log-list-entry a").first().getAttribute("href"), "/logs/8/");
             assert.equal(await archive.locator(".log-list-entry a").last().getAttribute("href"), "/logs/1/");
             assert.equal(await archive.locator(".log-feed-link a").getAttribute("href"), "/rss.xml");
             const overflow = await archive.evaluate(() =>

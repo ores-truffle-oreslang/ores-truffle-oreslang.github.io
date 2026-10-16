@@ -242,6 +242,36 @@
       "validationClass": "non-compiler-artifact",
       "publishedSourceSha256": null,
       "verifiedBackends": []
+    },
+    {
+      "id": "log-008-sample-01",
+      "log": 8,
+      "source": "src/pages/logs/8.astro",
+      "ordinal": 1,
+      "kind": "architecture-diagram",
+      "status": "illustrative",
+      "compilerVerified": false,
+      "compilerCommit": null,
+      "verificationRun": null,
+      "note": "conceptual lambda-like request compared to stateless actor message/reply; not executable source",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
+    },
+    {
+      "id": "log-008-sample-02",
+      "log": 8,
+      "source": "src/pages/logs/8.astro",
+      "ordinal": 2,
+      "kind": "architecture-diagram",
+      "status": "illustrative",
+      "compilerVerified": false,
+      "compilerCommit": null,
+      "verificationRun": null,
+      "note": "conceptual retained application state and actor lifetime; not executable source",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
     }
   ]
 }

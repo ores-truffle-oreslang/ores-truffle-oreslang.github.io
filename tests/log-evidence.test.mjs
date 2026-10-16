@@ -11,9 +11,9 @@ const entries = inventory.examples;
 
 test("every rendered or highlighted blog sample is accounted for in an evidence inventory", () => {
   assert.equal(inventory.schemaVersion, 2);
-  assert.equal(entries.length, 16);
+  assert.equal(entries.length, 18);
   assert.equal(new Set(entries.map((x) => x.id)).size, entries.length);
-  for (let log = 1; log <= 7; log++) {
+  for (let log = 1; log <= 8; log++) {
     const matching = entries.filter((x) => x.log === log);
     const source = log <= 5
       ? "src/components/Log" + log + "Content.astro"

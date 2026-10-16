@@ -25,7 +25,7 @@
     <h4>One actor-local arena per actor, plus managed GC where needed.</h4>
     <p>
       Shared, private/isolated and untrusted actors all get a default local
-      allocation arena. Java's Foreign Function &amp; Memory API supports native
+      allocation arena. Java's Foreign Function &amp; Memory (FFM) API supports native
       arenas with deterministic close, letting suitable actor payloads use cheap
       local allocation, bulk reclamation and actor-local reuse. Explicit shared
       regions remain a separate capability rather than becoming the actor heap.

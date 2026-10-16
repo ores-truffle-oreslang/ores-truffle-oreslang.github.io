@@ -8,22 +8,22 @@ import { engineeringLogs } from "../src/data/engineering-logs.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFileSync(join(root, path), "utf8");
 const index = read("src/pages/logs/index.astro");
-const pages = Array.from({ length: 7 }, (_, i) => read(`src/pages/logs/${i + 1}.astro`));
-const contents = Array.from({ length: 7 }, (_, i) =>
+const pages = Array.from({ length: 8 }, (_, i) => read(`src/pages/logs/${i + 1}.astro`));
+const contents = Array.from({ length: 8 }, (_, i) =>
   i < 5 ? read(`src/components/Log${i + 1}Content.astro`) : ""
 );
 const prompts = read("src/components/LogPrompt.astro");
 const archiveEntries = engineeringLogs.map((entry) => [null, String(entry.number), entry.title]);
 const normalize = (value) => value.replace(/\s+/gu, " ").trim().toLowerCase();
 
-test("archive lists each of the seven log articles once, newest first", () => {
-  assert.deepEqual(archiveEntries.map((m) => Number(m[1])), [7, 6, 5, 4, 3, 2, 1]);
-  assert.equal(new Set(archiveEntries.map((m) => m[1])).size, 7);
+test("archive lists each of the eight log articles once, newest first", () => {
+  assert.deepEqual(archiveEntries.map((m) => Number(m[1])), [8, 7, 6, 5, 4, 3, 2, 1]);
+  assert.equal(new Set(archiveEntries.map((m) => m[1])).size, 8);
   assert.match(index, /engineeringLogs\.map\(/u);
   assert.match(index, /src\/data\/engineering-logs|\.\.\/\.\.\/data\/engineering-logs/u);
 });
 
-for (let n = 1; n <= 7; n++) {
+for (let n = 1; n <= 8; n++) {
   test(`Log ${String(n).padStart(3, "0")} has one meaningful h1, metadata and an accessible prompt`, () => {
     const source = pages[n - 1];
     const headings = [...source.matchAll(/<h1\b[^>]*>([^<]+)<\/h1>/gu)];
@@ -55,7 +55,7 @@ for (let n = 1; n <= 7; n++) {
     assert.ok(footer, "Missing article footer");
     assert.match(footer, /href="\/logs\/"/u);
     if (n > 1) assert.ok(footer.includes(`href="/logs/${n - 1}/"`), "Missing previous article");
-    if (n < 7) assert.ok(footer.includes(`href="/logs/${n + 1}/"`), "Missing next article");
+    if (n < 8) assert.ok(footer.includes(`href="/logs/${n + 1}/"`), "Missing next article");
   });
 }
 
@@ -73,7 +73,7 @@ test("canonical domain, robots and sitemap remain consistent", () => {
 
 test("catalog dates, titles and author never drift from article metadata", () => {
   assert.equal(engineeringLogs.length, pages.length);
-  assert.deepEqual(engineeringLogs.map((entry) => entry.number), [7, 6, 5, 4, 3, 2, 1]);
+  assert.deepEqual(engineeringLogs.map((entry) => entry.number), [8, 7, 6, 5, 4, 3, 2, 1]);
   for (const entry of engineeringLogs) {
     const source = pages[entry.number - 1];
     const match = source.match(/article=\{\{\s*published: "([^"]+)",\s*modified: "([^"]+)",\s*author: "([^"]+)"/u);
