@@ -107,7 +107,7 @@ test("Log 007 is discoverable and adjacent articles link correctly", () => {
   assert.match(index, /engineeringLogs\.map\(/u);
   assert.ok(engineeringLogs.some((entry) => entry.number === 7));
   assert.equal(engineeringLogs[0].number, 8);
-  assert.match(article, /href="\\/logs\\/8\\/"/u);
+  assert.match(article, /href="\/logs\/8\/"/u);
   assert.match(previous, /href="\/logs\/7\/"/u);
   assert.match(article, /href="\/logs\/6\/"/u);
   assert.match(article, /href="\/logs\/"/u);
