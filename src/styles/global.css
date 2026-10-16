@@ -890,3 +890,91 @@ footer a {
     flex-direction: column;
   }
 }
+
+
+/* OresVM actor-local arena architecture */
+.actor-arena-map {
+  display: grid;
+  gap: 12px;
+  margin: 28px 0 34px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+}
+
+.actor-arena-map > div,
+.actor-arena-map article {
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.arena-map-root,
+.arena-map-shared,
+.arena-map-code,
+.arena-map-backend {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 16px;
+}
+
+.actor-arena-map strong {
+  color: var(--cream);
+}
+
+.actor-arena-map span,
+.actor-arena-map small {
+  color: var(--paper);
+}
+
+.arena-map-actors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.arena-map-actors article {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.arena-map-actors article > span {
+  color: var(--orange);
+  font: 800 .68rem/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: .12em;
+}
+
+.arena-map-actors article > strong {
+  font-size: 1rem;
+}
+
+.arena-map-actors article > small {
+  line-height: 1.45;
+}
+
+.arena-map-shared {
+  border-color: var(--accent-border) !important;
+}
+
+.arena-map-backend {
+  border-top: 2px solid var(--orange) !important;
+}
+
+@media (max-width: 820px) {
+  .arena-map-actors {
+    grid-template-columns: 1fr;
+  }
+
+  .arena-map-root,
+  .arena-map-shared,
+  .arena-map-code,
+  .arena-map-backend {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}

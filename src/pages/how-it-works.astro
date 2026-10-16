@@ -28,6 +28,34 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
       </ol>
       <p>The current Java <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/src/main/java/dev/oreslang/runtime/OresVM.java">OresVM implementation</a> prestarts its control workers before admitting root tasks. Actor dispatcher workers are runtime-owned, not threads created directly by guest programs. An actor has one mailbox and at most one active turn.</p>
 
+      <h3>Arena-per-actor is the memory invariant</h3>
+      <p>
+        <strong>Shared does not mean shared heap.</strong> Every actor kind gets an actor-local
+        allocation arena: shared, private/isolated, untrusted, and dedicated hungry actors.
+        The arena is the actor's default allocation and accounting domain. Shared actors differ
+        because policy may additionally grant access to explicit frozen/shared regions; ordinary
+        mutable actor allocations still stay in that actor's arena.
+      </p>
+      <div class="actor-arena-map" aria-label="OresVM actor-local arena architecture">
+        <div class="arena-map-root"><strong>OresVM</strong><span>scheduler · code generations · quotas</span></div>
+        <div class="arena-map-actors">
+          <article><span>SHARED ACTOR</span><strong>actor-local arena</strong><small>fast local allocation · local accounting</small></article>
+          <article><span>ISOLATED ACTOR</span><strong>actor-local arena</strong><small>confinement · stronger placement boundary</small></article>
+          <article><span>UNTRUSTED ACTOR</span><strong>actor-local arena</strong><small>confinement · capability gates</small></article>
+        </div>
+        <div class="arena-map-shared"><strong>explicit shared / frozen regions</strong><span>separate from actor-local heaps · policy-gated · leased/bounded</span></div>
+        <div class="arena-map-code"><strong>immutable code images</strong><span>shared code, isolated mutable state</span></div>
+        <div class="arena-map-backend"><strong>Graal / Truffle · Native Image · LLVM</strong><span>AOT · JIT · hybrid</span></div>
+      </div>
+      <p>
+        This layout is intended to make allocation cheap and reclamation local. Scratch allocations
+        can be bulk-reset at safe actor-turn or task boundaries; persistent actor state can live in a
+        longer-lived arena and be reclaimed when the actor retires. On managed JVM/Graal paths, moving
+        suitable payloads out of the Java heap can reduce allocation rate and tracing pressure, but the
+        surrounding Java/Truffle objects still share the enclosing collector unless the actor also gets
+        a separate physical isolate/process.
+      </p>
+
       <h2>AOT, JIT and hybrid: the same semantics</h2>
       <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Compilation modes comparison">
         <table class="tech-table">
@@ -46,11 +74,13 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
       <h2 id="memory-management">Actor-owned arenas and GC boundaries</h2>
       <p>
         <strong>The language contract stays the same; the memory strategy does not.</strong>
-        Both LLVM and GraalVM can use native arenas with deterministic lifetime
-        management. LLVM targets no tracing collector on verified native paths.
-        JVM/GraalVM adds actor-owned native FFM arenas and reduces managed allocation
-        while retaining a garbage collector for Java objects. Neither goal follows
-        automatically from compiler selection.
+        Every actor kind owns a default actor-local arena, including shared actors.
+        Shared memory is an additional explicit region, not the actor's default heap.
+        LLVM can use native arenas with deterministic lifetime management and targets
+        no tracing collector on verified native paths. JVM/GraalVM can use actor-owned
+        native FFM arenas to reduce allocation and tracing pressure while retaining a
+        collector for Java/Truffle objects. Neither goal follows automatically from
+        compiler selection.
       </p>
       <MemoryProfiles />
       <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Backend memory strategy comparison">
@@ -80,7 +110,7 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
           <thead><tr><th scope="col">Deployment / memory domain</th><th scope="col">Actor-owned storage</th><th scope="col">Physical tracing-GC boundary</th></tr></thead>
           <tbody>
             <tr><th scope="row">LLVM native actor</th><td>One bounded native arena/heap per actor is the target, reclaimed on safe retirement.</td><td>No tracing GC for proven native regions; native source actor lowering is still draft.</td></tr>
-            <tr><th scope="row">Shared / private actor on host JVM or Native Image</th><td>Logical actor-local ownership and quotas; off-heap FFM arenas in draft runtime paths.</td><td>Java wrappers, state and mailboxes share the host heap/collector.</td></tr>
+            <tr><th scope="row">Shared / private actor on host JVM or Native Image</th><td>One logical actor-local arena per actor is the target, including shared actors; shared/frozen regions are separate explicit capabilities. Off-heap FFM arenas are present in draft runtime paths.</td><td>Java wrappers, state and mailboxes still share the host heap/collector unless moved behind a stronger physical isolate.</td></tr>
             <tr><th scope="row">Pooled untrusted Graal isolate</th><td>Many actors retain separate logical arenas within one proposed sandboxed Engine.</td><td>One isolate-level heap/GC shared by those guest actors; isolated from the host's GC, not from each other.</td></tr>
             <tr><th scope="row">One Graal isolate per untrusted actor (optional)</th><td>A separate Engine and physical heap for each actor, if the isolate image is available.</td><td>Independent GC domains are possible, at a greater memory/startup/scheduling cost. This is a separate draft design, not the selected pooled default.</td></tr>
           </tbody>
@@ -136,7 +166,7 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
         <table class="tech-table">
           <thead><tr><th scope="col">Kind</th><th scope="col">Scheduling and data</th><th scope="col">Boundary and state</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Shared</th><td>Multiplexed shared-actor dispatcher; actor-owned mutable fields; explicitly synchronized sharing where policy grants it.</td><td>Mailbox serialization exists; no automatic OS memory boundary.</td></tr>
+            <tr><th scope="row">Shared</th><td>Multiplexed shared-actor dispatcher plus a default actor-local arena; explicit shared/frozen regions are separate opt-in capabilities.</td><td>Mutable actor state remains actor-owned. Sharing does not merge heaps; there is no automatic OS memory boundary.</td></tr>
             <tr><th scope="row">Isolated / private</th><td>Separate private dispatcher, copy/sendability checks and actor-identity memory accounting.</td><td>JVM memory slices are logical ownership boundaries, not independent GC heaps. Strong physical isolation needs a different backend.</td></tr>
             <tr><th scope="row">Untrusted</th><td>Restricted capabilities, quotas, validated messages and fail-closed admission.</td><td>Arbitrary hostile execution requires a dedicated revocable sandbox; the source-worker/full isolation path is still in progress.</td></tr>
             <tr><th scope="row">Hungry</th><td>Dedicated JNI-attached pthread carrier instead of ordinary multiplexing, bounded inbox and serial turns.</td><td>Expensive host/runtime primitive; not by itself CPU exclusivity, OS security isolation or guaranteed hard realtime.</td></tr>
