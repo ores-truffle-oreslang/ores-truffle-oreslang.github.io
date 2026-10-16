@@ -10,8 +10,8 @@ const inventory = JSON.parse(readFileSync(new URL("./visual-baselines.json", imp
 test("visual baselines are pinned to one reviewed exact-source workflow artifact", () => {
   assert.equal(inventory.version, 1);
   assert.equal(inventory.source.repository, "ores-truffle-oreslang/ores-truffle-oreslang.github.io");
-  assert.equal(inventory.source.workflowRun, 38661442077);
-  assert.equal(inventory.source.artifactId, 11938553812);
+  assert.equal(inventory.source.workflowRun, 38948068851);
+  assert.equal(inventory.source.artifactId, 12067237575);
   assert.match(inventory.source.gitCommit, /^[0-9a-f]{40}$/u);
   assert.deepEqual(inventory.environment.snapshot, { width: 32, height: 24, viewportHeight: 900 });
   assert.equal(inventory.environment.playwright, "1.56.1");
