@@ -12,10 +12,10 @@ assert channel is not None
 assert channel.findtext("title") == "Oreslang engineering logs"
 assert channel.findtext("link") == "https://ores-truffle-oreslang.github.io/logs/"
 items = channel.findall("item")
-assert len(items) == 7, f"Expected seven articles, found {len(items)}"
+assert len(items) == 8, f"Expected eight articles, found {len(items)}"
 links = []
 for index, item in enumerate(items):
-    number = 7 - index
+    number = 8 - index
     expected_url = f"https://ores-truffle-oreslang.github.io/logs/{number}/"
     assert item.findtext("link") == expected_url
     assert item.findtext("guid") == expected_url
@@ -26,11 +26,11 @@ for index, item in enumerate(items):
     assert published.astimezone(timezone.utc).year == 2026
     assert item.findtext("{http://purl.org/dc/elements/1.1/}creator") == "Alex Mills"
     links.append(expected_url)
-assert len(set(links)) == 7
+assert len(set(links)) == 8
 
 sitemap = ElementTree.parse(dist / "sitemap.xml").getroot()
 ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 locations = {node.text for node in sitemap.findall(".//s:loc", ns)}
 assert set(links).issubset(locations), "Some feed entries are missing from sitemap"
 assert "https://ores-truffle-oreslang.github.io/logs/" in locations
-print("PASS RSS: seven XML-valid, dated, unique articles with matching sitemap URLs")
+print("PASS RSS: eight XML-valid, dated, unique articles with matching sitemap URLs")
