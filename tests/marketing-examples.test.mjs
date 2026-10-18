@@ -11,7 +11,10 @@ const detail = read("../src/pages/examples.astro");
 test("home and examples import the same immutable code snippets", () => {
   for (const [page, text] of [["index", home], ["examples", detail]]) {
     assert.match(text, /import \{ languageMotionExamples as motion \} from "\.\.\/data\/language-motion-examples\.mjs"/);
-    assert.match(text, /const \{ pipelineCode, mlCode, httpCode, selectCode \} = motion;/);
+    const imports = page === "index"
+      ? /const \{ pipelineCode, mlCode, httpCode, selectCode \} = motion;/
+      : /const \{ pipelineCode, mlCode, httpCode, httpStreamingCode, selectCode \} = motion;/;
+    assert.match(text, imports);
     for (const name of ["pipelineCode", "mlCode", "httpCode", "selectCode"]) {
       assert.ok(text.includes("code={" + name + "}"), page + " missing " + name);
       assert.doesNotMatch(text, new RegExp("const " + name + " = `"));
@@ -45,13 +48,31 @@ test("ML example presents forward activations and reverse gradient flow without 
   assert.doesNotMatch(code, /zero.copy|production.ready|verified backend/i);
 });
 
-test("HTTP design uses VM-owned unary transport and exactly one returned reply", () => {
+test("HTTP design returns one Fetch-style response object with status and headers", () => {
   const code = motion.httpCode;
   assert.match(code, /define unary http actor HelloHttp as/);
-  assert.match(code, /run\(HttpMessage request\): string\s*\{/);
-  assert.match(code, /return "hello from Oreslang";/);
-  assert.doesNotMatch(code, /extends HttpActor|on_request\(|spawn HelloHttp\(|\.get_response\(|\.write\(/);
+  assert.match(code, /run\(HttpMessage request\): HttpResponse\s*\{/);
+  assert.match(code, /return new HttpResponse\("hello from Oreslang", \{/);
+  assert.match(code, /status: 200/);
+  assert.match(code, /"Content-Type": "text\/plain; charset=utf-8"/);
+  assert.doesNotMatch(code, /extends HttpActor|on_request\(|spawn HelloHttp\(|\.get_response\(|\.write\(|\.pipe\(/);
   assert.match(code, /VM-owned HTTP binding/);
+  assert.match(code, /not yet compiler-verified/);
+});
+
+test("HTTP stream design transfers one body stream and explicitly declares trailers", () => {
+  const code = motion.httpStreamingCode;
+  assert.match(code, /run\(HttpMessage request\): HttpResponse/);
+  assert.match(code, /const \(body, digestReady\) = checksumDownload\(\);/);
+  assert.match(code, /return new HttpResponse\(body, \{/);
+  assert.match(code, /trailerNames: \["Content-Digest"\]/);
+  assert.match(code, /trailers: digestReady/);
+  assert.match(code, /Future<HttpHeaders>/);
+  assert.match(code, /backpressure/);
+  assert.doesNotMatch(code, /\.pipe\(|\.stream\s*=|\.body\s*=|self\.end\(/);
+  assert.match(detail, /code=\{httpStreamingCode\}/);
+  assert.doesNotMatch(home, /code=\{httpStreamingCode\}/);
+  assert.match(detail, /not part of the WHATWG/);
   assert.match(code, /not yet compiler-verified/);
 });
 
