@@ -9,9 +9,9 @@ const philosophy = read("../src/pages/philosophy.astro");
 const css = read("../src/styles/technical.css");
 
 test("historical progress themes are complete, stable and shared", () => {
-  assert.equal(languageProgress.length, 11);
-  assert.equal(new Set(languageProgress.map((t) => t.id)).size, 11);
-  assert.equal(new Set(languageProgress.map((t) => t.label)).size, 11);
+  assert.equal(languageProgress.length, 12);
+  assert.equal(new Set(languageProgress.map((t) => t.id)).size, 12);
+  assert.equal(new Set(languageProgress.map((t) => t.label)).size, 12);
   for (const theme of languageProgress) {
     assert.match(theme.id, /^[a-z][a-z0-9-]*$/u);
     for (const field of ["label", "shift", "response", "forward"]) {
