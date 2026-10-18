@@ -1,0 +1,131 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { comparisons } from "../data/comparisons.mjs";
+import "../styles/comparisons.css";
+---
+
+<BaseLayout
+  title="Compare Oreslang with Erlang, Rust, Go and more"
+  description="Explore Oreslang's actor-first, ownership-aware design compared with ten established languages. Distinguishes design goals from verified capabilities."
+>
+  <section class="page-hero comparisons-hero">
+    <p class="kicker">Comparisons / language design</p>
+    <h1>Oreslang vs. the languages you already know.</h1>
+    <p>Keep the best ideas from Erlang and Rust. Add lightweight Tasks, typed actors, supervision, ownership and multiple compilation targets to one language design.</p>
+    <p class="comparison-disclaimer">
+      <strong>Design comparison, not a benchmark.</strong> These are Oreslang goals, not proof of shipping feature parity or performance wins.
+      The <a href="/language/">public feature matrix</a> currently marks backend support as unverified.
+    </p>
+  </section>
+
+  <section class="page-body comparisons-body" aria-label="Language comparisons">
+    <div class="comparison-toolbar">
+      <div>
+        <label for="language-picker">Compare Oreslang with</label>
+        <p>Choose a language to see the tradeoffs and where the designs differ.</p>
+      </div>
+      <select id="language-picker" name="language" aria-controls="comparison-content">
+        {comparisons.map((comparison) => (
+          <option value={comparison.id}>{comparison.name}</option>
+        ))}
+      </select>
+    </div>
+
+    <div id="comparison-content" class="comparison-content">
+      {comparisons.map((comparison, index) => (
+        <article
+          class="comparison-panel"
+          data-comparison={comparison.id}
+          id={`compare-${comparison.id}`}
+          aria-labelledby={`compare-title-${comparison.id}`}
+          hidden={index !== 0}
+        >
+          <div class="comparison-intro">
+            <p class="eyebrow">Oreslang / {comparison.name}</p>
+            <h2 id={`compare-title-${comparison.id}`}>Oreslang vs. {comparison.name}</h2>
+            <p class="comparison-headline">{comparison.headline}</p>
+          </div>
+
+          <div class="comparison-strength">
+            <h3>What {comparison.name} gets right</h3>
+            <p>{comparison.strength}</p>
+          </div>
+
+          <div class="comparison-angles" aria-label={`Tradeoffs versus ${comparison.name}`}>
+            {comparison.angles.map((angle) => (
+              <section class="comparison-angle">
+                <h3>{angle.topic}</h3>
+                <div class="comparison-columns">
+                  <div>
+                    <h4>{comparison.name} today</h4>
+                    <p>{angle.peer}</p>
+                  </div>
+                  <div>
+                    <h4>Oreslang direction</h4>
+                    <p>{angle.oreslang}</p>
+                  </div>
+                </div>
+              </section>
+            ))}
+          </div>
+
+          <div class="comparison-boundary">
+            <h3>Reality check</h3>
+            <p>{comparison.boundary}</p>
+          </div>
+
+          <div class="comparison-references">
+            <h3>Further reading</h3>
+            <ul>
+              {comparison.sources.map((source) => (
+                <li><a href={source.url} rel="noopener noreferrer" target="_blank">{source.label} ↗</a></li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="comparison-footnote">
+      For measured results and their limitations, see <a href="/performance/">Performance</a>.
+      For compiler-verification status, see <a href="/language/">Language reference</a>.
+    </p>
+    <p class="comparison-announcement" id="comparison-announcement" role="status" aria-live="polite" aria-atomic="true"></p>
+  </section>
+</BaseLayout>
+
+<script>
+  const picker = document.querySelector<HTMLSelectElement>("#language-picker");
+  const content = document.querySelector<HTMLElement>("#comparison-content");
+  const announcement = document.querySelector<HTMLElement>("#comparison-announcement");
+  if (picker && content) {
+    const panels = Array.from(content.querySelectorAll<HTMLElement>("[data-comparison]"));
+    const allowed = new Set(Array.from(picker.options, (option) => option.value));
+    const defaultLanguage = picker.options[0]?.value ?? "elixir";
+
+    const show = (requested: string, updateHistory = false) => {
+      const language = allowed.has(requested) ? requested : defaultLanguage;
+      for (const panel of panels) {
+        panel.hidden = panel.dataset.comparison !== language;
+      }
+      picker.value = language;
+      if (updateHistory) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("language", language);
+        window.history.pushState({ language }, "", url);
+      }
+      if (announcement) {
+        const name = picker.selectedOptions[0]?.textContent ?? language;
+        announcement.textContent = `Showing Oreslang compared with ${name}.`;
+      }
+    };
+
+    const fromUrl = () => {
+      const params = new URL(window.location.href).searchParams;
+      show(params.get("language") ?? defaultLanguage);
+    };
+
+    picker.addEventListener("change", () => show(picker.value, true));
+    window.addEventListener("popstate", fromUrl);
+    fromUrl();
+  }
+</script>
