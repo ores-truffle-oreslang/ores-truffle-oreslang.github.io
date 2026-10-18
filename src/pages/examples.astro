@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import OresCode from "../components/OresCode.astro";
 
 import { languageMotionExamples as motion } from "../data/language-motion-examples.mjs";
-const { pipelineCode, mlCode, httpCode, selectCode } = motion;
+const { pipelineCode, mlCode, httpCode, httpStreamingCode, selectCode } = motion;
 
 const dataCode = `
 define interface HasName as
@@ -44,7 +44,9 @@ fnc findName(): Option<String> {
     <div class="code-stack">
       <OresCode caption="Three actors, one typed pipeline" code={pipelineCode} />
       <OresCode caption="Actor-based AI/ML training with backpropagation (design sketch)" code={mlCode} />
-      <OresCode caption="Unary HTTP actor: one request, one response (proposed)" code={httpCode} />
+      <OresCode caption="Unary HTTP actor: Fetch-style response (proposed)" code={httpCode} />
+      <OresCode caption="HTTP body streaming and trailers (proposed)" code={httpStreamingCode} />
+      <p>The proposed <code>HttpResponse</code> has Fetch-style status, headers, and a readable body stream. The HTTP runtime sends the stream with backpressure after <code>run</code> returns; trailers are an Oreslang server-side extension, not part of the WHATWG <code>Response</code> API. Neither example is compiler-verified.</p>
       <OresCode caption="Select one ready channel operation" code={selectCode} />
       <p>The three intended forms are <code>select {}</code> (suspending result expression), <code>do select {}</code> (suspending statement), and <code>nb select {}</code> (asynchronous expression returning a Future). Nonblocking select is not a synchronous poll. Legacy combined prefixes are not canonical. Result-mode support remains a design target across backends.</p>
       <OresCode caption="Closed structural values and option-safe returns" code={dataCode} />
