@@ -2,79 +2,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import OresCode from "../components/OresCode.astro";
 
-const selectCode = `
-// Inside an actor's mailbox handler. Poll once without waiting.
-nb select {
-  when readch messages: val msg {
-    stdio.println("got: ", msg);
-  }
-
-  when readch shutdown: val signal {
-    cleanup();
-  }
-
-  when writech acknowledgements, receipt: {
-    stdio.println("ack sent");
-  }
-}
-`;
-
-const pipelineCode = `
-define actor Source as
-end
-
-define actor Transform as
-end
-
-define actor Sink as
-end
-
-pub fnc connect(): ActorStream<int> {
-  return spawn Source() pipe spawn Transform() pipe spawn Sink();
-}
-`;
-
-const mlCode = `
-// Proposed ML actor pipeline API: training includes backpropagation.
-define model Classifier as
-  Dense(784, 512)
-  ReLU()
-  Dense(512, 10)
-end
-
-const stages = ml.pipeline(
-  Classifier(),
-  stages: 3,
-  devices: #auto,
-  schedule: #one_forward_one_backward
-);
-
-const trainer = ml.trainer(
-  stages,
-  loss: CrossEntropy(),
-  optimizer: AdamW(lr: 0.001),
-  microbatches: 16
-);
-
-// Forward: microbatch activations flow stage 1 -> 2 -> 3.
-// Backward: loss gradients flow stage 3 -> 2 -> 1.
-// AdamW applies updates after gradient accumulation.
-await trainer.train(dataset);
-`;
-
-const httpCode = `
-// Proposed typed HTTP actor API.
-define actor HelloHttp extends HttpActor as
-  on_request(HttpRequest request): HttpResponse {
-    return HttpResponse(
-      status: 200,
-      body: "hello from Oreslang"
-    );
-  }
-end
-
-val server: ActorRef<HelloHttp> = spawn HelloHttp();
-`;
+import { languageMotionExamples as motion } from "../data/language-motion-examples.mjs";
+const { pipelineCode, mlCode, httpCode, selectCode } = motion;
 
 const dataCode = `
 define interface HasName as
@@ -108,16 +37,16 @@ fnc findName(): Option<String> {
   <section class="page-hero">
     <p class="kicker">Examples</p>
     <h1>Syntax that exposes the runtime model.</h1>
-    <p>These design examples illustrate typed actor pipelines, machine-learning training, HTTP handling, and selection. They are highlighted with the site’s Oreslang tokenizer.</p><p>Design sketches only: these snippets have not been compiler-verified. The ML and HTTP APIs are proposed; see <a href="/language/">language verification status</a>.</p>
+    <p>These design examples illustrate typed actor pipelines, machine-learning training, HTTP handling, and selection. They are highlighted with the site’s Oreslang tokenizer.</p><p>Design sketches only: these snippets have not been compiler-verified. Empty pipeline actors show topology only; the ML and HTTP APIs are proposed; see <a href="/language/">language verification status</a>.</p>
   </section>
 
   <section class="page-body">
     <div class="code-stack">
       <OresCode caption="Three actors, one typed pipeline" code={pipelineCode} />
       <OresCode caption="Actor-based AI/ML training with backpropagation (design sketch)" code={mlCode} />
-      <OresCode caption="HTTP request to typed response (proposed actor API)" code={httpCode} />
-      <OresCode caption="Nonblocking channel poll with nb select" code={selectCode} />
-      <p>The three valid select forms are <code>select {}</code> (wait for a ready arm), <code>do select {}</code> (repeated selection), and <code>nb select {}</code> (nonblocking poll). Do not combine <code>do</code> and <code>nb</code>.</p>
+      <OresCode caption="Unary HTTP actor: one request, one response (proposed)" code={httpCode} />
+      <OresCode caption="Select one ready channel operation" code={selectCode} />
+      <p>The three intended forms are <code>select {}</code> (suspending result expression), <code>do select {}</code> (suspending statement), and <code>nb select {}</code> (asynchronous expression returning a Future). Nonblocking select is not a synchronous poll. Legacy combined prefixes are not canonical. Result-mode support remains a design target across backends.</p>
       <OresCode caption="Closed structural values and option-safe returns" code={dataCode} />
     </div>
     <div class="prose">
