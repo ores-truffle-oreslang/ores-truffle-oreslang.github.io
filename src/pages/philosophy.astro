@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EditorThemePicker from "../components/EditorThemePicker.astro";
 import MemoryProfiles from "../components/MemoryProfiles.astro";
+import { languageProgress } from "../data/language-progress.mjs";
 ---
 
 <BaseLayout
@@ -47,6 +48,43 @@ runtime frames:
   hot frame    Worker.run    <span class="term-tag">JIT tier 2</span>
   actor        worker-17     <span class="term-tag">isolated</span></code></pre>
       </div>
+
+
+      <section class="language-progress-deep-dive" id="language-progress" aria-labelledby="language-progress-title">
+        <p class="kicker">Programming language progress / 2010–2022</p>
+        <h2 id="language-progress-title">Keep the breakthroughs. Fix the seams between them.</h2>
+        <p>
+          These advances did not all begin in 2010–2022: CUDA, formal methods, asynchronous
+          programming and functional programming are older. What changed was their reach
+          into everyday infrastructure and application development. Oreslang's ambition is
+          to combine the lessons rather than force teams to choose between them.
+        </p>
+        <p>
+          We separate the historical shift, Oreslang's design response, and the evidence
+          still required. A direction is not a shipped feature, formal proof, compiled
+          accelerator kernel, portable Wasm component or benchmark result.
+        </p>
+        <div class="language-progress-grid">
+          {languageProgress.map((theme, index) => (
+            <article class="language-progress-card" id={`progress-${theme.id}`}>
+              <header>
+                <span class="progress-number">{String(index + 1).padStart(2, "0")}</span>
+                <h3>{theme.label}</h3>
+              </header>
+              <p><strong>What changed.</strong> {theme.shift}</p>
+              <p><strong>Oreslang's response.</strong> {theme.response}</p>
+              <p class="progress-next"><strong>What pushes it forward.</strong> {theme.forward}</p>
+            </article>
+          ))}
+        </div>
+        <p class="status-note">
+          <strong>Evidence over aspiration:</strong> this agenda spans implemented language work,
+          experiments and future targets, not a conformance matrix. See the
+          <a href="/language/">draft language reference</a>,
+          <a href="/how-it-works/">runtime architecture</a> and
+          <a href="/performance/">published performance evidence</a> for concrete boundaries.
+        </p>
+      </section>
 
       <h3>AOT + JIT are complementary</h3>
       <p>
