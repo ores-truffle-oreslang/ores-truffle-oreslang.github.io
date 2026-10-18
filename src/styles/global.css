@@ -502,6 +502,12 @@ footer a {
     linear-gradient(180deg, rgba(20, 18, 17, 0.2), rgba(27, 18, 14, 0.36));
 }
 
+@media (max-width: 700px) {
+  .section-philosophy::before {
+    inset: 18px -12px;
+  }
+}
+
 .manifesto-lede {
   color: var(--cream);
   font-size: clamp(1.25rem, 2.2vw, 1.65rem);
