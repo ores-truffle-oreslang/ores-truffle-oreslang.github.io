@@ -189,6 +189,43 @@ try {
           } finally {
             await archive.close();
           }
+
+          // Dropdown selection, deep-link hydration, back navigation, keyboard and a11y.
+          const comparisonPage = await context.newPage();
+          const comparisonErrors = [];
+          comparisonPage.on("pageerror", (error) => comparisonErrors.push(error.message));
+          try {
+            const response = await comparisonPage.goto(base + "/comparisons/?language=rust", { waitUntil: "load" });
+            assert.equal(response.status(), 200, engine + " comparisons status");
+            const picker = comparisonPage.locator("#language-picker");
+            assert.equal(await picker.locator("option").count(), 10);
+            assert.equal(await picker.inputValue(), "rust", "deep-linked comparison should hydrate");
+            assert.equal(await comparisonPage.locator("#compare-rust").isVisible(), true);
+            assert.equal(await comparisonPage.locator("#compare-elixir").isVisible(), false);
+            await picker.focus();
+            await picker.selectOption("gleam");
+            assert.equal(await comparisonPage.locator("#compare-gleam").isVisible(), true);
+            assert.equal(await comparisonPage.locator("#compare-rust").isVisible(), false);
+            assert.ok(comparisonPage.url().endsWith("?language=gleam"), "selection must update shareable URL");
+            await comparisonPage.goBack();
+            assert.equal(await picker.inputValue(), "rust", "history back should restore prior comparison");
+            assert.equal(await comparisonPage.locator("#compare-rust").isVisible(), true);
+            const overflow = await comparisonPage.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+            assert.ok(overflow <= 2, "comparisons overflow " + engine + " " + width + "px: " + overflow);
+            if (engine === "chromium" && width === 375) {
+              const results = await new AxeBuilder({ page: comparisonPage }).withTags([
+                "wcag2a", "wcag2aa", "wcag21a", "wcag21aa"
+              ]).analyze();
+              const severe = results.violations.filter((item) =>
+                item.impact === "serious" || item.impact === "critical"
+              );
+              assert.deepEqual(severe.map((item) => item.id), [], "comparison accessibility");
+            }
+            assert.deepEqual(comparisonErrors, [], "comparison JS errors");
+            console.log("PASS " + engine + " " + width + "px comparisons");
+          } finally {
+            await comparisonPage.close();
+          }
         } finally {
           await context.close();
         }
