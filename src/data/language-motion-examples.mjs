@@ -47,15 +47,41 @@ await trainer.train(dataset);
 `,
 
   httpCode: `
-// Proposed unary HTTP transport; not yet compiler-verified.
+// Proposed Fetch-style response; not yet compiler-verified.
 define unary http actor HelloHttp as
-  run(HttpMessage request): string {
-    return "hello from Oreslang";
+  run(HttpMessage request): HttpResponse {
+    return new HttpResponse("hello from Oreslang", {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8"
+      }
+    });
   }
 end
 
-// VM-owned HTTP binding delivers requests and emits one typed reply.
-// A plain string result is serialized as JSON by the proposed codec.
+// VM-owned HTTP binding sends exactly one returned response.
+// Headers are frozen at return; no socket writer escapes.
+`,
+
+  httpStreamingCode: `
+// Proposed streaming and HTTP trailers; not yet compiler-verified.
+define unary http actor Download as
+  run(HttpMessage request): HttpResponse {
+    const (body, digestReady) = checksumDownload();
+
+    return new HttpResponse(body, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/octet-stream"
+      },
+      trailerNames: ["Content-Digest"],
+      trailers: digestReady
+    });
+  }
+end
+
+// body is a readable byte stream; digestReady is Future<HttpHeaders>.
+// The VM applies backpressure and completes trailers after body EOF.
 `,
 
   selectCode: `
