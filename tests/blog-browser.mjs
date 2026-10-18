@@ -29,15 +29,22 @@ const base = "http://127.0.0.1:" + port;
 const screenshotDirectory = resolve("test-artifacts/screenshots");
 const approvedVisuals = JSON.parse(readFileSync(new URL("./visual-baselines.json", import.meta.url), "utf8"));
 const compared = [];
+const visualFailures = [];
 async function checkVisual(name, screenshot) {
   const expectedWidth = Number(name.split("-")[1]);
   assert.ok([375, 1440].includes(expectedWidth), "Unexpected visual viewport " + name);
   checkScreenshotPng(name, screenshot, expectedWidth, 900);
   // Decode every engine's PNG with the same Chromium canvas implementation.
   const signature = await normalizedPixels(signaturePage, screenshot);
-  const result = compareVisual(name, screenshot, signature, approvedVisuals.images[name]);
+  try {
+    const result = compareVisual(name, screenshot, signature, approvedVisuals.images[name]);
+    console.log("VISUAL_PASS " + name + " " + JSON.stringify(result));
+  } catch (error) {
+    // Collect all screenshots for review, but fail the run after every comparison.
+    visualFailures.push({ name, error: error.message });
+    console.error("VISUAL_REVIEW_REQUIRED " + name + " " + error.message);
+  }
   compared.push(name);
-  console.log("VISUAL_PASS " + name + " " + JSON.stringify(result));
 }
 
 await mkdir(screenshotDirectory, { recursive: true });
@@ -236,6 +243,7 @@ try {
   }
   assert.deepEqual([...compared].sort(), Object.keys(approvedVisuals.images).sort(),
     "Every approved visual baseline must be checked exactly once");
+  assert.deepEqual(visualFailures, [], "Visual changes require review of the complete screenshot artifact");
 } finally {
   if (signaturePage) await signaturePage.close().catch(() => {});
   if (signatureBrowser) await signatureBrowser.close().catch(() => {});
