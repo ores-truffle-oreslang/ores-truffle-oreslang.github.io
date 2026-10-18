@@ -22,6 +22,13 @@ export const languageProgress = [
     "forward": "Measure p99/p99.9 latency, allocation jitter and end-to-end behavior on reproducible HPC and trading workloads."
   },
   {
+    "id": "data-oriented",
+    "label": "Data-oriented programming",
+    "shift": "Data-oriented design emphasized structuring memory around access patterns, cache locality, SIMD and contiguous data rather than object graphs alone.",
+    "response": "Oreslang aims for typed data layouts, array-of-structs and struct-of-arrays choices, and CPU/GPU-friendly buffers within its ownership and actor model.",
+    "forward": "Validate layout and aliasing guarantees across backends and benchmark real workloads before claiming performance wins."
+  },
+  {
     "id": "verification",
     "label": "Formal methods + contracts",
     "shift": "Long-established techniques such as model checking and proof assistants became more visible in infrastructure and safety-critical engineering.",
