@@ -330,6 +330,7 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
     right: 0;
     top: calc(100% + 11px);
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: min(270px, calc(100vw - 28px));
     gap: 0;
     padding: 7px;
@@ -340,10 +341,16 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
   }
   .site-header .mobile-navigation nav a {
     display: block;
+    grid-column: 1 / -1;
     padding: 12px;
     font-size: .87rem;
     border-radius: 7px;
     white-space: normal;
+  }
+  /* Pair the two short utility links in the final row; the disclosure
+     retains its reviewed height while both destinations remain reachable. */
+  .site-header .mobile-navigation nav a:nth-last-child(-n+2) {
+    grid-column: auto;
   }
   .site-header .mobile-navigation nav a:hover,
   .site-header .mobile-navigation nav a:focus-visible {
