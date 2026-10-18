@@ -4,6 +4,7 @@ import SectionTitle from "../components/SectionTitle.astro";
 import OresCode from "../components/OresCode.astro";
 import EditorThemePicker from "../components/EditorThemePicker.astro";
 import MemoryProfiles from "../components/MemoryProfiles.astro";
+import { languageProgress } from "../data/language-progress.mjs";
 
 const actorCode = `
 define actor Worker as
@@ -129,6 +130,22 @@ end
           when those extra tokens reduce ambiguity and make static analysis, AOT compilation, and
           JIT specialization faster.
         </p>
+
+
+        <section class="language-shifts-home" aria-labelledby="language-shifts-home-title">
+          <p class="eyebrow">From 2010–2022, and beyond</p>
+          <h3 id="language-shifts-home-title">Eleven shifts. One language ambition.</h3>
+          <p>Oreslang draws on what programming learned—and asks how those strengths can work together.</p>
+          <ul class="language-shifts-checklist">
+            {languageProgress.map((theme) => (
+              <li><span class="progress-check" aria-hidden="true">✓</span><span>{theme.label}</span></li>
+            ))}
+          </ul>
+          <p class="progress-caveat">
+            This checks off <em>ideas worth addressing</em>, not finished Oreslang features.
+            <a href="/philosophy/#language-progress">Explore the shifts, Oreslang's response, and the work ahead →</a>
+          </p>
+        </section>
 
         <div class="terminal-trace terminal-trace-home code-editor" data-code-editor="true" data-code-key="home-runtime-trace" data-editor-theme="vscode" aria-label="Illustrative Oreslang runtime stack trace">
           <div class="terminal-bar">
