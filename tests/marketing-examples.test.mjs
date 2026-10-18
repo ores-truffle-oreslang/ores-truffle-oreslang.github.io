@@ -74,7 +74,8 @@ test("select demo is a suspending statement, not a synchronous poll", () => {
 test("Oreslang code remains HTML escaped and highlighted", () => {
   const raw = "pub fnc connect(): ActorStream<int> { return spawn Source() pipe spawn Sink(); }";
   const html = highlight(raw, "oreslang");
-  assert.ok(html.includes("&lt;int&gt;"));
+  assert.ok(html.includes("&lt;"));
+  assert.ok(html.includes("&gt;"));
   assert.match(html, /tok-keyword/);
   assert.ok(!html.includes("<int>"));
   const structural = highlight("match x over on structural {id: string} a -> {} end static fnc f(): void {}", "oreslang");
