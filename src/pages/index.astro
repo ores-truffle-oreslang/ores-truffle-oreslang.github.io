@@ -6,79 +6,8 @@ import EditorThemePicker from "../components/EditorThemePicker.astro";
 import MemoryProfiles from "../components/MemoryProfiles.astro";
 import { languageProgress } from "../data/language-progress.mjs";
 
-const pipelineCode = `
-define actor Source as
-end
-
-define actor Transform as
-end
-
-define actor Sink as
-end
-
-pub fnc connect(): ActorStream<int> {
-  return spawn Source() pipe spawn Transform() pipe spawn Sink();
-}
-`;
-
-const mlCode = `
-// Proposed ML actor pipeline API: training includes backpropagation.
-define model Classifier as
-  Dense(784, 512)
-  ReLU()
-  Dense(512, 10)
-end
-
-const stages = ml.pipeline(
-  Classifier(),
-  stages: 3,
-  devices: #auto,
-  schedule: #one_forward_one_backward
-);
-
-const trainer = ml.trainer(
-  stages,
-  loss: CrossEntropy(),
-  optimizer: AdamW(lr: 0.001),
-  microbatches: 16
-);
-
-// Forward: microbatch activations flow stage 1 -> 2 -> 3.
-// Backward: loss gradients flow stage 3 -> 2 -> 1.
-// AdamW applies updates after gradient accumulation.
-await trainer.train(dataset);
-`;
-
-const httpCode = `
-// Proposed typed HTTP actor API.
-define actor HelloHttp extends HttpActor as
-  on_request(HttpRequest request): HttpResponse {
-    return HttpResponse(
-      status: 200,
-      body: "hello from Oreslang"
-    );
-  }
-end
-
-val server: ActorRef<HelloHttp> = spawn HelloHttp();
-`;
-
-const selectCode = `
-// Inside an actor's mailbox handler. Poll once without waiting.
-nb select {
-  when readch messages: val msg {
-    stdio.println("got: ", msg);
-  }
-
-  when readch shutdown: val signal {
-    cleanup();
-  }
-
-  when writech acknowledgements, receipt: {
-    stdio.println("ack sent");
-  }
-}
-`;
+import { languageMotionExamples as motion } from "../data/language-motion-examples.mjs";
+const { pipelineCode, mlCode, httpCode, selectCode } = motion;
 
 const structCode = `
 const account = infer struct {
@@ -323,10 +252,10 @@ stack trace:
       <div class="code-stack">
         <OresCode caption="Three actors, one typed pipeline" code={pipelineCode} />
         <OresCode caption="Actor-based AI/ML training with backpropagation (design sketch)" code={mlCode} />
-        <OresCode caption="HTTP request to typed response (proposed actor API)" code={httpCode} />
-        <OresCode caption="Nonblocking channel poll with nb select" code={selectCode} />
+        <OresCode caption="Unary HTTP actor: one request, one response (proposed)" code={httpCode} />
+        <OresCode caption="Select one ready channel operation" code={selectCode} />
         <OresCode caption="Closed inferred structs + structural matching" code={structCode} />
-        <p class="progress-caveat">Illustrative Oreslang design syntax, not compiler-verified examples. The ML and HTTP APIs are proposed and may change. <a href="/language/">See current language verification status →</a></p>
+        <p class="progress-caveat">Illustrative Oreslang design syntax, not compiler-verified examples. Empty actors show topology; ML and HTTP APIs are proposed. <a href="/language/">See current language verification status →</a></p>
       </div>
     </div>
   </section>
