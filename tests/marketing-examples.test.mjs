@@ -11,7 +11,10 @@ const detail = read("../src/pages/examples.astro");
 test("home and examples import the same immutable code snippets", () => {
   for (const [page, text] of [["index", home], ["examples", detail]]) {
     assert.match(text, /import \{ languageMotionExamples as motion \} from "\.\.\/data\/language-motion-examples\.mjs"/);
-    assert.match(text, /const \{ pipelineCode, mlCode, httpCode, selectCode \} = motion;/);
+    const imports = page === "index"
+      ? /const \\{ pipelineCode, mlCode, httpCode, selectCode \\} = motion;/
+      : /const \\{ pipelineCode, mlCode, httpCode, httpStreamingCode, selectCode \\} = motion;/;
+    assert.match(text, imports);
     for (const name of ["pipelineCode", "mlCode", "httpCode", "selectCode"]) {
       assert.ok(text.includes("code={" + name + "}"), page + " missing " + name);
       assert.doesNotMatch(text, new RegExp("const " + name + " = `"));
