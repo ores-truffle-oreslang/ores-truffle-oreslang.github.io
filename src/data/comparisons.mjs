@@ -475,136 +475,320 @@ export const comparisons = [
   {
     "id": "golang",
     "name": "Go",
-    "headline": "Go's channel-first philosophy, with ownership boundaries and actors as the default.",
-    "strength": "Go makes goroutines, channels, fast builds and operationally simple network services exceptionally accessible.",
+    "headline": "Go made concurrency simple. Oreslang aims to make concurrency safe by construction.",
+    "strength": "Go already compiles to native binaries, starts quickly, has a powerful M:N goroutine scheduler, simple channels, an excellent standard library and a famously straightforward deployment model. Its concurrent GC has improved continuously. Oreslang cannot claim Go lacks parallelism or AOT compilation.",
     "angles": [
       {
-        "topic": "Communication",
-        "peer": "Go encourages sharing memory by communicating; it also allows shared mutable memory and has no language borrow checker.",
-        "oreslang": "Oreslang aims to make typed actor mailboxes and actor-owned mutable heaps a more enforceable realization of that principle."
+        "topic": "Share memory by communicating—for real",
+        "peer": "Go encourages channels and ownership handoffs, but its type system permits shared mutable pointers and requires mutexes, atomic operations or disciplined channel ownership to avoid races.",
+        "oreslang": "Oreslang intends actor-owned mutable state, borrow checking and typed ActorRef messages to make implicit cross-actor mutable sharing unavailable by default.",
+        "impact": "A concurrency policy can become a compiler-enforced boundary rather than a team convention backed primarily by the race detector."
       },
       {
-        "topic": "Async model",
-        "peer": "Go uses goroutines rather than async/await syntax; goroutines are lightweight and run concurrently across OS threads.",
-        "oreslang": "Oreslang distinguishes lightweight nb Tasks from state-isolated actors, with explicit awaitable Task handles and supervision."
+        "topic": "Goroutines versus Tasks plus actors",
+        "peer": "Go goroutines are lightweight and genuinely run in parallel via the Go scheduler. Channels, select and context cancellation are mature primitives; Go doesn't use async/await syntax.",
+        "oreslang": "Oreslang proposes nb Tasks for lightweight parallel/suspending work, await/select syntax and actors for private state, message order, failures and supervision. A Task should not need a whole actor or OS thread.",
+        "impact": "Choose the smallest primitive for each problem: tasks for work, actors for isolation and recovery."
       },
       {
-        "topic": "GC and hardware",
-        "peer": "Go uses a low-latency concurrent garbage collector; short stop-the-world phases can still occur.",
-        "oreslang": "LLVM Oreslang targets zero-GC modes and a freestanding core, with future FPGA/ASIC-oriented subsets. Neither is broadly verified yet."
+        "topic": "GC and tail latency",
+        "peer": "Go uses a concurrent, low-latency tracing GC that still consumes CPU and can briefly stop the world. Its actual pause behavior is typically good and tuning matters.",
+        "oreslang": "Oreslang's LLVM strict profile targets zero runtime GC with explicit arenas, borrowing and deterministic release; GraalVM modes may still have managed collection.",
+        "impact": "For tight latency budgets, predictability could improve by design—but only benchmarked p99 and p99.9 behavior can settle the tradeoff."
+      },
+      {
+        "topic": "Worker supervision and hot reload",
+        "peer": "Go services typically implement restart loops, orchestration, message schemas and rolling deploys with libraries and infrastructure. Hot-swapping a live function's code and actor state is not a language-level feature.",
+        "oreslang": "Oreslang targets supervisor-directed recovery, versioned actor generation, typed mailboxes and staged hot reload with rollback.",
+        "impact": "Long-lived session and plugin hosts could update small stateful components without always recycling the entire process."
+      },
+      {
+        "topic": "Beyond standard server binaries",
+        "peer": "Go has excellent compiled Linux/macOS/Windows deployment and has specialized TinyGo toolchains for embedded/Wasm targets; typical Go still relies on its runtime and GC.",
+        "oreslang": "Oreslang separates freestanding core, optional allocation and richer actor/stdlib profiles; future LLVM GPU, FPGA and ASIC subsets are research/development targets, not shipped parity.",
+        "impact": "The long-term aim is shared language semantics across native services and constrained compute targets."
       }
     ],
-    "boundary": "Go may be the simpler, more reliable deployment choice today. Zero-GC does not guarantee lower end-to-end latency, and hardware targets require evidence.",
+    "boundary": "Go remains the safer operational bet for many APIs, agents and infrastructure teams. Oreslang's strongest argument is making Go's communication-first philosophy enforceable while integrating supervision, ownership and optional no-GC native execution; those gains remain design goals.",
     "sources": [
       {
         "label": "Effective Go — concurrency",
         "url": "https://go.dev/doc/effective_go#concurrency"
       },
       {
+        "label": "Go memory model",
+        "url": "https://go.dev/ref/mem"
+      },
+      {
         "label": "Go GC guide",
         "url": "https://go.dev/doc/gc-guide"
+      },
+      {
+        "label": "TinyGo project",
+        "url": "https://tinygo.org/"
+      }
+    ],
+    "thesis": "Go popularized the right maxim: 'Do not communicate by sharing memory; share memory by communicating.' But Go does not enforce that principle across ordinary mutable variables. Oreslang's actor model aims to turn it into a structural guarantee while preserving goroutine-like Tasks, adding typed supervision and letting native zero-GC profiles serve workloads where collector activity matters.",
+    "benefits": [
+      {
+        "title": "Communication is the boundary",
+        "detail": "Actor-owned mutable heaps and typed messages aim to ensure the safe path is passing ownership, not accidentally sharing and locking state."
+      },
+      {
+        "title": "Goroutine-like work plus fault domains",
+        "detail": "Lightweight nb Tasks are distinct from actors with supervised lifecycle, mailboxes and recoverable failures."
+      },
+      {
+        "title": "Choose an explicit memory profile",
+        "detail": "A strict native LLVM path targets zero runtime GC, while managed profiles can trade predictability for convenience."
+      }
+    ],
+    "useCases": [
+      {
+        "title": "High-concurrency infrastructure",
+        "detail": "Services with many independently supervised sessions, tenant workloads or plugins and a mix of I/O plus CPU work."
+      },
+      {
+        "title": "Predictable-latency workers",
+        "detail": "Native event processing where explicit allocation lifetime and isolated state could reduce runtime interference."
       }
     ]
   },
   {
     "id": "nodejs",
     "name": "Node.js",
-    "headline": "Keep the event-driven developer experience; make multi-core actor execution natural.",
-    "strength": "Node.js is an excellent I/O-first runtime with the npm ecosystem, async/await, a polished event loop and libuv integration.",
+    "headline": "Node.js made asynchronous I/O easy. Oreslang wants safe parallel code to be just as easy.",
+    "strength": "Node.js delivers an extraordinary npm ecosystem, approachable JavaScript, async/await, fast startup for many deployments, strong network I/O and excellent diagnostics. Worker threads, child processes, transferable ArrayBuffers and SharedArrayBuffer already offer real parallel strategies.",
     "angles": [
       {
-        "topic": "Threading",
-        "peer": "A typical Node.js process runs JavaScript callbacks on a main event-loop thread; libuv offloads selected operations to its thread pool, and Worker threads execute JavaScript in parallel.",
-        "oreslang": "Oreslang aims to schedule many Tasks and actors over a configurable M:N worker pool in one OS process, using available CPU cores without putting all application handlers on one JS thread."
+        "topic": "Event loop versus multicore scheduling",
+        "peer": "A typical Node.js JavaScript worker processes callbacks on a single event-loop thread. libuv's pool handles selected native operations; it does not execute arbitrary JS callbacks on those worker-pool threads.",
+        "oreslang": "Oreslang targets a configurable M:N pool running Tasks and actors across physical cores without forcing application code into a main-JS-thread bottleneck. Blocking/suspending operations should cooperate with scheduling.",
+        "impact": "A CPU-heavy handler need not stall unrelated JS callbacks merely because the app chose the single-event-loop default."
       },
       {
-        "topic": "Isolation",
-        "peer": "Worker threads create independent JavaScript execution environments and V8 isolates; their cost and message-transfer behavior differ from a callback.",
-        "oreslang": "Actors are intended to own mutable heaps while sharing authorized immutable code and communicating inside one runtime, avoiding mandatory TCP or per-actor V8 isolates."
+        "topic": "Worker threads and isolation cost",
+        "peer": "Node Worker threads provide parallel JavaScript execution with separate V8 isolates. They can transfer buffers and use SharedArrayBuffer for shared memory; they are not equivalent to OS processes but still carry isolate/runtime overhead.",
+        "oreslang": "Oreslang's actor model is designed for many logical actors per runtime, with actor-owned mutable state and shared authorized immutable code, not one independent language isolate for every actor.",
+        "impact": "Aim for finer-grained isolation and task switching without multiplying full JS execution contexts."
       },
       {
-        "topic": "Compute and upgrades",
-        "peer": "Workers, native addons and external services handle parallel CPU work; hot-reload patterns depend on tooling.",
-        "oreslang": "Native LLVM targets and supervised versioned actors aim to make compute and swapping code an integrated workflow."
+        "topic": "Memory safety of communication",
+        "peer": "JavaScript is memory-safe in many respects, yet mutable shared buffers require Atomics and discipline, and TypeScript type annotations are not runtime-enforced ownership rules.",
+        "oreslang": "Compile-time ownership, typed ActorRef messages and authorized zero-copy immutable sharing aim to constrain how data moves between concurrent parts.",
+        "impact": "Parallelism becomes a property developers can reason about statically instead of a maze of copied buffers and implicit mutable aliases."
+      },
+      {
+        "topic": "Hot code and recoverability",
+        "peer": "Hot module replacement, clusters, workers and orchestration can reload Node code, but consistent in-flight message handling, capability changes and state migration remain app/framework responsibilities.",
+        "oreslang": "Oreslang plans actor generations, staged hot loading, supervisor-directed recovery and explicit mailbox/capability boundaries. Reload one stateful component without claiming the entire process has been restarted.",
+        "impact": "The desired primitive is 'replace this worker safely' rather than 'restart everything and rebuild every connection.'"
+      },
+      {
+        "topic": "Native compute and cold-start profiles",
+        "peer": "Node can use native addons, WebAssembly and Worker threads for performance work. Every option has ecosystem and integration tradeoffs; Node's startup can already be excellent for many use cases.",
+        "oreslang": "LLVM AOT and native memory profiles aim to place numerical loops and supervision in one language, with GraalVM offering a different managed/JIT tradeoff.",
+        "impact": "The opportunity is cleaner integration of event-driven services with CPU-intensive kernels; not an unmeasured blanket throughput victory over V8."
       }
     ],
-    "boundary": "Thread counts are adaptive, not a promised fixed 10–50 workers. Same-process messaging is not inherently zero-copy, nor is it automatically faster than Node workers without a benchmark.",
+    "boundary": "Use Node.js for mature JS ecosystems, web tooling and the npm integration surface. Oreslang's distinct bet is native multicore Tasks plus inexpensive logical actors, typed ownership and built-in supervision—while acknowledging Node already offers worker threads and shared buffers.",
     "sources": [
       {
-        "label": "Node.js Worker threads",
+        "label": "Node.js event loop",
+        "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick"
+      },
+      {
+        "label": "Node.js worker threads",
         "url": "https://nodejs.org/api/worker_threads.html"
       },
       {
-        "label": "Node.js event-loop guide",
-        "url": "https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick"
+        "label": "Node.js don't block event loop",
+        "url": "https://nodejs.org/en/learn/asynchronous-work/dont-block-the-event-loop"
+      }
+    ],
+    "thesis": "Node.js is a triumph of the event-driven model, but its default JavaScript execution path centers on one event-loop thread per worker environment. Oreslang's design starts from parallel Tasks and isolated actors: keep the expressive async programming style while giving multicore CPUs, typed mutable-state boundaries and supervised code replacement a first-class place.",
+    "benefits": [
+      {
+        "title": "Parallel app code, not only parallel I/O",
+        "detail": "Run many lightweight Tasks across an M:N scheduler in one process; worker counts adapt to actual CPUs and workloads rather than a promised fixed number."
+      },
+      {
+        "title": "Actors without an isolate per actor",
+        "detail": "Actors are intended to own mutable heaps while trusted immutable code may be shared within authorized domains, avoiding the cost of one V8 isolate per logical actor."
+      },
+      {
+        "title": "Safe hot-running extensions",
+        "detail": "Supervise independently reloadable actor code and constrain its state and capabilities, rather than relying entirely on process restarts or custom worker protocols."
+      }
+    ],
+    "useCases": [
+      {
+        "title": "CPU-heavy real-time gateways",
+        "detail": "Streaming, codec, transformation and local inference work that must run concurrently with network-facing sessions."
+      },
+      {
+        "title": "Reloadable multi-tenant plugin hosts",
+        "detail": "Lots of small stateful plugins that need bounded mailboxes, controlled capabilities and hot replacement."
       }
     ]
   },
   {
     "id": "csharp",
     "name": "C#",
-    "headline": "From mainstream async/await to typed, isolated and reloadable actors.",
-    "strength": "C# helped popularize language-integrated async/await and offers an excellent .NET runtime, tooling, memory safety and sophisticated actor frameworks such as Orleans.",
+    "headline": "C# gave async/await a home. Oreslang wants actors and ownership to feel just as native.",
+    "strength": "C# brought modern language ergonomics to application development, including async/await in C# 5, Task-based asynchronous programming, LINQ, strong typing, native AOT and rich tooling. Orleans provides a production virtual-actor model, and .NET's GC is sophisticated.",
     "angles": [
       {
-        "topic": "Async foundations",
-        "peer": "C# introduced its async/await syntax in C# 5, making asynchronous code approachable; async patterns predate it in other ecosystems.",
-        "oreslang": "Oreslang adds an explicit Task/actor distinction: nb Tasks for lightweight work, actors for owned state and fault isolation."
+        "topic": "Async/await is not state isolation",
+        "peer": "C# async/await is outstanding for suspending asynchronous operations without blocking a thread. A Task does not stop shared objects from being concurrently mutated, and async code can still require locks.",
+        "oreslang": "Oreslang's Tasks similarly handle concurrent work, but its actor concept aims to reserve mutable state to actor-private arenas and typed callbacks, with explicit message transfer.",
+        "impact": "Scheduling throughput and protection of mutable state become separate guarantees, both designed into the language."
       },
       {
-        "topic": "Sharing and actors",
-        "peer": "Ordinary C# objects can share mutable state; Orleans and Akka.NET offer actor models through frameworks.",
-        "oreslang": "Oreslang is designed to encode actor isolation, typed messages and supervision into core language/runtime semantics rather than requiring a framework."
+        "topic": "Orleans and the actor framework layer",
+        "peer": "Orleans is a mature virtual-actor system with activation, distribution and persistence models. Other .NET actor frameworks support messaging and supervision.",
+        "oreslang": "Oreslang aims to make actors a core language/runtime abstraction, including typed ActorRef<T>, lifetime/borrow rules, supervision and hot code generations across backends.",
+        "impact": "A developer should not need a distributed framework just to obtain local mutable-state confinement."
       },
       {
-        "topic": "Runtime and deployment",
-        "peer": ".NET offers tiered JIT, native AOT and configurable managed GC; Orleans has real production deployments.",
-        "oreslang": "Oreslang aims for independent GraalVM and LLVM implementations and zero-GC LLVM profiles without coupling actor contracts to a single managed runtime."
+        "topic": "Shared heap versus explicit domains",
+        "peer": ".NET managed objects can be shared among threads; locking, immutable collections and disciplined ownership patterns make this safe when applied correctly.",
+        "oreslang": "Oreslang proposes actor-owned mutable memory, checked borrows and explicit safe sharing domains for immutable zero-copy data. Unsafe native interop remains a separate trust boundary.",
+        "impact": "Cross-component sharing is an intentional operation with explicit rights, not a default property of an object reference."
+      },
+      {
+        "topic": "GC, AOT and memory predictability",
+        "peer": ".NET supports native AOT and advanced server, background and low-latency GC modes. Native AOT does not itself mean that a managed .NET app is GC-free.",
+        "oreslang": "The LLVM profile targets a non-tracing zero-GC memory discipline for supported programs; GraalVM Oreslang can use managed GC. Actual latency depends on allocation, scheduling and workload.",
+        "impact": "A build profile can express stricter memory lifetime needs without discarding async/actor abstractions."
+      },
+      {
+        "topic": "Reload, isolation and portable runtimes",
+        "peer": ".NET has AssemblyLoadContext, dynamic loading, hot reload tooling and mature hosting, but safe unloading and migration of live state are design challenges.",
+        "oreslang": "Versioned actors, staged rollout/rollback and supervisor recovery are intended as consistent runtime contracts across LLVM and GraalVM, without assuming every backend supports the same features today.",
+        "impact": "Hot-swappable stateful services can be a core architectural unit rather than a deployment trick."
       }
     ],
-    "boundary": "C# already has native AOT and production actor frameworks. Oreslang's main proposed advantage is integration and stricter default isolation, not invented async/await or universal speed.",
+    "boundary": "C# and Orleans are mature, serious alternatives; C# also offers native AOT. Oreslang is not claiming to have invented async/await or actors. Its opportunity is integrating actor-owned memory and hot-reload supervision at the language boundary with a native zero-GC option.",
     "sources": [
       {
-        "label": "C# async programming",
+        "label": "C# asynchronous programming",
         "url": "https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/"
       },
       {
-        "label": "Microsoft Orleans",
+        "label": "Microsoft Orleans overview",
         "url": "https://learn.microsoft.com/en-us/dotnet/orleans/overview"
+      },
+      {
+        "label": "Native AOT deployment",
+        "url": "https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/"
+      },
+      {
+        "label": "AssemblyLoadContext",
+        "url": "https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/understanding-assemblyloadcontext"
+      }
+    ],
+    "thesis": "C# helped make async/await mainstream and has excellent .NET tooling. Oreslang takes the next structural step: distinguish lightweight Tasks from supervised actors, make mutable ownership an explicit boundary and offer both managed and native no-GC execution profiles. The design goal is a system where concurrent work, state isolation and code evolution reinforce each other.",
+    "benefits": [
+      {
+        "title": "Enforced actor ownership",
+        "detail": "Actors are intended to be language-level units of state isolation with typed mailboxes rather than ordinary shared objects disciplined by a framework."
+      },
+      {
+        "title": "Task and actor semantics together",
+        "detail": "Use nb Tasks for short-lived concurrency, actors for isolation/supervision and await/select for scheduling without collapsing these into one abstraction."
+      },
+      {
+        "title": "Native mode outside .NET GC",
+        "detail": "A strict LLVM profile targets zero tracing-GC execution, with a separate managed profile where GC is desirable."
+      }
+    ],
+    "useCases": [
+      {
+        "title": "Long-lived service and plugin hosts",
+        "detail": "Stateful tenants or extensions needing supervised updates with typed messaging and narrow permissions."
+      },
+      {
+        "title": "Native async edge services",
+        "detail": "Short-lived agents or high-load service workers balancing native memory constraints and async orchestration."
       }
     ]
   },
   {
     "id": "ocaml",
     "name": "OCaml",
-    "headline": "Strong functional typing meets supervised, ownership-aware actor systems.",
-    "strength": "OCaml provides excellent static inference, algebraic data types, pattern matching, native-code compilation and modern multicore support.",
+    "headline": "OCaml knows how to make illegal states unrepresentable. Oreslang adds an actor-shaped runtime.",
+    "strength": "OCaml has impressive type inference, algebraic data types, pattern matching, native compilation and a rich functional programming tradition. OCaml 5 adds Domains for multicore parallelism, with effect-handler-based concurrency libraries such as Eio.",
     "angles": [
       {
-        "topic": "Static discipline",
-        "peer": "OCaml's type system and functional-first style make many illegal states hard to express.",
-        "oreslang": "Oreslang builds on that idea with explicit borrowing, capability boundaries and actor-owned mutable state."
+        "topic": "Expressive types versus ownership checking",
+        "peer": "OCaml infers rich types and supports modules, functors and ADTs, but ordinary native OCaml memory is still GC-managed and mutable sharing is not governed by a Rust-style borrow checker.",
+        "oreslang": "Oreslang combines static types, Option/Result patterns, nominal and structural shapes with ownership/borrowing and actor-private state boundaries.",
+        "impact": "Make concurrency and lifetime violations harder to express, not only ordinary invalid domain values."
       },
       {
-        "topic": "Parallelism",
-        "peer": "OCaml 5 has multicore Domains and effect handlers; Eio and other libraries provide lightweight concurrency.",
-        "oreslang": "Oreslang proposes an integrated M:N Task scheduler alongside typed actor message passing and supervision."
+        "topic": "OCaml 5 Domains and fibers",
+        "peer": "OCaml 5 Domains enable genuine multicore parallel execution; effect handlers support sophisticated cooperative task libraries including Eio. OCaml is not fundamentally single-threaded.",
+        "oreslang": "Oreslang plans an integrated M:N Task scheduler for await/select plus actors for independent state, mailbox ownership and supervision. Actors should not be mandatory for numerical kernels.",
+        "impact": "The runtime itself defines the division between parallel work and fault-tolerant mutable state."
       },
       {
-        "topic": "Memory and hot reload",
-        "peer": "OCaml is GC-managed by default and does not have OTP-style supervised hot code swapping as a built-in language model.",
-        "oreslang": "LLVM profiles target explicit ownership with zero-GC execution and versioned actor hot reload."
+        "topic": "GC and native control",
+        "peer": "OCaml compiles to native code with an efficient runtime, but tracing garbage collection is part of its usual memory model and may affect allocation-sensitive workloads.",
+        "oreslang": "The strict LLVM profile targets arena/ownership-based allocation with no runtime GC; GraalVM mode remains a different memory strategy.",
+        "impact": "The long-term target is explicit allocation predictability for engines, simulation, native services and embedded subsets."
+      },
+      {
+        "topic": "Fault tolerance and recovery",
+        "peer": "OCaml applications can implement processes, queues, restart policies and concurrency frameworks. OTP-style actor supervision and hot swaps are not OCaml language-level primitives.",
+        "oreslang": "Actor supervision, typed messages, panic escalation, code generations and controlled reload are central Oreslang semantics under development.",
+        "impact": "Recoverability moves from application architecture into a reusable, inspectable runtime contract."
+      },
+      {
+        "topic": "Data orientation and accelerators",
+        "peer": "OCaml can use bigarrays, C bindings and native libraries for performance work, and its compiler produces efficient machine code for many domains.",
+        "oreslang": "Oreslang targets columnar data layouts, zero-copy region borrows and later CPU/GPU-targeted kernels that actors coordinate without per-entity overhead.",
+        "impact": "The proposed architecture unifies cache-local compute and resilient coordination without making either an afterthought."
       }
     ],
-    "boundary": "OCaml's native compiler and multicore facilities are real. Oreslang's actor and no-GC goals are not a claim that OCaml lacks efficient parallel computing.",
+    "boundary": "OCaml is a mature and compelling choice for typed functional software and native compilers. Oreslang's differentiator is actor isolation, supervised code evolution and native ownership/no-GC profiles; its implementation and tooling still need verification.",
     "sources": [
       {
-        "label": "OCaml parallel programming",
+        "label": "OCaml parallelism and Domains",
         "url": "https://ocaml.org/manual/5.4/parallelism.html"
       },
       {
         "label": "OCaml effect handlers",
         "url": "https://ocaml.org/manual/5.3/effects.html"
+      },
+      {
+        "label": "OCaml language overview",
+        "url": "https://ocaml.org/about"
+      }
+    ],
+    "thesis": "OCaml has long shown what a precise functional type system can do for software design. Oreslang aims to carry that rigor into mutable memory, concurrent execution and failure containment: compile-time borrowing, typed actor mailboxes, supervisor trees and hot reload, together with a native no-GC target.",
+    "benefits": [
+      {
+        "title": "From values to ownership",
+        "detail": "Reason statically not just about data variants but about exclusive mutation, actor-private arenas and safe transfer."
+      },
+      {
+        "title": "Parallel computation plus supervision",
+        "detail": "A built-in Task/Actor split aims to combine fine-grained multicore work with recoverable, message-driven components."
+      },
+      {
+        "title": "Predictable native memory profiles",
+        "detail": "LLVM zero-GC goals and explicit lifetime management target scenarios where collection overhead is unwelcome."
+      }
+    ],
+    "useCases": [
+      {
+        "title": "Typed high-availability engines",
+        "detail": "Rule engines, data processors and embedded decision systems needing both exhaustive modeling and supervised stateful execution."
+      },
+      {
+        "title": "Native data pipelines",
+        "detail": "Batch and streaming numerical work where columnar memory layout, explicit lifetime and actor boundaries matter."
       }
     ]
   }
