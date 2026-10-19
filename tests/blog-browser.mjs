@@ -217,6 +217,21 @@ try {
             await comparisonPage.goBack();
             assert.equal(await picker.inputValue(), "rust", "history back should restore prior comparison");
             assert.equal(await comparisonPage.locator("#compare-rust").isVisible(), true);
+            // Deep editorial structure must exist for every language, not just the SSR default.
+            if (engine === "chromium" && width === 375) {
+              for (const language of ["elixir", "erlang", "gleam", "rust", "java", "cpp", "golang", "nodejs", "csharp", "ocaml"]) {
+                await picker.selectOption(language);
+                const active = comparisonPage.locator("#compare-" + language);
+                assert.equal(await active.isVisible(), true, language + " should be active");
+                assert.equal(await active.locator(".comparison-benefit").count(), 3, language + " benefits");
+                assert.equal(await active.locator(".comparison-angle").count(), 5, language + " angles");
+                assert.equal(await active.locator(".comparison-impact").count(), 5, language + " impact statements");
+                assert.equal(await active.locator(".comparison-use-card").count(), 2, language + " use cases");
+                const horizontal = await comparisonPage.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+                assert.ok(horizontal <= 2, language + " has horizontal overflow " + horizontal);
+              }
+              await picker.selectOption("rust");
+            }
             const overflow = await comparisonPage.evaluate(() => document.documentElement.scrollWidth - innerWidth);
             assert.ok(overflow <= 2, "comparisons overflow " + engine + " " + width + "px: " + overflow);
             if (engine === "chromium" && width === 375) {

@@ -5,15 +5,21 @@ import "../styles/comparisons.css";
 ---
 
 <BaseLayout
-  title="Compare Oreslang with Erlang, Rust, Go and more"
-  description="Explore Oreslang's actor-first, ownership-aware design compared with ten established languages. Distinguishes design goals from verified capabilities."
+  title="Why Oreslang? Deep comparisons with Rust, Go, Erlang and more"
+  description="Why Oreslang combines ownership, lightweight Tasks, supervised actors, native compilation and hot code replacement. Detailed tradeoffs versus ten languages."
 >
   <section class="page-hero comparisons-hero">
     <p class="kicker">Comparisons / language design</p>
-    <h1>Oreslang vs. the languages you already know.</h1>
-    <p>Keep the best ideas from Erlang and Rust. Add lightweight Tasks, typed actors, supervision, ownership and multiple compilation targets to one language design.</p>
+    <h1>Own your memory. Supervise your failures. Keep your code running.</h1>
+    <p><strong>Oreslang = ~(Erlang + Rust).</strong> The ambition: the static safety of ownership, the resilience of actors and the freedom of native compilation, without assembling separate runtimes for every part of your system.</p>
+    <div class="comparison-value-bar" aria-label="Oreslang's core design advantages">
+      <span>Typed ownership</span>
+      <span>Tasks + actors</span>
+      <span>Supervision + hot reload</span>
+      <span>LLVM + GraalVM directions</span>
+    </div>
     <p class="comparison-disclaimer">
-      <strong>Design comparison, not a benchmark.</strong> These are Oreslang goals, not proof of shipping feature parity or performance wins.
+      <strong>Architecture goals, not unverified promises.</strong> This is a comparison of intended designs, not a claim that Oreslang has shipped every feature or wins every benchmark.
       The <a href="/language/">public feature matrix</a> currently marks backend support as unverified.
     </p>
   </section>
@@ -22,7 +28,7 @@ import "../styles/comparisons.css";
     <div class="comparison-toolbar">
       <div>
         <label for="language-picker">Compare Oreslang with</label>
-        <p>Choose a language to see the tradeoffs and where the designs differ.</p>
+        <p>Ten ecosystems. Five deep technical contrasts each. A clear case for when Oreslang matters.</p>
       </div>
       <select id="language-picker" name="language" aria-controls="comparison-content">
         {comparisons.map((comparison) => (
@@ -46,11 +52,28 @@ import "../styles/comparisons.css";
             <p class="comparison-headline">{comparison.headline}</p>
           </div>
 
+          <div class="comparison-thesis">
+            <p class="eyebrow">The Oreslang case</p>
+            <p>{comparison.thesis}</p>
+          </div>
+
+          <div class="comparison-benefits" aria-label={`Three reasons to choose Oreslang's direction over ${comparison.name}`}>
+            {comparison.benefits.map((benefit, index) => (
+              <section class="comparison-benefit">
+                <span class="comparison-benefit-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <h3>{benefit.title}</h3>
+                <p>{benefit.detail}</p>
+              </section>
+            ))}
+          </div>
+
           <div class="comparison-strength">
-            <h3>What {comparison.name} gets right</h3>
+            <h3>Respect what {comparison.name} already does well</h3>
             <p>{comparison.strength}</p>
           </div>
 
+          <h3 class="comparison-section-title">Where the architectures differ</h3>
+          <p class="comparison-section-subtitle">Not feature-name checkboxes: what changes for people building and operating systems.</p>
           <div class="comparison-angles" aria-label={`Tradeoffs versus ${comparison.name}`}>
             {comparison.angles.map((angle) => (
               <section class="comparison-angle">
@@ -65,12 +88,28 @@ import "../styles/comparisons.css";
                     <p>{angle.oreslang}</p>
                   </div>
                 </div>
+                <div class="comparison-impact">
+                  <strong>Why it matters</strong>
+                  <p>{angle.impact}</p>
+                </div>
               </section>
             ))}
           </div>
 
+          <section class="comparison-use-cases">
+            <h3 class="comparison-section-title">Where Oreslang's direction is especially compelling</h3>
+            <div class="comparison-use-grid">
+              {comparison.useCases.map((useCase) => (
+                <div class="comparison-use-card">
+                  <h4>{useCase.title}</h4>
+                  <p>{useCase.detail}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <div class="comparison-boundary">
-            <h3>Reality check</h3>
+            <h3>What is ready today—and what still needs proof</h3>
             <p>{comparison.boundary}</p>
           </div>
 
