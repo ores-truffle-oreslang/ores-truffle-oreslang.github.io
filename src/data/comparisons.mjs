@@ -237,98 +237,238 @@ export const comparisons = [
   {
     "id": "rust",
     "name": "Rust",
-    "headline": "Rust's ownership mindset, with actors and Tasks designed into the language experience.",
-    "strength": "Rust provides mature native performance, a borrow checker, a large ecosystem and excellent libraries for async runtimes, actors and GPU work.",
+    "headline": "Rust protects memory. Oreslang wants to protect the entire running system.",
+    "strength": "Rust is already excellent for native systems: ownership, borrowing, Send/Sync, no_std, async/await, Tokio tasks, production actor libraries, low-level memory control and outstanding LLVM tooling. The distinction is not that Rust lacks Tasks or actors; it is where those semantics are defined.",
     "angles": [
       {
-        "topic": "Tasks",
-        "peer": "Rust has async/await and lightweight tasks through runtimes such as Tokio; this is not a missing Rust capability.",
-        "oreslang": "Oreslang proposes built-in lightweight nb Tasks with awaitable handles and an M:N scheduler, reducing runtime/framework assembly."
+        "topic": "Tasks are real in Rust—what changes?",
+        "peer": "Rust has async/await and Tokio's very lightweight tasks with JoinHandle, cancellation semantics and sophisticated work stealing. It also has async-std, smol, threads and scoped parallelism.",
+        "oreslang": "Oreslang's nb Task syntax and scheduler are part of the intended language experience, with do nb fire-and-continue, awaitable Task<T> handles and explicit cancellation boundaries. Ordinary code need not run inside an actor.",
+        "impact": "Developers can express fast concurrency without committing to a particular executor crate or pretending a Task and an actor have identical isolation rules."
       },
       {
-        "topic": "Actors and faults",
-        "peer": "Actor models are available in Rust libraries such as Actix; ownership helps prevent data races.",
-        "oreslang": "Typed actors, mailbox isolation, supervision and controlled hot-swapping are meant to be integrated parts of Oreslang's language and runtime."
+        "topic": "Actor isolation versus library discipline",
+        "peer": "Rust libraries implement actors, mailboxes and supervisors, often with type-safe channels. They can be excellent, but the exact state and lifecycle contract varies by crate.",
+        "oreslang": "Oreslang aims to make an ActorRef<T> send boundary, actor-owned mutable arena, mailbox order and supervisor escalation consistent across runtime backends. Cross-actor mutation should be restricted by the language's ownership rules.",
+        "impact": "Concurrency architecture becomes a checkable part of the application contract, not a choice repeated across libraries."
       },
       {
-        "topic": "Memory model",
-        "peer": "Rust can operate without GC and with no_std on bare metal; this is a major strength.",
-        "oreslang": "Oreslang targets similarly strict ownership for its LLVM profile while combining it with an Erlang-inspired actor model."
+        "topic": "Send/Sync and zero-copy sharing",
+        "peer": "Rust's Send/Sync auto traits, lifetimes, Arc, Mutex and borrowing offer powerful and proven shared-memory safety, including high-performance ECS and data-oriented systems.",
+        "oreslang": "Oreslang adopts similar sendability and safe borrow concepts, while distinguishing private actor mutation from authorized immutable zero-copy sharing and field-sensitive region borrows.",
+        "impact": "Large native workloads could combine cache-friendly, columnar data with supervised actors—without an actor per row or an unnecessary memcpy."
+      },
+      {
+        "topic": "Faults, supervision and live upgrades",
+        "peer": "Rust can detect panics and implement supervisors, but OTP-style restart trees and hot code swaps are not uniform built-in language facilities. Stable live replacement often needs custom indirection, ABI and state migration plans.",
+        "oreslang": "Oreslang targets structured throw/raise/panic propagation to supervisors, explicit actor lifecycle, stable message contracts and generation-aware staged hot reload with rollback.",
+        "impact": "A system can update a worker without treating every failure and code migration as a bespoke infrastructure project."
+      },
+      {
+        "topic": "Bare metal and heterogeneous compute",
+        "peer": "Rust already has robust no_std support and credible embedded, native, SIMD and GPU ecosystems; it often wins immediately on tooling maturity.",
+        "oreslang": "Oreslang plans a freestanding core, optional alloc and stdlib split plus LLVM-native/no-GC profiles, with accelerator-oriented regions and kernels as future work.",
+        "impact": "The long-term bet is a single systems-language vocabulary from edge compute to resilient services—not a claim that Oreslang already matches Rust's embedded ecosystem."
       }
     ],
-    "boundary": "Rust is already the stronger choice for production native tooling and embedded targets. Oreslang is differentiating on integrated concurrency and live lifecycle semantics, not claiming Rust lacks tasks or actors.",
+    "boundary": "Rust is the production choice today for safe native performance, embedded hardware and ecosystem depth. Oreslang's proposed advantage is integrating ownership, actors, Tasks and hot reload into one coherent runtime contract; the overhead and reliability still require proof.",
     "sources": [
       {
-        "label": "Tokio tasks",
+        "label": "Rust ownership and borrowing",
+        "url": "https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html"
+      },
+      {
+        "label": "Tokio task spawning",
         "url": "https://tokio.rs/tokio/tutorial/spawning"
+      },
+      {
+        "label": "Rust Send and Sync",
+        "url": "https://doc.rust-lang.org/nomicon/send-and-sync.html"
       },
       {
         "label": "Actix actor framework",
         "url": "https://actix.rs/docs/actix/"
+      }
+    ],
+    "thesis": "Rust made ownership a practical language-level guarantee. Oreslang takes that philosophy into a larger concurrency contract: native safety, lightweight Tasks, isolated actors, supervised failure and swappable code, designed as cooperating parts instead of a stack of independent libraries. Think 'Rust-like discipline meets Erlang-like recovery.'",
+    "benefits": [
+      {
+        "title": "Actor model built in",
+        "detail": "Typed mailboxes, actor-owned mutable heaps, supervision and lifecycle contracts aim to be language/runtime invariants rather than framework conventions."
+      },
+      {
+        "title": "Tasks for work, actors for isolation",
+        "detail": "Use lightweight nb Tasks for parallel I/O or compute and actors only where state protection, supervision or messaging truly matter."
+      },
+      {
+        "title": "Hot code with a safety story",
+        "detail": "Versioned code loading and staged rollback aim to work alongside ownership and actor state, rather than bolted-on dynamic libraries."
+      }
+    ],
+    "useCases": [
+      {
+        "title": "Plugin or tenant execution hosts",
+        "detail": "Servers that need typed native extensions, revocable capabilities, per-actor state and controlled code replacement."
+      },
+      {
+        "title": "Real-time or simulation backends",
+        "detail": "Cache-local data-oriented compute under an actor-supervised orchestration layer, with Tasks for fine-grained parallel work."
       }
     ]
   },
   {
     "id": "java",
     "name": "Java",
-    "headline": "Beyond virtual threads: isolate mutable state as an actor-level rule.",
-    "strength": "Java delivers a broad ecosystem, powerful JIT optimization, mature observability and virtual threads for scalable concurrent I/O.",
+    "headline": "Virtual threads make waiting cheaper. Actors make shared state less dangerous.",
+    "strength": "The JVM has world-class JITs, debugging, profilers, production libraries, virtual threads, structured concurrency libraries and advanced collectors. GraalVM Native Image can also build fast-starting native executables. Oreslang should earn its place through clearer isolation, not dismiss Java's engineering quality.",
     "angles": [
       {
-        "topic": "Concurrency",
-        "peer": "Virtual threads make thread-per-request styles practical, but Java code can still freely share mutable objects and require synchronization.",
-        "oreslang": "Oreslang's actors aim to enforce owned mutable state and typed message boundaries, alongside lightweight Tasks."
+        "topic": "Virtual threads versus Tasks and actors",
+        "peer": "Java virtual threads make high-concurrency blocking-style I/O easier, but they do not stop two threads from mutating the same object. Locks, immutable design and disciplined libraries still matter.",
+        "oreslang": "Oreslang separates lightweight schedulable Tasks from actors that own mutable state. A mailbox and sealed callbacks define where mutation happens; typed messages express interactions.",
+        "impact": "Thread scaling and data-race prevention become distinct, explicit engineering concerns instead of being conflated."
       },
       {
-        "topic": "GC and native",
-        "peer": "The JVM offers several sophisticated collectors and native-image options through GraalVM; pauses and footprints are configuration-dependent.",
-        "oreslang": "The LLVM profile targets zero runtime GC in supported allocation modes; GraalVM-backed Oreslang may still have managed-runtime GC."
+        "topic": "The actor model: framework or language?",
+        "peer": "Akka/Pekko, Orleans-like patterns in other runtimes, and Java libraries offer message-driven services; Scala on the JVM has had advanced actor frameworks. Their safety guarantees depend on APIs and discipline.",
+        "oreslang": "Oreslang proposes built-in ActorRef<T>, supervision, actor arenas and lifecycle hooks across more than one execution backend. The actor is intended to be a runtime-owned isolation boundary, not merely a class with a queue.",
+        "impact": "Teams can reason about failure containment and state visibility before choosing a service framework."
       },
       {
-        "topic": "Hot reload",
-        "peer": "JVM reload and actor frameworks exist, but semantics depend on libraries, classloaders and tooling.",
-        "oreslang": "Versioned code loading, supervision and state isolation are intended to be explicit language/runtime contracts."
+        "topic": "Memory collection and tail latency",
+        "peer": "HotSpot offers G1, ZGC and Shenandoah with sophisticated low-pause options. GraalVM Native Image also has its own memory strategies; blanket claims of long JVM pauses are misleading.",
+        "oreslang": "Oreslang's managed/GraalVM profile may use GC; the strict LLVM profile targets explicit native ownership and zero runtime GC for supported programs.",
+        "impact": "A service can aim to select its memory tradeoff at compilation/deployment time, while testing actual p99 latency instead of assuming zero-GC guarantees speed."
+      },
+      {
+        "topic": "Cold starts and footprint",
+        "peer": "The JVM's class loading, JIT warmup and runtime footprint matter in some FaaS and device scenarios. GraalVM Native Image already mitigates many startup concerns for Java.",
+        "oreslang": "Oreslang aims at AOT native builds for bursty jobs, while keeping a separate JIT-capable profile for dynamic workloads. Actor semantics are meant to remain recognizable across both.",
+        "impact": "The value is combining native deployment with actor-oriented supervision—not pretending Java cannot compile AOT."
+      },
+      {
+        "topic": "Hot code, trust and failure routing",
+        "peer": "Class loaders, agents and module systems allow sophisticated deployment strategies; production-safe state migration and plugin isolation still require careful integration.",
+        "oreslang": "Oreslang designs actor generations, staged reload, failure escalation and capabilities as an explicit lifecycle protocol, with different trust classes and controlled sharing.",
+        "impact": "Reloading a worker becomes a supervised state transition rather than an ad hoc classloader replacement."
       }
     ],
-    "boundary": "Do not claim all JVM deployments have large pauses, or that every Oreslang backend is GC-free. Native image startup and full-VM behavior require measured comparisons.",
+    "boundary": "Java remains a superb production ecosystem, and modern collectors and virtual threads are significant advances. Oreslang is promising a more principled actor/ownership model and optional native zero-GC execution, not a universal speed or latency victory.",
     "sources": [
       {
-        "label": "Java virtual threads (JEP 444)",
+        "label": "JEP 444 — Virtual Threads",
         "url": "https://openjdk.org/jeps/444"
+      },
+      {
+        "label": "JVM Garbage Collector ZGC",
+        "url": "https://docs.oracle.com/en/java/javase/25/gctuning/z-garbage-collector.html"
       },
       {
         "label": "GraalVM Native Image",
         "url": "https://www.graalvm.org/latest/reference-manual/native-image/"
+      }
+    ],
+    "thesis": "Java excels at enterprise scale, but concurrency safety remains largely a convention layered over shared objects, synchronization and framework choices. Oreslang's argument is stronger: let lightweight Tasks handle execution while actors own state, enforce typed messages and supervise failure. Then choose a managed GraalVM path or a native LLVM path according to deployment needs.",
+    "benefits": [
+      {
+        "title": "Ownership at the right boundary",
+        "detail": "A private actor heap and typed message contract aim to eliminate broad categories of accidental shared-state races."
+      },
+      {
+        "title": "Not bound to one VM",
+        "detail": "GraalVM and LLVM are separate intended compilation profiles, allowing managed JIT and native no-GC design tradeoffs."
+      },
+      {
+        "title": "Lifecycle is part of the model",
+        "detail": "Supervision and versioned actor upgrades are designed as runtime semantics, not just library deployment patterns."
+      }
+    ],
+    "useCases": [
+      {
+        "title": "Latency-conscious multitenant services",
+        "detail": "Native actors with isolated state and bounded mailboxes, without a separate JVM process for every tenant."
+      },
+      {
+        "title": "Extensible infrastructure services",
+        "detail": "Long-running plugin workers needing versioned reload, capabilities and native or managed deployment options."
       }
     ]
   },
   {
     "id": "cpp",
     "name": "C++",
-    "headline": "Native control with a safer default story for ownership, actors and lifecycle.",
-    "strength": "C++ offers close-to-hardware control, zero-required-GC execution, mature compilers, portable native libraries and deep GPU/embedded ecosystems.",
+    "headline": "C++ gives you control. Oreslang aims to make the safe path the default.",
+    "strength": "C++ remains foundational in engines, finance, robotics, embedded systems, compilers and GPU computing. RAII, move semantics, templates, coroutines, smart pointers and modern sanitizers are powerful—and no required garbage collector is already normal.",
     "angles": [
       {
-        "topic": "Safety",
-        "peer": "C++ can achieve deterministic lifetime with RAII and smart pointers, but aliasing and concurrency rules place substantial responsibility on developers.",
-        "oreslang": "Oreslang proposes compile-time borrow/ownership constraints and private actor state to make unsafe sharing harder by default."
+        "topic": "RAII versus enforced borrowing",
+        "peer": "RAII and smart pointers provide deterministic resource management, but C++ still permits raw pointers, invalid aliasing, use-after-free and subtle data races in ordinary code.",
+        "oreslang": "Oreslang proposes compiler-checked ownership/borrows, actor-owned mutable arenas and explicit unsafe/foreign interfaces where unavoidable.",
+        "impact": "The intended default is that moving data across a boundary must obey lifetime and sharing rules rather than trusting every call site."
       },
       {
-        "topic": "Async and actors",
-        "peer": "C++20 includes coroutines; actors and task scheduling typically come from libraries and application conventions.",
-        "oreslang": "Tasks, actor mailboxes, supervision and controlled reload are intended as interoperable runtime primitives."
+        "topic": "Threads, coroutines and scheduling",
+        "peer": "C++20 coroutines are a flexible mechanism, not a single baked-in scheduler; production task runtimes and actor patterns vary by application/library.",
+        "oreslang": "The Oreslang runtime proposes lightweight M:N Tasks with await/select, plus actors with mailboxes and supervision. Ordinary CPU loops can run without becoming actors.",
+        "impact": "Applications get a clearer standard way to describe execution versus isolation, without writing a bespoke scheduling framework each time."
       },
       {
-        "topic": "Hardware",
-        "peer": "C++ is already used on bare metal, accelerators and constrained systems.",
-        "oreslang": "Oreslang's freestanding core and LLVM/GPU/FPGA/ASIC ambitions are targets, not evidence of comparable device support."
+        "topic": "Fault containment",
+        "peer": "A segmentation fault or memory corruption in native C++ can terminate or poison the process. Library-level actors cannot completely sandbox arbitrary unsafe native code.",
+        "oreslang": "Borrow-checked native code and actor-owned mutable state target fewer accidental corruption pathways. Supervisors can manage language-level failures; untrusted native code still needs a real security boundary.",
+        "impact": "Supervision is more meaningful when the language narrows the ways one component can corrupt another."
+      },
+      {
+        "topic": "Hot swapping running components",
+        "peer": "Dynamic libraries and plugins can be reloaded, but ABI stability, object layout, in-flight calls and state migration are often custom engineering work.",
+        "oreslang": "Versioned actor contracts, staged code generation and controlled rollback are central hot-reload design goals, with explicit state and capability migration.",
+        "impact": "Treat safe code replacement as a repeatable application operation, not an undocumented set of pointer assumptions."
+      },
+      {
+        "topic": "Bare metal, SIMD, GPU and cache locality",
+        "peer": "C++ already supports outstanding bare-metal, native, SIMD and accelerator toolchains. Its dominance in HPC and specialized devices is not in question.",
+        "oreslang": "Oreslang targets LLVM-native/no-GC execution, a freestanding core and cache-friendly AoS/SoA/AoSoA layouts. FPGA/ASIC and GPU profiles remain aspirational and require real kernels.",
+        "impact": "The value proposition is native performance plus constrained concurrency, not a promise to beat mature C++ toolchains on every platform."
       }
     ],
-    "boundary": "C++ is mature and excellent for specialized native hardware. Oreslang's safety and fault-containment ideas must prove their runtime costs and toolchain quality.",
+    "boundary": "Choose C++ today for demanding specialized hardware, ABI compatibility and established HPC tooling. Oreslang's opportunity is eliminating routine safety and lifecycle glue while retaining a native performance envelope; current benchmarks do not establish parity.",
     "sources": [
       {
-        "label": "C++ coroutines overview",
+        "label": "C++ coroutines",
         "url": "https://en.cppreference.com/w/cpp/language/coroutines"
+      },
+      {
+        "label": "C++ RAII and lifetime",
+        "url": "https://en.cppreference.com/w/cpp/language/raii"
+      },
+      {
+        "label": "LLVM project",
+        "url": "https://llvm.org/"
+      }
+    ],
+    "thesis": "C++ can extract exceptional performance from nearly any machine, but its freedom makes ownership, aliasing, concurrency and hot reload a continuing code-review burden. Oreslang is aiming for the same native ambition with borrow-checked state, typed actor communication and a supervised runtime model that helps a system stay alive when components fail.",
+    "benefits": [
+      {
+        "title": "Safer memory as a language invariant",
+        "detail": "Reject dangerous borrows and unauthorized mutable sharing before they become dangling pointers or cross-thread races."
+      },
+      {
+        "title": "Real supervision for native code",
+        "detail": "Actors package state, mailbox contracts, failure routing and managed lifecycle around high-performance components."
+      },
+      {
+        "title": "Compute-friendly without actor overhead everywhere",
+        "detail": "Use direct data-oriented loops, contiguous buffers and Tasks for fine-grained work; deploy actors where isolation earns its cost."
+      }
+    ],
+    "useCases": [
+      {
+        "title": "Long-lived native plugin systems",
+        "detail": "Reliably swapping independently supervised native worker modules without loose lifetime assumptions."
+      },
+      {
+        "title": "Data-heavy simulation and control",
+        "detail": "Zero-GC-oriented data layouts and Tasks, with actor supervision at coarse-grained boundaries."
       }
     ]
   },
