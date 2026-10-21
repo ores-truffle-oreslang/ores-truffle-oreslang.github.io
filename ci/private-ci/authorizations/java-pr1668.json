@@ -12,7 +12,7 @@
   "destination": {
     "repository": "orestra/orestra-conformance",
     "repository_id": 1426277234,
-    "base_sha": "c91a3dec2cca660405506d3d85618d3393455ad1",
+    "base_sha": "45a0b599e2dc45a57b5fed290eb03210cc8bafe0",
     "workflow_path": ".github/workflows/oreslang-exact-tree-carrier.yml",
     "workflow_blob_sha": "f4759633e2d7bb0c528394325e770013a8cc1826",
     "test_plan_path": "ci/test-plans/java-pr1668.json",
