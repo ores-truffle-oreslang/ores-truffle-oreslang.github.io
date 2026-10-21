@@ -11,10 +11,24 @@ SPEC = importlib.util.spec_from_file_location("anchor", HERE / "verify-authoriza
 anchor = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(anchor)
 DOC = json.loads((HERE / "authorizations/java-pr1668.json").read_text())
+DOC_1711 = json.loads((HERE / "authorizations/java-pr1711.json").read_text())
 
 class Tests(unittest.TestCase):
-    def test_current_manifest(self):
-        anchor.validate(copy.deepcopy(DOC), dt.datetime(2026,10,21,tzinfo=dt.timezone.utc))
+    def test_current_manifests(self):
+        now = dt.datetime(2026,10,21,tzinfo=dt.timezone.utc)
+        anchor.validate(copy.deepcopy(DOC), now)
+        anchor.validate(copy.deepcopy(DOC_1711), now)
+        self.assertEqual(DOC_1711["source"]["pr"], 1711)
+        self.assertEqual(
+            DOC_1711["destination"]["test_plan_path"],
+            "ci/test-plans/java-pr1711.json",
+        )
+
+    def test_test_plan_path_must_match_source_pr(self):
+        doc = copy.deepcopy(DOC_1711)
+        doc["destination"]["test_plan_path"] = "ci/test-plans/java-pr1668.json"
+        with self.assertRaisesRegex(anchor.Denied, "match source PR"):
+            anchor.validate(doc)
 
     def test_codeowners_covers_anchor_control_plane(self):
         root = HERE.parents[1]
