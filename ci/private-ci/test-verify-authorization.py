@@ -65,5 +65,18 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(anchor.Denied, "expired"):
             anchor.validate(copy.deepcopy(DOC), dt.datetime(2026,10,29,tzinfo=dt.timezone.utc))
 
+    def test_expiry_must_be_canonical_utc_and_bounded(self):
+        now = dt.datetime(2026,10,21,tzinfo=dt.timezone.utc)
+
+        doc = copy.deepcopy(DOC_1711)
+        doc["constraints"]["expires_at"] = "2026-10-27T00:00:00+00:00"
+        with self.assertRaisesRegex(anchor.Denied, "canonical UTC Z"):
+            anchor.validate(doc, now)
+
+        doc = copy.deepcopy(DOC_1711)
+        doc["constraints"]["expires_at"] = "2026-10-28T00:00:01Z"
+        with self.assertRaisesRegex(anchor.Denied, "retention exceeds seven days"):
+            anchor.validate(doc, now)
+
 if __name__ == "__main__":
     unittest.main()
