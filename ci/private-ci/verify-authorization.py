@@ -84,6 +84,8 @@ def validate(doc, now=None):
     safe_path(destination["workflow_path"], ".github/workflows/", ".yml")
     sha(destination["workflow_blob_sha"], "workflow blob")
     safe_path(destination["test_plan_path"], "ci/test-plans/", ".json")
+    if destination["test_plan_path"] != f"ci/test-plans/java-pr{source['pr']}.json":
+        raise Denied("test-plan path must match source PR")
     sha(destination["test_plan_blob_sha"], "test-plan blob")
 
     constraints = doc["constraints"]
