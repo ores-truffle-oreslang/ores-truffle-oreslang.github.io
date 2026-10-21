@@ -105,14 +105,18 @@ def validate(doc, now=None):
         raise Denied("unexpected authorization ref template")
     if constraints["receipt_schema"] != "ores-private-ci-receipt-v4":
         raise Denied("unexpected receipt schema")
+    expiry_text = constraints["expires_at"]
+    if not isinstance(expiry_text, str) or not expiry_text.endswith("Z"):
+        raise Denied("expiry must use canonical UTC Z form")
     try:
-        expires = dt.datetime.fromisoformat(constraints["expires_at"].replace("Z", "+00:00"))
-    except (AttributeError, ValueError) as exc:
+        expires = dt.datetime.fromisoformat(expiry_text[:-1] + "+00:00")
+    except ValueError as exc:
         raise Denied("invalid expiry") from exc
-    if expires.tzinfo is None:
-        raise Denied("expiry must be timezone-aware")
-    if now is not None and expires <= now:
-        raise Denied("authorization expired")
+    if now is not None:
+        if expires <= now:
+            raise Denied("authorization expired")
+        if expires - now > dt.timedelta(days=7):
+            raise Denied("authorization retention exceeds seven days")
     return doc
 
 def load(path):
