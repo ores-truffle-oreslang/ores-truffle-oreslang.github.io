@@ -16,6 +16,20 @@ class Tests(unittest.TestCase):
     def test_current_manifest(self):
         anchor.validate(copy.deepcopy(DOC), dt.datetime(2026,10,21,tzinfo=dt.timezone.utc))
 
+    def test_codeowners_covers_anchor_control_plane(self):
+        root = HERE.parents[1]
+        lines = {
+            line.strip()
+            for line in (root / ".github" / "CODEOWNERS").read_text().splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        }
+        required = {
+            "/ci/private-ci/ @ORESoftware",
+            "/.github/workflows/private-ci-anchor.yml @ORESoftware",
+            "/.github/CODEOWNERS @ORESoftware",
+        }
+        self.assertEqual(set(), required - lines)
+
     def test_unknown_field_fails_closed(self):
         doc=copy.deepcopy(DOC); doc["shell"]="bash"
         with self.assertRaises(anchor.Denied): anchor.validate(doc)
