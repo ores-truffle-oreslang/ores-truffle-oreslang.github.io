@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'ci/private-ci/**'
+      - '.github/CODEOWNERS'
       - '.github/workflows/private-ci-anchor.yml'
   push:
     branches: [main]
