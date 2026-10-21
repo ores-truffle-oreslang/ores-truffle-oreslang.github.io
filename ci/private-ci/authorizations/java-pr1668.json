@@ -25,6 +25,7 @@
     "source_ref_template": "ci/oreslang-{source_tree_sha}",
     "authorization_ref_template": "ci/authorized-{carrier_commit_sha}",
     "receipt_schema": "ores-private-ci-receipt-v4",
-    "expires_at": "2026-10-28T00:00:00Z"
+    "expires_at": "2026-10-28T00:00:00Z",
+    "control_ref_template": "ci/control-{carrier_commit_sha}"
   }
 }
