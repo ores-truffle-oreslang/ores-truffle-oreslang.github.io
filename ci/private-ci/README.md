@@ -41,7 +41,12 @@ complete check immediately before source execution:
 
 1. The live anchor repository has numeric ID `1409246164`, remains public,
    and its default branch is `main`.
-2. Anchor `main` reports `protected=true`.
+2. Anchor `main` reports `protected=true`, and the effective branch-rules
+   API for `main` must show a pull-request rule with at least one approval,
+   stale-review dismissal, CODEOWNER review, last-push approval, and required
+   review-thread resolution, plus deletion protection and non-fast-forward
+   protection. The carrier checks these effective rules both before dependent
+   reads and again before execution.
 3. The receipt-named authorization PR is closed, non-draft, actually merged,
    and its merge commit is the current protected `main` tip.
 4. That authorization PR has an effective `APPROVED` review from the
