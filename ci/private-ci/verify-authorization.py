@@ -104,7 +104,7 @@ def validate(doc, now=None):
         raise Denied("unexpected source ref template")
     if constraints["authorization_ref_template"] != "ci/authorized-{carrier_commit_sha}":
         raise Denied("unexpected authorization ref template")
-    if constraints["control_ref_template"] != "ci/control-{carrier_commit_sha}":
+    if constraints["control_ref_template"] != "ci/oreslang-control-{carrier_commit_sha}":
         raise Denied("unexpected control ref template")
     if constraints["receipt_schema"] != "ores-private-ci-receipt-v4":
         raise Denied("unexpected receipt schema")
