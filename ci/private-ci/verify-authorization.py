@@ -92,7 +92,8 @@ def validate(doc, now=None):
     if not isinstance(constraints, dict) or set(constraints) != {
         "source_must_be_private", "destination_must_be_private",
         "source_tree_prefix", "source_ref_template",
-        "authorization_ref_template", "receipt_schema", "expires_at"
+        "authorization_ref_template", "control_ref_template",
+        "receipt_schema", "expires_at"
     }:
         raise Denied("constraint fields are not exact")
     if constraints["source_must_be_private"] is not True or constraints["destination_must_be_private"] is not True:
@@ -103,6 +104,8 @@ def validate(doc, now=None):
         raise Denied("unexpected source ref template")
     if constraints["authorization_ref_template"] != "ci/authorized-{carrier_commit_sha}":
         raise Denied("unexpected authorization ref template")
+    if constraints["control_ref_template"] != "ci/control-{carrier_commit_sha}":
+        raise Denied("unexpected control ref template")
     if constraints["receipt_schema"] != "ores-private-ci-receipt-v4":
         raise Denied("unexpected receipt schema")
     expiry_text = constraints["expires_at"]
