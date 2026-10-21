@@ -1,0 +1,30 @@
+{
+  "schema": "ores-private-ci-external-authorization-v1",
+  "anchor_repository_id": 1409246164,
+  "source": {
+    "repository": "ores-truffle-oreslang/oreslang-source.java",
+    "repository_id": 1400792274,
+    "base_branch": "main",
+    "pr": 1668,
+    "head_sha": "4ccb6046fa302be59d377261a3b23a28a82f0a1f",
+    "tree_sha": "f96b24ac3e7b547b66b10ad19692c11943b02e0b"
+  },
+  "destination": {
+    "repository": "orestra/orestra-conformance",
+    "repository_id": 1426277234,
+    "base_sha": "c91a3dec2cca660405506d3d85618d3393455ad1",
+    "workflow_path": ".github/workflows/oreslang-exact-tree-carrier.yml",
+    "workflow_blob_sha": "f4759633e2d7bb0c528394325e770013a8cc1826",
+    "test_plan_path": "ci/test-plans/java-pr1668.json",
+    "test_plan_blob_sha": "f480a42368505df33541666e6c414bb12201d2ad"
+  },
+  "constraints": {
+    "source_must_be_private": true,
+    "destination_must_be_private": true,
+    "source_tree_prefix": "private-oreslang-source",
+    "source_ref_template": "ci/oreslang-{source_tree_sha}",
+    "authorization_ref_template": "ci/authorized-{carrier_commit_sha}",
+    "receipt_schema": "ores-private-ci-receipt-v4",
+    "expires_at": "2026-10-28T00:00:00Z"
+  }
+}
