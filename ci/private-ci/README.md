@@ -39,9 +39,10 @@ complete check immediately before source execution:
 2. Anchor `main` reports `protected=true`.
 3. The receipt-named authorization PR is closed, non-draft, actually merged,
    and its merge commit is the current protected `main` tip.
-4. That authorization PR has an effective independent `APPROVED` review
+4. That authorization PR has an effective `APPROVED` review from the
+   designated security reviewer `@ORESoftware` (GitHub user ID `11139560`)
    whose `commit_id` equals the exact PR head. The PR author cannot satisfy
-   this requirement.
+   this requirement, and an arbitrary independent reviewer is insufficient.
 5. The authorization PR's changed-file set contains the exact
    `ci/private-ci/authorizations/java-pr<source-pr>.json` manifest blob.
    An unrelated reviewed PR that merely inherits an older manifest cannot
