@@ -6,8 +6,8 @@
     "repository_id": 1400792274,
     "base_branch": "main",
     "pr": 1668,
-    "head_sha": "9e53888139bb384dd6248d71d44884d74de0be42",
-    "tree_sha": "0c0817c99bfee129f96e0967c549c89a11e87f34"
+    "head_sha": "6556c958f782f3c93846e0bb0221f3a62182a59c",
+    "tree_sha": "97fd9c561020f45eae03863ed173e5a505da3e4e"
   },
   "destination": {
     "repository": "orestra/orestra-conformance",
