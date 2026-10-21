@@ -26,6 +26,6 @@
     "authorization_ref_template": "ci/authorized-{carrier_commit_sha}",
     "receipt_schema": "ores-private-ci-receipt-v4",
     "expires_at": "2026-10-27T00:00:00Z",
-    "control_ref_template": "ci/control-{carrier_commit_sha}"
+    "control_ref_template": "ci/oreslang-control-{carrier_commit_sha}"
   }
 }
