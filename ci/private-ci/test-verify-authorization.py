@@ -30,6 +30,12 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(anchor.Denied, "match source PR"):
             anchor.validate(doc)
 
+    def test_control_ref_template_is_fixed(self):
+        doc = copy.deepcopy(DOC_1711)
+        doc["constraints"]["control_ref_template"] = "ci/oreslang-{carrier_commit_sha}"
+        with self.assertRaisesRegex(anchor.Denied, "control ref template"):
+            anchor.validate(doc)
+
     def test_codeowners_covers_anchor_control_plane(self):
         root = HERE.parents[1]
         lines = {
