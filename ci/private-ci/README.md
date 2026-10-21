@@ -19,8 +19,13 @@ The connector-mediated publisher must verify the protected anchor and all live
 identities before reading or writing private source bytes; then it may create
 only a fresh `ci/oreslang-<source-tree-sha>` source-bearing branch and the
 matching `ci/authorized-<carrier-commit-sha>` authorization ref in the pinned
-private carrier. It must verify the uploaded isolated subtree has the exact
-authorized source root-tree SHA before attaching either ref.
+private carrier. The source-bearing ref itself must not trigger Actions. After
+the exact source-bearing commit is verified, the publisher creates a separate
+source-free `ci/control-<carrier-commit-sha>` commit, based on the authorized
+carrier base, containing only dispatch metadata. That control ref runs the
+trusted workflow inherited from the authorized source-free base. It must verify
+the uploaded isolated subtree has the exact authorized source root-tree SHA
+before attaching any execution ref.
 
 This trust anchor is source-free by construction.
 
@@ -54,10 +59,16 @@ complete check immediately before source execution:
 8. The inherited carrier workflow blob and
    `ci/test-plans/java-pr<source-pr>.json` blob match the manifest exactly.
 9. The source-bearing branch name is exactly
-   `ci/oreslang-<authorized-source-root-tree-sha>`.
+   `ci/oreslang-<authorized-source-root-tree-sha>`, and that ref is not an
+   Actions trigger.
 10. The exact `ci/authorized-<carrier-commit-sha>` ref exists and points to
-    the event commit.
-11. Anchor `main` is re-read after all dependent metadata reads and must still
+    the source-bearing commit.
+11. Execution is dispatched only by a source-free
+    `ci/control-<carrier-commit-sha>` commit whose sole parent is the
+    authorized carrier base and whose only change is strict dispatch metadata.
+    The trusted workflow validates the protected authorization before checking
+    out the private source-bearing commit.
+12. Anchor `main` is re-read after all dependent metadata reads and must still
     point to the same protected authorization merge commit.
 
 This makes a later direct push, force-push, carrier-base advance, workflow
