@@ -24,4 +24,14 @@ jobs:
         with:
           python-version: '3.13'
       - run: python3 ci/private-ci/test-verify-authorization.py
-      - run: python3 ci/private-ci/verify-authorization.py ci/private-ci/authorizations/java-pr1668.json
+      - name: Validate every authorization manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=false
+          for manifest in ci/private-ci/authorizations/*.json; do
+            test -f "$manifest"
+            found=true
+            python3 ci/private-ci/verify-authorization.py "$manifest"
+          done
+          test "$found" = "true"
