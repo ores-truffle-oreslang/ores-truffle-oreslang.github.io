@@ -66,6 +66,14 @@ The site consumes its Astro adapter from
 To intentionally update the grammar used by the site, advance the submodule pointer
 to a tested highlighter commit and commit that pointer change here.
 
+## Software licenses
+
+The website publishes a [licenses page](/licenses/) with the custom Lima 27
+source-available license and exclusions. It is not OSI-approved or a free-software
+license; the page does not automatically apply Lima 27 to compiler repositories,
+third-party contributions, or previously licensed releases. Adoption requires
+an express notice by each authorized rights holder.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` checks out submodules, runs the highlighter's own test
@@ -107,3 +115,7 @@ are also checked against 18 reviewed, tolerance-based pixel signatures.
 See [engineering-log publication standards](docs/ENGINEERING_LOG_PUBLICATION.md)
 and [example evidence inventory](src/data/engineering-log-examples.json), and
 [compiler/visual verification policy](docs/ENGINEERING_LOG_EVIDENCE_AND_VISUALS.md).
+
+## Engineering policy: no Python
+
+Python is prohibited in the `ores-truffle-oreslang` GitHub organization, including scripts, build tools, tests, CI, automation and documentation examples that execute Python. Existing Python implementations must be replaced with equivalent **Rust** implementations while preserving behavior, security properties and test coverage. Do not add `.py`, `.pyi`, `.ipynb`, Python dependency manifests, `python`/`python3` commands, `pip`, `pytest`, `poetry`, `uv` or `actions/setup-python` to project workflows. Rust replacements should pass `cargo fmt`, `cargo clippy` and `cargo test`. Explanatory references to this prohibition are acceptable. The language-specific Oreslang compiler backends are not required to be rewritten in Rust solely because they are implemented in Java, C/C++ or other non-Python languages.

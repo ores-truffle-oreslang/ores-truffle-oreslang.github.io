@@ -347,9 +347,9 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
     border-radius: 7px;
     white-space: normal;
   }
-  /* Pair the two short utility links in the final row; the disclosure
-     retains its reviewed height while both destinations remain reachable. */
-  .site-header .mobile-navigation nav a:nth-last-child(-n+2) {
+  /* Four utility links occupy two paired rows. Keep the mobile disclosure
+     height stable as destinations are added; every link stays accessible. */
+  .site-header .mobile-navigation nav a:nth-last-child(-n+4) {
     grid-column: auto;
   }
   .site-header .mobile-navigation nav a:hover,
