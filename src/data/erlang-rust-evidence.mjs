@@ -52,6 +52,8 @@ export const rowDraftFeatureIds = Object.freeze({
   "aot-jit": [
     "platform-targets"
   ],
+  "native-single-binaries": [],
+  "target-architectures": [],
   "lambdas": [],
   "mobile-phones": [],
   "desktop-apps": [],
@@ -65,6 +67,7 @@ export const rowDraftFeatureIds = Object.freeze({
     "records-tuples-entries"
   ],
   "data-oriented": [],
+  "data-oriented-design": [],
   "gpus": [],
   "distributed": [],
   "carrier-grade-linux": [],
