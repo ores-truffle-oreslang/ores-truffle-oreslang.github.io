@@ -72,6 +72,12 @@ To change an approved baseline:
    detection tests themselves still fail closed.
 5. Keep the baseline-generator script versioned with the manifest.
 
+### Reviewed single-image navigation update (October 22, 2026)
+
+The original [visual seed run 38948068851](https://github.com/ores-truffle-oreslang/ores-truffle-oreslang.github.io/actions/runs/38948068851) remains the source of truth for **17 of 18** screenshots. The site's mobile menu has since deliberately gained two links, `licenses` and `comparisons`; those links are visible in the full-size WebKit 375 px logs-archive screenshot, but absent from the original baseline. A PR-head [validation run 39840069637](https://github.com/ores-truffle-oreslang/ores-truffle-oreslang.github.io/actions/runs/39840069637) exercised the page's keyboard/navigation/overflow and other browser checks and failed only the stale `webkit-375-archive.png` visual baseline (15 significant cells vs allowed 12).
+
+The actual 375×900 screenshot from that run's [browser-visual-review artifact 12452822497](https://github.com/ores-truffle-oreslang/ores-truffle-oreslang.github.io/actions/runs/39840069637/artifacts) was compared visually with the original seed artifact 12067237575, including menu labels and layout. After review, **only that one screenshot's original SHA-256 and 32×24 RGB sample** were refreshed. No visual acceptance thresholds were changed; all other baseline signatures remain identical. `tests/visual-baselines.json.reviewedOverrides` pins the exact source commit, workflow run, artifact ID and review rationale; the baseline unit test explicitly validates this exception. Final CI on the updated PR head must still pass the unchanged visual gate before merge.
+
 A past seed artifact may expire. The compact signatures and provenance
 remain in Git, but new baselines must be seeded from a fresh reviewed run.
 

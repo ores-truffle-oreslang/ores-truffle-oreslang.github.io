@@ -41,13 +41,22 @@ export const rowDraftFeatureIds = Object.freeze({
   "borrow-checking": [
     "ownership-borrows"
   ],
+  "memory-safety": [
+    "ownership-borrows",
+    "actor-isolation"
+  ],
   "garbage-collection": [],
+  "compressed-addressing": [],
   "soft-real-time": [],
   "hard-real-time": [],
   "aot-jit": [
     "platform-targets"
   ],
+  "native-single-binaries": [],
+  "target-architectures": [],
   "lambdas": [],
+  "mobile-phones": [],
+  "desktop-apps": [],
   "actor-system": [
     "actor-isolation",
     "actor-supervision"
@@ -58,9 +67,12 @@ export const rowDraftFeatureIds = Object.freeze({
     "records-tuples-entries"
   ],
   "data-oriented": [],
+  "data-oriented-design": [],
   "gpus": [],
   "distributed": [],
   "carrier-grade-linux": [],
+  "embedded-systems": [],
+  "fpga-asic": [],
   "websockets": [],
   "rtc-signaling": [],
   "top-five": [],
@@ -70,6 +82,7 @@ export const rowDraftFeatureIds = Object.freeze({
     "actor-isolation",
     "async-channels-select"
   ],
+  "nonblocking-io": [],
   "ffi-abi": [],
   "packages-modules": [
     "modules-and-visibility"

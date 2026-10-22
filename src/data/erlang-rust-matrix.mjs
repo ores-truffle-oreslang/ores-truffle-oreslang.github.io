@@ -10,10 +10,10 @@ export const matrixRows = [
   {
     "id": "type-system",
     "feature": "Type system",
-    "erlang": "Dynamically typed terms, pattern matching, typespecs and Dialyzer; checks are not Rust-style static guarantees.",
-    "rust": "Static nominal types, generics, traits, lifetimes and exhaustive enums; compilation rejects many invalid programs.",
-    "oreslang": "Design: static nominal/structural types, generics, Option/Result-like variants and typed actor mail; backend conformance is unverified.",
-    "others": "Go offers static interfaces; Elixir is dynamic on BEAM; Gleam and OCaml have strong inferred static types.",
+    "erlang": "Dynamically typed Erlang terms with pattern matching, optional typespec annotations and Dialyzer success typing. These give useful inferred analyses but do not turn Erlang into a gradual static type system with guaranteed compile-time checks.",
+    "rust": "Statically typed with strong local type inference, nominal types, traits, generics and exhaustive enums. Inference removes many annotations without weakening static checks; ordinary Rust does not provide gradual dynamic typing.",
+    "oreslang": "Design: static nominal/structural contracts and inferred local types alongside explicit annotations, generics and typed actor mail. Gradual typing (controlled dynamic-to-static boundaries with runtime checks) is a separate research question, not a verified mode; backend conformance remains unverified.",
+    "others": "OCaml/Gleam use inferred static types; Go infers some declarations; Python typing uses Any as a gradual form while its runtime stays dynamic. TypeScript offers gradual-style adoption around any/unknown and JavaScript interop, with limitations.",
     "status": "design"
   },
   {
@@ -44,6 +44,15 @@ export const matrixRows = [
     "status": "design"
   },
   {
+    "id": "memory-safety",
+    "feature": "Memory safety",
+    "erlang": "Ordinary BEAM terms are managed and isolated by processes, preventing many pointer and lifetime errors in Erlang code. Native implemented functions (NIFs), drivers and ports have different trust and failure boundaries.",
+    "rust": "Safe Rust enforces ownership, borrowing and bounds checks to prevent many memory errors; unsafe Rust, native libraries and FFI still require manually upheld invariants. Memory safety is not a guarantee of logic or availability safety.",
+    "oreslang": "Design goal: ownership/borrow checks, generation-checked actor handles, single actor-owned state schema and isolated mutable arenas. No end-to-end backend memory-safety certification or FFI containment proof is published.",
+    "others": "Java, C# and Go provide managed memory safety with escape hatches; C/C++ provide low-level control but generally require additional discipline and tooling.",
+    "status": "design"
+  },
+  {
     "id": "garbage-collection",
     "feature": "Garbage collection",
     "erlang": "BEAM normally performs garbage collection on individual process heaps; large binaries can be shared via reference counting.",
@@ -51,6 +60,15 @@ export const matrixRows = [
     "oreslang": "Target: LLVM actor-owned arenas/heaps with no tracing GC; GraalVM uses actor-owned regions alongside managed GC. These are distinct profiles, not guaranteed results.",
     "others": "Go, Java, C# use managed GC; C/C++ use explicit/RAII lifetime strategies.",
     "status": "design"
+  },
+  {
+    "id": "compressed-addressing",
+    "feature": "32-bit pointers / compressed arena offsets",
+    "erlang": "Term and pointer representation depends on the BEAM build and target word size. A 64-bit BEAM is not a universal 32-bit-pointer or compressed-reference system; term tagging and shared binaries affect real memory use.",
+    "rust": "Native pointers follow the target architecture (32-bit target: generally 4-byte thin pointers; 64-bit target: generally 8). Applications can explicitly use u32 indices/relative offsets in bounded arenas; Rust does not automatically compress arbitrary pointers.",
+    "oreslang": "Research target: store checked 32-bit offsets or handles into actor-owned regions no larger than 4 GiB, with bounds, alignment and generation validation. A 64-bit process still uses native-width pointers at FFI/OS boundaries. Savings and overflow safety require proof.",
+    "others": "JVM compressed ordinary object pointers may reduce reference footprint; WebAssembly wasm32 uses 32-bit linear-memory addressing; C/C++ can implement compact handles manually. Object/layout overhead can outweigh pointer savings.",
+    "status": "research"
   },
   {
     "id": "soft-real-time",
@@ -80,12 +98,48 @@ export const matrixRows = [
     "status": "design"
   },
   {
+    "id": "native-single-binaries",
+    "feature": "Native code and standalone single binaries",
+    "erlang": "Erlang modules execute on BEAM (with an OTP JIT on supported hosts). OTP releases can package an embedded runtime and dependencies, but standard deployment is not one self-contained machine-code executable.",
+    "rust": "rustc normally emits native AOT executables and libraries; a single executable is often practical. Full portability or static linkage still depends on libc, target ABI, linked native libraries, assets and OS facilities.",
+    "oreslang": "Target: LLVM native AOT executables and GraalVM Native Image distributions, optionally packaging application runtime into a single artifact. Fully static vs dynamic linking and platform dependencies vary; no verified one-file distribution across all targets is claimed.",
+    "others": "Go often produces a single native executable; C/C++ depend on linker/toolchain settings; .NET Native AOT and GraalVM Native Image can ship native binaries; JVM apps commonly need a runtime or bundled distribution.",
+    "status": "design"
+  },
+  {
+    "id": "target-architectures",
+    "feature": "Target architectures and portability",
+    "erlang": "OTP commonly targets x86-64 and ARM/AArch64 on supported operating systems; other CPU/OS combinations require platform-specific runtime builds and testing. Cross-compiling BEAM/ERTS is not the same as universal target support.",
+    "rust": "rustc offers tiered target support for x86/x86-64, ARM/AArch64, RISC-V, WebAssembly and other CPU/OS triples. Standard-library availability, atomics, toolchain distribution and cross-linking differ by target tier.",
+    "oreslang": "Target matrix spans native LLVM architectures (x86-64, AArch64, ARM and RISC-V candidates), Java/GraalVM on its supported hosts, plus WebAssembly, JavaScript and .NET backend strategies. Architecture-level AOT, ABI, actor isolation and CI parity remain unverified for each target.",
+    "others": "C/C++/LLVM and Zig have broad cross-compilation ecosystems; Go builds many CPU/OS pairs; Java and .NET target their respective supported VMs/runtimes. Availability must be checked for exact triples, not inferred from language names.",
+    "status": "research"
+  },
+  {
     "id": "lambdas",
     "feature": "Usage in Lambdas / serverless",
     "erlang": "AWS Lambda can host Erlang/Elixir through custom runtimes or containers; BEAM startup and packaging remain factors.",
     "rust": "AWS Lambda supports Rust through custom runtimes/third-party tooling; native executables can benefit cold-start and memory budgets.",
     "oreslang": "Target: actor-backed functions in native/AOT builds and optional GraalVM modes; no verified AWS Lambda runtime, cold-start or cost advantage.",
     "others": "Go, Java, Node.js, Python and .NET have mature Lambda ecosystems; language closures are a separate concept.",
+    "status": "research"
+  },
+  {
+    "id": "mobile-phones",
+    "feature": "Mobile phones (Android / iOS)",
+    "erlang": "BEAM can be embedded in mobile applications using specialized integrations, but Android/iOS app delivery, platform policies, startup and footprint require substantial adaptation; not a standard mobile UI workflow.",
+    "rust": "Android and iOS cross-compilation are supported targets. Rust is often used for reusable native libraries and application backends, paired with Kotlin/Swift or cross-platform UI tooling; mobile packaging and platform SDK integration remain necessary.",
+    "oreslang": "Target: native/AOT isolated actor components for Android and iOS with platform FFI and lifecycle integration, respecting battery, background limits and iOS code-loading policies. No complete signed mobile app/SDK path is verified.",
+    "others": "Kotlin/Java with Android, Swift/Objective-C with iOS, Flutter/Dart and React Native/JavaScript supply established mobile UI ecosystems.",
+    "status": "research"
+  },
+  {
+    "id": "desktop-apps",
+    "feature": "Desktop applications",
+    "erlang": "Erlang/OTP runs on desktop platforms and provides wx bindings; GUI packaging and native desktop UX are less central to its ecosystem than server/telecom workloads.",
+    "rust": "Native binaries target Windows, macOS and Linux; Tauri, egui, iced and Slint support desktop app architectures. UI frameworks, code signing, packaging and auto-updates are ecosystem choices.",
+    "oreslang": "Target: LLVM-native or GraalVM-backed app services with supervised background actors, native GUI/WebView bindings and package/sign/update workflows. No complete production desktop UI framework or installer is verified.",
+    "others": "Electron (JS), .NET MAUI/WPF, Qt/C++, JavaFX and SwiftUI/AppKit offer established desktop application stacks.",
     "status": "research"
   },
   {
@@ -117,11 +171,20 @@ export const matrixRows = [
   },
   {
     "id": "data-oriented",
-    "feature": "Data-oriented programming",
-    "erlang": "Binaries/ETS and compact terms are useful, but BEAM is not primarily an explicit AoS/SoA SIMD-layout language.",
-    "rust": "Native structs, slices, packed buffers, SIMD libraries and ECS crates support AoS/SoA/AoSoA tuning.",
-    "oreslang": "Goal: explicit AoS, SoA, AoSoA, SoAoS and ECS-friendly layouts with actor-owned storage and cache-local kernels; backend lowering unverified.",
-    "others": "C/C++/Zig excel at manual layout; Unity DOTS shows a managed ECS-oriented toolchain.",
+    "feature": "Data-oriented programming (DOP)",
+    "erlang": "Erlang's immutable terms, binaries, ETS and batch-oriented message formats can represent collections, but BEAM does not natively expose explicit SoA/AoSoA memory layout or portable SIMD guarantees.",
+    "rust": "Array/slice/struct layouts, iterators and explicit buffer ownership enable AoS, SoA, AoSoA and columnar data pipelines. Layout optimization is a programmer/library choice, not the default for every Rust collection.",
+    "oreslang": "Design goal: typed AoS, SoA, AoSoA and SoAoS schemas, columnar buffers, bulk map/filter/reduce and actor-owned contiguous regions with checked borrowing. Layout lowering, SIMD parity and speedups require backend-specific executed evidence.",
+    "others": "C/C++, Zig, Julia, Arrow and columnar database engines offer established data-parallel layout techniques; DOP refers to shaping programs around data transformations, not necessarily an ECS architecture.",
+    "status": "research"
+  },
+  {
+    "id": "data-oriented-design",
+    "feature": "Data-oriented design (DoD) / ECS",
+    "erlang": "Can organize systems around transformation stages, data batches and ETS tables, but OTP processes/supervisors are not intrinsically an ECS or a cache-local component storage engine.",
+    "rust": "ECS libraries such as Bevy ECS and hecs allow entity IDs, compact components and systems running over matching component sets; storage layouts and contention patterns depend on each ECS implementation.",
+    "oreslang": "Architecture target: design around access patterns, hot/cold fields, AoS/SoA/AoSoA chunks, archetype-style ECS queries and actor/task affinity. Keep mutable chunks actor-owned and forbid uncontrolled shared writes; no verified cache-miss or ECS throughput win.",
+    "others": "Unity DOTS/Entities and C++ EnTT are established ECS and data-oriented design systems. DoD is an architectural method about locality and data flows, distinct from the language's DOP expressions and types.",
     "status": "research"
   },
   {
@@ -145,10 +208,28 @@ export const matrixRows = [
   {
     "id": "carrier-grade-linux",
     "feature": "Carrier-grade Linux",
-    "erlang": "Long history in telecom applications on Linux; Erlang/OTP is not itself a Carrier Grade Linux certification.",
-    "rust": "Can target Linux servers, embedded and RT kernels; carrier-grade claims require system-level testing, HA design and operations.",
-    "oreslang": "Target: telecom-grade actors, fault isolation and bounded scheduling on Linux; no CGL compliance or telecom certification is claimed.",
-    "others": "C/C++, Go, Java and Erlang all deploy on carrier-grade Linux stacks; platform resilience is broader than language choice.",
+    "erlang": "OTP has a long telecom deployment history, with supervision and distributed application patterns on Linux. Carrier Grade Linux concerns system availability and conformance; Erlang/OTP alone is not a CGL certification.",
+    "rust": "Rust native services can run on HA Linux deployments and integrate with watchdogs, redundancy and RT scheduling. Safety and carrier-grade availability require system design, fault-injection and operations evidence.",
+    "oreslang": "Target: supervised native Linux actors, graceful upgrade/rollback, failure isolation, bounded queues and diagnostics. No independent CGL compliance, carrier-grade availability target or telecom certification has been demonstrated.",
+    "others": "C/C++, Java, Erlang and Go services can all participate in carrier-grade Linux deployments; hardware, kernel, redundancy, monitoring and operational qualification are system-level concerns.",
+    "status": "research"
+  },
+  {
+    "id": "embedded-systems",
+    "feature": "Embedded systems",
+    "erlang": "BEAM can run on capable embedded Linux/RTOS devices and purpose-built platforms such as GRiSP. Small microcontrollers with very limited RAM/flash generally cannot host a standard BEAM runtime.",
+    "rust": "A mature embedded ecosystem targets Cortex-M and other MCUs through no_std, embedded-hal, target-specific crates and RTOS/firmware integration. Capability depends on target and board support.",
+    "oreslang": "Research direction: freestanding LLVM/AOT language subset with static/arena allocation and explicit peripheral/C ABI bindings; full actor scheduler and networking need a suitable host. No validated microcontroller firmware target is claimed.",
+    "others": "C/C++ and Ada/SPARK are established in embedded firmware; Zig and MicroPython cover different resource budgets.",
+    "status": "research"
+  },
+  {
+    "id": "fpga-asic",
+    "feature": "FPGA and ASIC integration",
+    "erlang": "Commonly orchestrates FPGA/ASIC-based devices through external services, ports or native drivers. BEAM application code does not ordinarily synthesize to RTL or gates.",
+    "rust": "Can control FPGA/ASIC devices through MMIO, PCIe, drivers and C interfaces. Specialized HDL/HLS tools are needed to synthesize datapaths; ordinary Rust CPU binaries are not FPGA/ASIC logic.",
+    "oreslang": "Long-term research: actor-supervised CPU control planes plus typed device buffers and explicit accelerator ABI. Synthesizable FPGA/ASIC RTL or HLS compilation is a separate unverified goal; LLVM native compilation alone does not generate circuits.",
+    "others": "Verilog/SystemVerilog, VHDL and HDL/HLS systems such as Amaranth or vendor tools generate hardware; C/C++ can feed supported HLS workflows.",
     "status": "research"
   },
   {
@@ -227,6 +308,15 @@ export const matrixRows = [
     "rust": "OS threads, atomics, scoped threads, async futures and channels; memory safety via Send/Sync and borrow checking.",
     "oreslang": "Design: single native-thread execution per actor at a time, multiple in-flight async messages, Tasks/channels/select and optional worker carriers; actor state via critical loans.",
     "others": "Go goroutines; Java virtual threads; C# async/await and thread pool; JS event loop/workers.",
+    "status": "design"
+  },
+  {
+    "id": "nonblocking-io",
+    "feature": "Non-blocking I/O by default",
+    "erlang": "BEAM socket/network I/O integrates with the runtime so Erlang processes can wait without blocking a normal scheduler thread. Blocking NIFs and drivers require dirty schedulers or separate workers; not every foreign call is non-blocking.",
+    "rust": "std file/socket APIs are often blocking unless configured otherwise. Non-blocking I/O and async execution are explicit choices through Tokio, async-std, mio or OS interfaces; async syntax does not make arbitrary FFI non-blocking.",
+    "oreslang": "Design direction: default evented, backpressured I/O for actor HTTP/TCP/WebSocket and channel operations; blocking foreign calls need isolation or dedicated blocking pools. No universal non-blocking default or cross-backend implementation is verified.",
+    "others": "Node.js has an event-loop-centric I/O model but synchronous APIs exist; Go uses a netpoller with goroutines; Java has NIO and virtual threads; .NET supports async I/O.",
     "status": "design"
   },
   {
