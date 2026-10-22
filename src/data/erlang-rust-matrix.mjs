@@ -39,7 +39,7 @@ export const matrixRows = [
     "feature": "Borrow checking",
     "erlang": "No compile-time affine ownership or borrow checker; actors exchange immutable terms and use process isolation.",
     "rust": "Compiler-enforced ownership, shared/mutable borrowing and lifetime checking, including across async contexts.",
-    "oreslang": "Design: checked rt borrow, rt borrow mut, rt take and rt share with actor isolation and suspension-aware loans; conformance is unverified.",
+    "oreslang": "Design: checked rt borrow, rt mut borrow, rt take and rt share with actor isolation and suspension-aware loans; conformance is unverified.",
     "others": "C++ has RAII without Rust-equivalent universal borrow checks; Swift enforces some exclusivity rules.",
     "status": "design"
   },
