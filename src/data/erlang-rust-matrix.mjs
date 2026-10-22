@@ -10,10 +10,10 @@ export const matrixRows = [
   {
     "id": "type-system",
     "feature": "Type system",
-    "erlang": "Dynamically typed terms, pattern matching, typespecs and Dialyzer; checks are not Rust-style static guarantees.",
-    "rust": "Static nominal types, generics, traits, lifetimes and exhaustive enums; compilation rejects many invalid programs.",
-    "oreslang": "Design: static nominal/structural types, generics, Option/Result-like variants and typed actor mail; backend conformance is unverified.",
-    "others": "Go offers static interfaces; Elixir is dynamic on BEAM; Gleam and OCaml have strong inferred static types.",
+    "erlang": "Dynamically typed Erlang terms with pattern matching, optional typespec annotations and Dialyzer success typing. These give useful inferred analyses but do not turn Erlang into a gradual static type system with guaranteed compile-time checks.",
+    "rust": "Statically typed with strong local type inference, nominal types, traits, generics and exhaustive enums. Inference removes many annotations without weakening static checks; ordinary Rust does not provide gradual dynamic typing.",
+    "oreslang": "Design: static nominal/structural contracts and inferred local types alongside explicit annotations, generics and typed actor mail. Gradual typing (controlled dynamic-to-static boundaries with runtime checks) is a separate research question, not a verified mode; backend conformance remains unverified.",
+    "others": "OCaml/Gleam use inferred static types; Go infers some declarations; Python typing uses Any as a gradual form while its runtime stays dynamic. TypeScript offers gradual-style adoption around any/unknown and JavaScript interop, with limitations.",
     "status": "design"
   },
   {
@@ -98,6 +98,24 @@ export const matrixRows = [
     "status": "design"
   },
   {
+    "id": "native-single-binaries",
+    "feature": "Native code and standalone single binaries",
+    "erlang": "Erlang modules execute on BEAM (with an OTP JIT on supported hosts). OTP releases can package an embedded runtime and dependencies, but standard deployment is not one self-contained machine-code executable.",
+    "rust": "rustc normally emits native AOT executables and libraries; a single executable is often practical. Full portability or static linkage still depends on libc, target ABI, linked native libraries, assets and OS facilities.",
+    "oreslang": "Target: LLVM native AOT executables and GraalVM Native Image distributions, optionally packaging application runtime into a single artifact. Fully static vs dynamic linking and platform dependencies vary; no verified one-file distribution across all targets is claimed.",
+    "others": "Go often produces a single native executable; C/C++ depend on linker/toolchain settings; .NET Native AOT and GraalVM Native Image can ship native binaries; JVM apps commonly need a runtime or bundled distribution.",
+    "status": "design"
+  },
+  {
+    "id": "target-architectures",
+    "feature": "Target architectures and portability",
+    "erlang": "OTP commonly targets x86-64 and ARM/AArch64 on supported operating systems; other CPU/OS combinations require platform-specific runtime builds and testing. Cross-compiling BEAM/ERTS is not the same as universal target support.",
+    "rust": "rustc offers tiered target support for x86/x86-64, ARM/AArch64, RISC-V, WebAssembly and other CPU/OS triples. Standard-library availability, atomics, toolchain distribution and cross-linking differ by target tier.",
+    "oreslang": "Target matrix spans native LLVM architectures (x86-64, AArch64, ARM and RISC-V candidates), Java/GraalVM on its supported hosts, plus WebAssembly, JavaScript and .NET backend strategies. Architecture-level AOT, ABI, actor isolation and CI parity remain unverified for each target.",
+    "others": "C/C++/LLVM and Zig have broad cross-compilation ecosystems; Go builds many CPU/OS pairs; Java and .NET target their respective supported VMs/runtimes. Availability must be checked for exact triples, not inferred from language names.",
+    "status": "research"
+  },
+  {
     "id": "lambdas",
     "feature": "Usage in Lambdas / serverless",
     "erlang": "AWS Lambda can host Erlang/Elixir through custom runtimes or containers; BEAM startup and packaging remain factors.",
@@ -153,11 +171,20 @@ export const matrixRows = [
   },
   {
     "id": "data-oriented",
-    "feature": "Data-oriented programming",
-    "erlang": "Binaries/ETS and compact terms are useful, but BEAM is not primarily an explicit AoS/SoA SIMD-layout language.",
-    "rust": "Native structs, slices, packed buffers, SIMD libraries and ECS crates support AoS/SoA/AoSoA tuning.",
-    "oreslang": "Goal: explicit AoS, SoA, AoSoA, SoAoS and ECS-friendly layouts with actor-owned storage and cache-local kernels; backend lowering unverified.",
-    "others": "C/C++/Zig excel at manual layout; Unity DOTS shows a managed ECS-oriented toolchain.",
+    "feature": "Data-oriented programming (DOP)",
+    "erlang": "Erlang's immutable terms, binaries, ETS and batch-oriented message formats can represent collections, but BEAM does not natively expose explicit SoA/AoSoA memory layout or portable SIMD guarantees.",
+    "rust": "Array/slice/struct layouts, iterators and explicit buffer ownership enable AoS, SoA, AoSoA and columnar data pipelines. Layout optimization is a programmer/library choice, not the default for every Rust collection.",
+    "oreslang": "Design goal: typed AoS, SoA, AoSoA and SoAoS schemas, columnar buffers, bulk map/filter/reduce and actor-owned contiguous regions with checked borrowing. Layout lowering, SIMD parity and speedups require backend-specific executed evidence.",
+    "others": "C/C++, Zig, Julia, Arrow and columnar database engines offer established data-parallel layout techniques; DOP refers to shaping programs around data transformations, not necessarily an ECS architecture.",
+    "status": "research"
+  },
+  {
+    "id": "data-oriented-design",
+    "feature": "Data-oriented design (DoD) / ECS",
+    "erlang": "Can organize systems around transformation stages, data batches and ETS tables, but OTP processes/supervisors are not intrinsically an ECS or a cache-local component storage engine.",
+    "rust": "ECS libraries such as Bevy ECS and hecs allow entity IDs, compact components and systems running over matching component sets; storage layouts and contention patterns depend on each ECS implementation.",
+    "oreslang": "Architecture target: design around access patterns, hot/cold fields, AoS/SoA/AoSoA chunks, archetype-style ECS queries and actor/task affinity. Keep mutable chunks actor-owned and forbid uncontrolled shared writes; no verified cache-miss or ECS throughput win.",
+    "others": "Unity DOTS/Entities and C++ EnTT are established ECS and data-oriented design systems. DoD is an architectural method about locality and data flows, distinct from the language's DOP expressions and types.",
     "status": "research"
   },
   {
