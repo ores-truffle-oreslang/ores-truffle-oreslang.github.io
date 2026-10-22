@@ -178,7 +178,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
                 <details class="synthesis-verification">
                   <summary>Per-backend evidence</summary>
                   <dl>
-                    {matrixRowEvidence[row.id].backends.map((backend) => (
+                    {matrixRowEvidence[row.id].backends.map((backend: { label: string; labelText: string }) => (
                       <div>
                         <dt>{backend.label}</dt>
                         <dd>{backend.labelText}</dd>
@@ -186,7 +186,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
                     ))}
                   </dl>
                   {matrixRowEvidence[row.id].features.length > 0 ? (
-                    <p>Covered draft topics: {matrixRowEvidence[row.id].features.map((feature) => feature.name).join("; ")}.</p>
+                    <p>Covered draft topics: {matrixRowEvidence[row.id].features.map((feature: { name: string }) => feature.name).join("; ")}.</p>
                   ) : (
                     <p>This topic has no separate entry in the public draft; no backend support is inferred.</p>
                   )}
