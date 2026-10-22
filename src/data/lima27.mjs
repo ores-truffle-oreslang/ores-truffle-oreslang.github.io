@@ -4,13 +4,15 @@ export const excludedOrganizations = [
   "Google (Google LLC and Alphabet Inc.)",
   "Apple (Apple Inc.)",
   "Facebook / Meta (Meta Platforms, Inc.)",
-  "Jane Street (Jane Street Group, LLC)"
+  "Jane Street (Jane Street Group, LLC)",
+  "CIA (U.S. Central Intelligence Agency)",
+  "Mossad (Israeli Institute for Intelligence and Special Operations)"
 ];
 export const excludedIndividuals = [
   "Taylor Swift"
 ];
 export const lima27LicenseText = String.raw`LIMA 27 LICENSE
-Version 1.0 — October 22, 2026
+Version 1.1 — October 22, 2026
 
 Copyright (c) the applicable copyright holder(s). All rights reserved except as expressly licensed below.
 
@@ -38,11 +40,15 @@ Organizations:
 - Apple Inc. (Apple)
 - Meta Platforms, Inc. (including Facebook)
 - Jane Street Group, LLC (Jane Street)
+- Central Intelligence Agency (CIA), United States
+- Institute for Intelligence and Special Operations (Mossad), Israel
 
 Individuals:
 - Taylor Swift (the individual)
 
-For an organization named above, "Excluded Party" also includes an entity it directly or indirectly controls, an entity that directly or indirectly controls it, and an entity under common control. "Control" means ownership of more than 50 percent of voting interests or the legal power to direct management. An eligible person acting on behalf of an Excluded Party is not licensed for that activity.
+For a corporate organization named above, "Excluded Party" also includes an entity it directly or indirectly controls, an entity that directly or indirectly controls it, and an entity under common control. "Control" means ownership of more than 50 percent of voting interests or the legal power to direct management.
+
+For the CIA and Mossad, the exclusion includes the respective named agency and its constituent offices, departments, units, and personnel acting on its behalf. It does not automatically extend to other government agencies merely because they belong to the same national government. An otherwise eligible person acting on behalf of any Excluded Party is not licensed for that activity.
 
 Excluded Parties are not licensed by Lima 27 to run, use, copy, modify, distribute, host, or prepare derivative works of the Software. Receiving a copy from another person does not confer permissions under this License on an Excluded Party. Rights independently obtained under another valid license are not revoked or limited by this document.
 
