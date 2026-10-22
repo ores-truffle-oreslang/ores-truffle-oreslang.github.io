@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { matrixColumns, matrixRows, matrixReferences } from "../data/erlang-rust-matrix.mjs";
+import { matrixCategories, matrixSourceCatalog, matrixRowAnnotations } from "../data/erlang-rust-matrix-navigation.mjs";
 import "../styles/erlang-rust-matrix.css";
 ---
 
@@ -64,7 +65,21 @@ import "../styles/erlang-rust-matrix.css";
       </div>
       <a href="/comparisons/">Read detailed pairwise comparisons →</a>
     </header>
-    <p class="synthesis-scroll-hint">On smaller screens, scroll the matrix horizontally to see every language.</p>
+    <form class="synthesis-filter" role="search" aria-label="Find a language comparison" onsubmit="return false">
+      <div>
+        <label for="synthesis-search">Find a feature</label>
+        <input id="synthesis-search" type="search" name="q" autocomplete="off" placeholder="Try supervision, WebSocket, FFI, memory…" aria-controls="synthesis-table-body" />
+      </div>
+      <div>
+        <label for="synthesis-category">Category</label>
+        <select id="synthesis-category" name="category" aria-controls="synthesis-table-body">
+          {matrixCategories.map((category) => <option value={category.id}>{category.label}</option>)}
+        </select>
+      </div>
+      <button id="synthesis-reset" type="button">Clear filters</button>
+    </form>
+    <p id="synthesis-results" class="synthesis-results" role="status" aria-live="polite" aria-atomic="true">24 of 24 dimensions shown.</p>
+    <p class="synthesis-scroll-hint">On smaller screens, scroll the matrix horizontally to see every language. Each feature has its own shareable link and primary documentation.</p>
 
     <div class="synthesis-table-scroller" role="region" aria-label="Erlang, Rust, Oreslang and other languages feature comparison" tabindex="0">
       <table class="synthesis-table">
@@ -75,10 +90,26 @@ import "../styles/erlang-rust-matrix.css";
             {matrixColumns.map((column) => <th scope="col" class={column.key === "oreslang" ? "synthesis-oreslang-column" : ""}>{column.label}</th>)}
           </tr>
         </thead>
-        <tbody>
+        <tbody id="synthesis-table-body">
           {matrixRows.map((row) => (
-            <tr id={row.id}>
-              <th scope="row">{row.feature}</th>
+            <tr id={row.id} data-category={matrixRowAnnotations[row.id].category}>
+              <th scope="row">
+                <a class="synthesis-feature-link" href={`#${row.id}`} title={`Link to ${row.feature}`}>{row.feature}<span aria-hidden="true"> ↗</span></a>
+                <details class="synthesis-row-sources">
+                  <summary>Sources ({matrixRowAnnotations[row.id].sources.length})</summary>
+                  <ul>
+                    {matrixRowAnnotations[row.id].sources.map((key) => (
+                      <li>
+                        <a href={matrixSourceCatalog[key].url}
+                          rel={matrixSourceCatalog[key].url.startsWith("https://") ? "noopener noreferrer" : undefined}
+                          target={matrixSourceCatalog[key].url.startsWith("https://") ? "_blank" : undefined}>
+                          {matrixSourceCatalog[key].label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </th>
               <td>{Array.isArray(row.erlang) ? <ol>{row.erlang.map((item) => <li>{item}</li>)}</ol> : row.erlang}</td>
               <td>{Array.isArray(row.rust) ? <ol>{row.rust.map((item) => <li>{item}</li>)}</ol> : row.rust}</td>
               <td class="synthesis-oreslang-column">
@@ -91,6 +122,35 @@ import "../styles/erlang-rust-matrix.css";
         </tbody>
       </table>
     </div>
+    <p id="synthesis-empty" class="synthesis-empty" hidden>No matches. Try another term or clear the filters.</p>
+
+    <section class="synthesis-benchmark" aria-label="How to fairly test system performance">
+      <p class="eyebrow">Before comparing performance</p>
+      <h2>A fair high-load benchmark needs more than requests per second.</h2>
+      <p>
+        Erlang, Rust and Oreslang expose different runtime and allocation strategies. Treat the
+        following as a <strong>measurement protocol, not published benchmark results</strong>.
+      </p>
+      <div class="synthesis-benchmark-grid">
+        <article>
+          <h3>Workload parity</h3>
+          <p>Match payloads, connection counts, TLS configuration, protocol semantics, restart policy and feature behavior. Record workload code and each exact compiler/runtime revision.</p>
+        </article>
+        <article>
+          <h3>CPU and memory</h3>
+          <p>Report CPU-seconds per completed request, core saturation, RSS peak and steady-state, allocations, actor/process heap usage, collector time and fragmentation.</p>
+        </article>
+        <article>
+          <h3>Tail latency and overload</h3>
+          <p>Measure p50/p95/p99/p99.9 response time under open-loop offered load, connection churn, backpressure, queue growth, errors and load shedding. Include warm-up and idle baselines.</p>
+        </article>
+        <article>
+          <h3>Failure and recovery</h3>
+          <p>Inject actor crashes, broken FFI calls, abrupt worker death and rolling code upgrades. Record recovery time, dropped or duplicate messages, resource reclamation and service availability.</p>
+        </article>
+      </div>
+      <p>Only publish speedups, CPU efficiencies or memory reductions once the workloads, measurement tools, confidence intervals and raw artifacts are reproducible. <a href="/performance/">See existing measurements →</a></p>
+    </section>
 
     <section class="synthesis-caveats" aria-label="Interpreting the comparison">
       <h2>What these comparisons do not establish</h2>
@@ -128,3 +188,62 @@ import "../styles/erlang-rust-matrix.css";
     </section>
   </section>
 </BaseLayout>
+
+<script>
+  // Progressive enhancement: all rows and their source links remain visible without JavaScript.
+  const search = document.querySelector<HTMLInputElement>("#synthesis-search");
+  const category = document.querySelector<HTMLSelectElement>("#synthesis-category");
+  const reset = document.querySelector<HTMLButtonElement>("#synthesis-reset");
+  const count = document.querySelector<HTMLElement>("#synthesis-results");
+  const empty = document.querySelector<HTMLElement>("#synthesis-empty");
+  const body = document.querySelector<HTMLTableSectionElement>("#synthesis-table-body");
+  if (search && category && reset && count && empty && body) {
+    const rows = Array.from(body.querySelectorAll<HTMLTableRowElement>("tr[data-category]"));
+    const allowed = new Set(Array.from(category.options, (option) => option.value));
+    const apply = (writeUrl = false) => {
+      const term = search.value.trim().toLocaleLowerCase();
+      const selected = allowed.has(category.value) ? category.value : "all";
+      let shown = 0;
+      for (const row of rows) {
+        const matchesCategory = selected === "all" || row.dataset.category === selected;
+        const matchesText = (row.textContent ?? "").toLocaleLowerCase().includes(term);
+        row.hidden = !(matchesCategory && matchesText);
+        if (!row.hidden) shown++;
+      }
+      count.textContent = `${shown} of ${rows.length} dimensions shown.`;
+      empty.hidden = shown > 0;
+      if (writeUrl) {
+        const url = new URL(window.location.href);
+        term ? url.searchParams.set("q", search.value.trim()) : url.searchParams.delete("q");
+        selected !== "all" ? url.searchParams.set("category", selected) : url.searchParams.delete("category");
+        window.history.replaceState(null, "", url);
+      }
+    };
+    const readUrl = () => {
+      const params = new URL(window.location.href).searchParams;
+      search.value = params.get("q") ?? "";
+      const selected = params.get("category") ?? "all";
+      category.value = allowed.has(selected) ? selected : "all";
+      apply();
+    };
+    search.addEventListener("input", () => apply(true));
+    category.addEventListener("change", () => apply(true));
+    reset.addEventListener("click", () => {
+      search.value = "";
+      category.value = "all";
+      apply(true);
+      search.focus();
+    });
+    window.addEventListener("popstate", readUrl);
+    window.addEventListener("hashchange", () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      const target = rows.find((row) => row.id === id);
+      if (target?.hidden) {
+        search.value = "";
+        category.value = "all";
+        apply(true);
+      }
+    });
+    readUrl();
+  }
+</script>

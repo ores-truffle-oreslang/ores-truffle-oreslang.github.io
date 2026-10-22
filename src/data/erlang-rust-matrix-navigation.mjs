@@ -1,0 +1,68 @@
+/**
+ * Reader navigation and public documentation pointers for the 24-row comparison.
+ * Links establish where to verify established ecosystems, NOT Oreslang conformance.
+ */
+export const matrixCategories = [
+  { id: "all", label: "All dimensions" },
+  { id: "language", label: "Language and safety" },
+  { id: "runtime", label: "Actors and runtime" },
+  { id: "operations", label: "Operations and real time" },
+  { id: "networking", label: "Networking and deployment" },
+  { id: "hardware", label: "Hardware and performance" },
+  { id: "tooling", label: "Build and interoperability" },
+];
+
+/** @type {Record<string, {label: string, url: string}>} */
+export const matrixSourceCatalog = {
+  erl_types: { label: "Erlang types and type specifications", url: "https://www.erlang.org/doc/system/typespec.html" },
+  erl_release: { label: "OTP release handling", url: "https://www.erlang.org/doc/system/release_handling.html" },
+  erl_gc: { label: "ERTS garbage collector", url: "https://www.erlang.org/doc/apps/erts/garbagecollection.html" },
+  erl_dist: { label: "OTP distributed applications", url: "https://www.erlang.org/doc/system/distributed_applications.html" },
+  erl_nif: { label: "ERTS native implemented functions", url: "https://www.erlang.org/doc/apps/erts/erl_nif.html" },
+  erl_process: { label: "Erlang process model", url: "https://www.erlang.org/doc/reference_manual/processes.html" },
+  erl_docs: { label: "Erlang/OTP documentation", url: "https://www.erlang.org/docs" },
+  rust_book: { label: "The Rust Programming Language", url: "https://doc.rust-lang.org/book/" },
+  rust_borrow: { label: "Rust references and borrowing", url: "https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html" },
+  rust_ffi: { label: "Rust external blocks and FFI", url: "https://doc.rust-lang.org/reference/items/external-blocks.html" },
+  rust_enum: { label: "Rust enums and pattern matching", url: "https://doc.rust-lang.org/book/ch06-00-enums.html" },
+  rust_cargo: { label: "Cargo documentation", url: "https://doc.rust-lang.org/cargo/" },
+  rust_closures: { label: "Rust closures", url: "https://doc.rust-lang.org/book/ch13-01-closures.html" },
+  rust_async: { label: "Rust async book", url: "https://rust-lang.github.io/async-book/" },
+  tokio: { label: "Tokio async runtime", url: "https://tokio.rs/" },
+  kernel_rt: { label: "Linux PREEMPT_RT kernel differences", url: "https://docs.kernel.org/core-api/real-time/differences.html" },
+  aws_lambda: { label: "AWS Lambda custom runtimes", url: "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html" },
+  websocket: { label: "WebSocket protocol (RFC 6455)", url: "https://www.rfc-editor.org/rfc/rfc6455" },
+  webrtc: { label: "WebRTC security architecture (RFC 8825)", url: "https://www.rfc-editor.org/rfc/rfc8825" },
+  cowboy: { label: "Cowboy Web server", url: "https://ninenines.eu/docs/en/cowboy/2.20/guide/ws_handlers/" },
+  ores_features: { label: "Oreslang draft feature status", url: "/language/" },
+  ores_performance: { label: "Oreslang performance evidence", url: "/performance/" },
+};
+
+/** Every row must carry a category and useful documentation pointers. */
+/** @type {Record<string, {category: string, sources: string[]}>} */
+export const matrixRowAnnotations = {
+  "type-system": { category: "language", sources: ["erl_types", "rust_book", "ores_features"] },
+  "hot-reload": { category: "operations", sources: ["erl_release", "ores_features"] },
+  "build-system": { category: "tooling", sources: ["rust_cargo", "erl_docs", "ores_features"] },
+  "borrow-checking": { category: "language", sources: ["rust_borrow", "ores_features"] },
+  "garbage-collection": { category: "runtime", sources: ["erl_gc", "rust_book", "ores_features"] },
+  "soft-real-time": { category: "operations", sources: ["erl_process", "tokio", "ores_features"] },
+  "hard-real-time": { category: "operations", sources: ["kernel_rt", "ores_features"] },
+  "aot-jit": { category: "runtime", sources: ["erl_docs", "rust_book", "ores_features"] },
+  "lambdas": { category: "networking", sources: ["aws_lambda", "rust_closures", "ores_features"] },
+  "actor-system": { category: "runtime", sources: ["erl_process", "tokio", "ores_features"] },
+  "functional-programming": { category: "language", sources: ["rust_closures", "erl_docs", "ores_features"] },
+  "adts": { category: "language", sources: ["rust_enum", "erl_types", "ores_features"] },
+  "data-oriented": { category: "hardware", sources: ["rust_book", "ores_features"] },
+  "gpus": { category: "hardware", sources: ["rust_book", "ores_features"] },
+  "distributed": { category: "networking", sources: ["erl_dist", "ores_features"] },
+  "carrier-grade-linux": { category: "operations", sources: ["kernel_rt", "erl_docs", "ores_features"] },
+  "websockets": { category: "networking", sources: ["websocket", "cowboy", "ores_features"] },
+  "rtc-signaling": { category: "networking", sources: ["webrtc", "websocket", "ores_features"] },
+  "top-five": { category: "networking", sources: ["erl_docs", "rust_book", "ores_features"] },
+  "stack-traces": { category: "operations", sources: ["erl_process", "rust_book", "ores_features"] },
+  "high-load-performance": { category: "hardware", sources: ["erl_gc", "tokio", "ores_performance"] },
+  "concurrency-model": { category: "runtime", sources: ["erl_process", "rust_async", "ores_features"] },
+  "ffi-abi": { category: "tooling", sources: ["erl_nif", "rust_ffi", "ores_features"] },
+  "packages-modules": { category: "tooling", sources: ["rust_cargo", "erl_docs", "ores_features"] },
+};
