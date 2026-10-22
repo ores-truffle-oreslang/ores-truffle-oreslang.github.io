@@ -40,6 +40,12 @@ test("missing public snapshot entries are unassessed rather than called unsuppor
     assert.equal(matrixRowEvidence[id].coverage, "included");
     assert.ok(matrixRowEvidence[id].backends.every(x => x.labelText === "Not verified"));
   }
+  for (const id of ["compressed-addressing", "nonblocking-io", "embedded-systems", "fpga-asic", "mobile-phones", "desktop-apps"]) {
+    assert.equal(matrixRowEvidence[id].coverage, "not-assessed", id + " should not claim public verification");
+    assert.ok(matrixRowEvidence[id].backends.every((x) => x.labelText === "Not assessed in public snapshot"));
+  }
+  assert.equal(matrixRowEvidence["memory-safety"].coverage, "included");
+  assert.ok(matrixRowEvidence["memory-safety"].backends.every((x) => x.labelText === "Not verified"));
   assert.ok(promotionRequirements.length >= 4);
 });
 
