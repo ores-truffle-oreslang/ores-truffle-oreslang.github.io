@@ -4,9 +4,11 @@
  * A row without directly applicable draft entries is NOT "unsupported": it is unassessed.
  */
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { matrixRows } from "./erlang-rust-matrix.mjs";
 
-const sourcePath = new URL("../../public/language/draft-2026-10-14/features.json", import.meta.url);
+// Astro relocates bundled modules under dist; resolve the tracked public source from the build root.
+const sourcePath = resolve(process.cwd(), "public/language/draft-2026-10-14/features.json");
 const snapshot = JSON.parse(readFileSync(sourcePath, "utf8"));
 
 export const evidenceSource = Object.freeze({
