@@ -44,6 +44,13 @@ test("missing public snapshot entries are unassessed rather than called unsuppor
     assert.equal(matrixRowEvidence[id].coverage, "not-assessed", id + " should not claim public verification");
     assert.ok(matrixRowEvidence[id].backends.every((x) => x.labelText === "Not assessed in public snapshot"));
   }
+  // No independent CPU-triple, single-file native packaging or ECS lowering proof is
+  // present in the public draft, regardless of the platform-targets umbrella entry.
+  for (const id of ["data-oriented-design", "native-single-binaries", "target-architectures"]) {
+    assert.equal(matrixRowEvidence[id].coverage, "not-assessed");
+    assert.deepEqual(rowDraftFeatureIds[id], []);
+    assert.ok(matrixRowEvidence[id].backends.every((x) => x.status === "not-assessed"));
+  }
   assert.equal(matrixRowEvidence["memory-safety"].coverage, "included");
   assert.ok(matrixRowEvidence["memory-safety"].backends.every((x) => x.labelText === "Not verified"));
   assert.ok(promotionRequirements.length >= 4);
