@@ -9,22 +9,24 @@ const nav = read("../src/components/SiteNav.astro");
 const layout = read("../src/layouts/BaseLayout.astro");
 const endpoint = read("../src/pages/licenses/lima-27.txt.ts");
 
-test("Lima 27 excludes the five requested organizations and one individual", () => {
-  assert.equal(excludedOrganizations.length, 5);
+test("Lima 27 excludes all seven requested organizations and one individual", () => {
+  assert.equal(excludedOrganizations.length, 7);
   assert.deepEqual(excludedIndividuals, ["Taylor Swift"]);
-  for (const name of ["Amazon", "Google", "Apple", "Facebook", "Jane Street"]) {
+  for (const name of ["Amazon", "Google", "Apple", "Facebook", "Jane Street", "CIA", "Mossad"]) {
     assert.ok(excludedOrganizations.some((organization) => organization.includes(name)), name);
   }
-  for (const name of ["Amazon.com, Inc.", "Google LLC", "Alphabet Inc.", "Apple Inc.", "Meta Platforms, Inc.", "Jane Street Group, LLC", "Taylor Swift"]) {
+  for (const name of ["Amazon.com, Inc.", "Google LLC", "Alphabet Inc.", "Apple Inc.", "Meta Platforms, Inc.", "Jane Street Group, LLC", "Central Intelligence Agency (CIA)", "Institute for Intelligence and Special Operations (Mossad)", "Taylor Swift"]) {
     assert.ok(lima27LicenseText.includes(name), "License is missing " + name);
   }
 });
 
 test("grant, restrictions and license classification are not contradictory", () => {
   for (const clause of [
-    "royalty-free", "source or compiled form", "for personal or commercial purposes",
-    "No rights or permissions are granted", "acting on behalf of an Excluded Party",
+    "Version 1.1", "royalty-free", "source or compiled form", "for personal or commercial purposes",
+    "No rights or permissions are granted", "acting on behalf of any Excluded Party",
     "Receiving a copy", "independently obtained", "complete License",
+    "does not automatically extend to other government agencies",
+    "For a corporate organization named above",
     "does not meet the Open Source Initiative's Open Source Definition",
     "does not, by itself, change the license of another project",
     "independent use of the Oreslang language syntax",
