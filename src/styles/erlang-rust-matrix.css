@@ -259,3 +259,5 @@
 .synthesis-flow-summary p { color: var(--paper); margin: 0 0 9px; }
 @media (max-width: 1050px) { .synthesis-example-grid { grid-template-columns: 1fr; } }
 @media print { .synthesis-verification, .synthesis-proof-policy details { display: none; } }
+
+.synthesis-example-grid pre:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
