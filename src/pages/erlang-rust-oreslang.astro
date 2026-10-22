@@ -12,7 +12,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
 
 <BaseLayout
   title={`Erlang vs Rust vs Oreslang — ${matrixRows.length}-feature architecture matrix`}
-  description="Compare Erlang, Rust and Oreslang across memory safety, compact arena offsets, non-blocking I/O, embedded, FPGA/ASIC, carrier-grade Linux, mobile and desktop alongside actor and systems design."
+  description="Compare Erlang, Rust and Oreslang across inferred and gradual typing, data-oriented programming and design, native single binaries, target architectures, memory safety, actor systems, embedded and mobile applications."
 >
   <section class="page-hero synthesis-hero">
     <p class="kicker">Language comparisons / systems architecture</p>
@@ -246,6 +246,12 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       </p>
       <p>
         <strong>Compact addressing is not a 32-bit address-space guarantee.</strong> A 32-bit arena offset can reduce reference storage on a 64-bit host only when the region bounds, object lifetime, alignment and generation checks are sound. Likewise, an LLVM native binary does not turn software into synthesizable FPGA or ASIC circuitry.</p>
+      <p>
+        <strong>Inferred typing is not gradual typing.</strong> Static inference fills in types without
+        weakening static checks; gradual typing introduces explicitly dynamic type boundaries and
+        requires a defined checking and runtime contract. Oreslang's public draft does not certify
+        gradual typing, native single-file packaging, target-specific ABI parity or verified ECS layouts.
+      </p>
       <p>
         <strong>Verification is backend-specific.</strong> The public Oreslang
         <a href="/language/">draft feature matrix</a> marks Java/GraalVM, LLVM, .NET and WebAssembly
