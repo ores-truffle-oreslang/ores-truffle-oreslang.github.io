@@ -1,5 +1,5 @@
 /**
- * Reader navigation and public documentation pointers for the 24-row comparison.
+ * Reader navigation and public documentation pointers for the 31-row comparison.
  * Links establish where to verify established ecosystems, NOT Oreslang conformance.
  */
 export const matrixCategories = [
@@ -34,6 +34,14 @@ export const matrixSourceCatalog = {
   websocket: { label: "WebSocket protocol (RFC 6455)", url: "https://www.rfc-editor.org/rfc/rfc6455" },
   webrtc: { label: "WebRTC security architecture (RFC 8825)", url: "https://www.rfc-editor.org/rfc/rfc8825" },
   cowboy: { label: "Cowboy Web server", url: "https://ninenines.eu/docs/en/cowboy/2.20/guide/ws_handlers/" },
+  rust_layout: { label: "Rust pointer and type layout", url: "https://doc.rust-lang.org/reference/type-layout.html" },
+  rust_embedded: { label: "Embedded Rust and no_std", url: "https://doc.rust-lang.org/embedded-book/intro/no-std.html" },
+  rust_targets: { label: "Rust compiler platform targets", url: "https://doc.rust-lang.org/rustc/platform-support.html" },
+  rust_unsafe: { label: "Unsafe Rust and memory safety", url: "https://doc.rust-lang.org/book/ch20-01-unsafe-rust.html" },
+  grisp: { label: "GRiSP embedded Erlang runtime", url: "https://github.com/grisp/grisp" },
+  erlang_wx: { label: "OTP wxWidgets desktop integration", url: "https://www.erlang.org/doc/apps/wx/chapter.html" },
+  hdl_amaranth: { label: "Amaranth FPGA hardware description toolkit", url: "https://github.com/amaranth-lang/amaranth" },
+  tauri: { label: "Tauri cross-platform Rust applications", url: "https://tauri.app/" },
   ores_features: { label: "Oreslang draft feature status", url: "/language/" },
   ores_performance: { label: "Oreslang performance evidence", url: "/performance/" },
 };
@@ -45,11 +53,15 @@ export const matrixRowAnnotations = {
   "hot-reload": { category: "operations", sources: ["erl_release", "ores_features"] },
   "build-system": { category: "tooling", sources: ["rust_cargo", "erl_docs", "ores_features"] },
   "borrow-checking": { category: "language", sources: ["rust_borrow", "ores_features"] },
+  "memory-safety": { category: "language", sources: ["rust_unsafe", "erl_nif", "ores_features"] },
   "garbage-collection": { category: "runtime", sources: ["erl_gc", "rust_book", "ores_features"] },
+  "compressed-addressing": { category: "hardware", sources: ["rust_layout", "erl_gc", "ores_features"] },
   "soft-real-time": { category: "operations", sources: ["erl_process", "tokio", "ores_features"] },
   "hard-real-time": { category: "operations", sources: ["kernel_rt", "ores_features"] },
   "aot-jit": { category: "runtime", sources: ["erl_docs", "rust_book", "ores_features"] },
   "lambdas": { category: "networking", sources: ["aws_lambda", "rust_closures", "ores_features"] },
+  "mobile-phones": { category: "networking", sources: ["rust_targets", "tauri", "ores_features"] },
+  "desktop-apps": { category: "networking", sources: ["erlang_wx", "tauri", "ores_features"] },
   "actor-system": { category: "runtime", sources: ["erl_process", "tokio", "ores_features"] },
   "functional-programming": { category: "language", sources: ["rust_closures", "erl_docs", "ores_features"] },
   "adts": { category: "language", sources: ["rust_enum", "erl_types", "ores_features"] },
@@ -57,12 +69,15 @@ export const matrixRowAnnotations = {
   "gpus": { category: "hardware", sources: ["rust_book", "ores_features"] },
   "distributed": { category: "networking", sources: ["erl_dist", "ores_features"] },
   "carrier-grade-linux": { category: "operations", sources: ["kernel_rt", "erl_docs", "ores_features"] },
+  "embedded-systems": { category: "hardware", sources: ["rust_embedded", "grisp", "ores_features"] },
+  "fpga-asic": { category: "hardware", sources: ["hdl_amaranth", "rust_embedded", "ores_features"] },
   "websockets": { category: "networking", sources: ["websocket", "cowboy", "ores_features"] },
   "rtc-signaling": { category: "networking", sources: ["webrtc", "websocket", "ores_features"] },
   "top-five": { category: "networking", sources: ["erl_docs", "rust_book", "ores_features"] },
   "stack-traces": { category: "operations", sources: ["erl_process", "rust_book", "ores_features"] },
   "high-load-performance": { category: "hardware", sources: ["erl_gc", "tokio", "ores_performance"] },
   "concurrency-model": { category: "runtime", sources: ["erl_process", "rust_async", "ores_features"] },
+  "nonblocking-io": { category: "runtime", sources: ["erl_nif", "tokio", "ores_features"] },
   "ffi-abi": { category: "tooling", sources: ["erl_nif", "rust_ffi", "ores_features"] },
   "packages-modules": { category: "tooling", sources: ["rust_cargo", "erl_docs", "ores_features"] },
 };
