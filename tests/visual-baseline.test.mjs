@@ -7,7 +7,7 @@ import { BYTE_COUNT, compareVisual, checkScreenshotPng } from "./visual-signatur
 
 const inventory = JSON.parse(readFileSync(new URL("./visual-baselines.json", import.meta.url), "utf8"));
 
-test("visual baselines are pinned to one reviewed exact-source workflow artifact", () => {
+test("visual baselines have exact-source provenance, including approved per-image refreshes", () => {
   assert.equal(inventory.version, 1);
   assert.equal(inventory.source.repository, "ores-truffle-oreslang/ores-truffle-oreslang.github.io");
   assert.equal(inventory.source.workflowRun, 38948068851);
@@ -15,6 +15,16 @@ test("visual baselines are pinned to one reviewed exact-source workflow artifact
   assert.match(inventory.source.gitCommit, /^[0-9a-f]{40}$/u);
   assert.deepEqual(inventory.environment.snapshot, { width: 32, height: 24, viewportHeight: 900 });
   assert.equal(inventory.environment.playwright, "1.56.1");
+  // The seed remains immutable for the other 17 screenshots. The only reviewed
+  // exception is the changed WebKit 375px menu, adding licenses/comparisons.
+  assert.deepEqual(Object.keys(inventory.reviewedOverrides), ["webkit-375-archive.png"]);
+  const changed = inventory.reviewedOverrides["webkit-375-archive.png"];
+  assert.equal(changed.workflowRun, 39840069637);
+  assert.equal(changed.artifactId, 12452822497);
+  assert.equal(changed.gitCommit, "0144686e36ed867b113985895de79524b4e23df9");
+  assert.match(changed.reason, /licenses and comparisons links/u);
+  assert.equal(inventory.images["webkit-375-archive.png"].pngSha256,
+    "78f8e2f7aeb5cb731a43a23e87a402163a686bf0d3bf5c7ff8e5e8553bc20e47");
   const files = Object.keys(inventory.images);
   assert.equal(files.length, 18);
   for (const engine of ["chromium", "firefox", "webkit"]) {
