@@ -276,6 +276,19 @@ try {
               assert.equal(await matrix.locator("#synthesis-search").inputValue(), "");
               await matrix.locator("#ffi-abi .synthesis-row-sources summary").click();
               assert.ok(await matrix.locator("#ffi-abi .synthesis-row-sources a").count() >= 2);
+              // Proof disclosures must be keyboard-accessible and preserve all four backends.
+              await matrix.locator("#borrow-checking .synthesis-verification summary").click();
+              assert.equal(await matrix.locator("#borrow-checking .synthesis-verification dd").count(), 4);
+              assert.equal(await matrix.locator("#borrow-checking .synthesis-verification dd")
+                .filter({ hasText: "Not verified" }).count(), 4);
+              await matrix.locator("#gpus .synthesis-verification summary").click();
+              assert.equal(await matrix.locator("#gpus .synthesis-verification dd")
+                .filter({ hasText: "Not assessed in public snapshot" }).count(), 4);
+              // Example code is rendered as text, not executable guest source or raw HTML.
+              assert.equal(await matrix.locator("#actor-walkthrough pre code").count(), 3);
+              assert.equal(await matrix.locator('#actor-walkthrough pre[tabindex="0"][aria-label]').count(), 3);
+              assert.ok((await matrix.locator("#actor-walkthrough pre code").last().textContent())
+                .includes("NOT ORESLANG SOURCE SYNTAX"));
               assert.equal(await matrix.locator(".synthesis-table-scroller").evaluate(
                 (el) => getComputedStyle(el).overflowX
               ), "auto");

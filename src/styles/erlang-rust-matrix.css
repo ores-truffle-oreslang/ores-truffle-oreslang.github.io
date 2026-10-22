@@ -216,3 +216,48 @@
   .synthesis-table tr { break-inside: avoid; }
   .synthesis-table tbody tr[hidden] { display: table-row !important; }
 }
+
+/* Proof-gated backend status: a small progressive disclosure in each Oreslang cell. */
+.synthesis-proof-policy {
+  margin: 18px 0 22px; padding: 18px 21px; border: 1px solid var(--accent-border);
+  background: var(--surface); border-radius: 9px;
+}
+.synthesis-proof-policy h2 { margin: 0 0 8px; font-size: 1.13rem; color: var(--cream); }
+.synthesis-proof-policy p { color: var(--paper); margin: 0 0 9px; }
+.synthesis-proof-policy a,
+.synthesis-verification a { color: var(--orange-soft); }
+.synthesis-proof-policy summary,
+.synthesis-verification summary { cursor: pointer; font-weight: 700; color: var(--orange-soft); }
+.synthesis-proof-policy ol { color: var(--paper); font-size: .89rem; }
+.synthesis-verification { margin: 0 0 12px; font-size: .79rem; color: var(--paper); }
+.synthesis-verification dl { margin: 9px 0; }
+.synthesis-verification dl > div {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2px 12px;
+  border-bottom: 1px solid var(--line); padding: 5px 0;
+}
+.synthesis-verification dt { font-weight: 700; color: var(--cream); }
+.synthesis-verification dd { margin: 0; }
+.synthesis-verification p { margin: 9px 0; }
+.synthesis-verification summary:focus-visible,
+.synthesis-proof-policy summary:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+.synthesis-walkthrough { margin: 35px 0 44px; }
+.synthesis-walkthrough > h2 { color: var(--cream); font-size: clamp(1.3rem, 2.5vw, 1.8rem); }
+.synthesis-walkthrough > p:not(.eyebrow) { max-width: 960px; color: var(--paper); }
+.synthesis-walkthrough-warning { border-left: 3px solid var(--orange); background: var(--surface); padding: 12px 16px; }
+.synthesis-example-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin: 20px 0; }
+.synthesis-example-grid article { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.synthesis-example-grid h3 { color: var(--cream); margin: 0 0 12px; font-size: 1rem; }
+.synthesis-example-grid article > p:last-child { color: var(--paper); font-size: .88rem; }
+.synthesis-example-grid pre {
+  overflow-x: auto; max-width: 100%; padding: 15px; border: 1px solid var(--accent-border);
+  border-radius: 6px; background: var(--surface-solid); color: var(--cream);
+  font: 500 .78rem/1.6 "IBM Plex Mono", ui-monospace, monospace;
+}
+.synthesis-example-grid pre code { font: inherit; white-space: pre; }
+.synthesis-flow-summary { padding: 17px 22px; background: var(--surface-strong); border-left: 3px solid var(--orange-soft); }
+.synthesis-flow-summary h3 { color: var(--cream); margin: 0 0 9px; font-size: 1rem; }
+.synthesis-flow-summary p { color: var(--paper); margin: 0 0 9px; }
+@media (max-width: 1050px) { .synthesis-example-grid { grid-template-columns: 1fr; } }
+@media print { .synthesis-verification, .synthesis-proof-policy details { display: none; } }
+
+.synthesis-example-grid pre:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
