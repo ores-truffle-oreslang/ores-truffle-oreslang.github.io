@@ -79,19 +79,19 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
         <article>
           <p class="eyebrow">Erlang / OTP</p>
           <h3>Process isolation + supervision</h3>
-          <pre><code>{erlangExample}</code></pre>
+          <pre tabindex="0" aria-label="Erlang gen_server example, scrollable code"><code>{erlangExample}</code></pre>
           <p>Run the `gen_server` under an OTP supervisor to apply a restart policy. BEAM controls per-process heaps and tracing GC. A live upgrade requires release/state migration discipline; this excerpt alone does not implement it.</p>
         </article>
         <article>
           <p class="eyebrow">Rust / Tokio</p>
           <h3>Owned channels + async execution</h3>
-          <pre><code>{rustExample}</code></pre>
+          <pre tabindex="0" aria-label="Rust Tokio example, scrollable code"><code>{rustExample}</code></pre>
           <p>The compiler checks ownership of the sender and receiver types; the mailbox and executor come from Tokio. Supervision, restart and live upgrades require additional application or framework logic.</p>
         </article>
         <article>
           <p class="eyebrow">Oreslang / intended model</p>
           <h3>Typed actor + borrow-checked state</h3>
-          <pre><code>{oresExample}</code></pre>
+          <pre tabindex="0" aria-label="Conceptual Oreslang example, not valid source code"><code>{oresExample}</code></pre>
           <p>The design combines actor-local mutable storage, explicit state loans and supervised failure handling. The compiler must prove message/borrow contracts. Hot reload and cross-backend behavior remain unverified.</p>
         </article>
       </div>
