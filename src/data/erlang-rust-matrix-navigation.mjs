@@ -33,7 +33,7 @@ export const matrixSourceCatalog = {
   aws_lambda: { label: "AWS Lambda custom runtimes", url: "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html" },
   websocket: { label: "WebSocket protocol (RFC 6455)", url: "https://www.rfc-editor.org/rfc/rfc6455" },
   webrtc: { label: "WebRTC security architecture (RFC 8825)", url: "https://www.rfc-editor.org/rfc/rfc8825" },
-  cowboy: { label: "Cowboy Web server", url: "https://ninenines.eu/docs/en/cowboy/2.13/guide/" },
+  cowboy: { label: "Cowboy Web server", url: "https://ninenines.eu/docs/en/cowboy/2.20/guide/ws_handlers/" },
   ores_features: { label: "Oreslang draft feature status", url: "/language/" },
   ores_performance: { label: "Oreslang performance evidence", url: "/performance/" },
 };
