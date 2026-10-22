@@ -286,6 +286,7 @@ try {
                 .filter({ hasText: "Not assessed in public snapshot" }).count(), 4);
               // Example code is rendered as text, not executable guest source or raw HTML.
               assert.equal(await matrix.locator("#actor-walkthrough pre code").count(), 3);
+              assert.equal(await matrix.locator('#actor-walkthrough pre[tabindex="0"][aria-label]').count(), 3);
               assert.ok((await matrix.locator("#actor-walkthrough pre code").last().textContent())
                 .includes("NOT ORESLANG SOURCE SYNTAX"));
               assert.equal(await matrix.locator(".synthesis-table-scroller").evaluate(
