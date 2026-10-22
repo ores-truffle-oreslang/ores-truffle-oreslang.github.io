@@ -11,8 +11,8 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
 ---
 
 <BaseLayout
-  title="Erlang vs Rust vs Oreslang — 24-feature architecture matrix"
-  description="Compare Erlang, Rust, Oreslang and other languages across 24 systems features, from actors, ownership and hot loading to WebSockets, FFI, real-time scheduling, profiling and package management."
+  title={`Erlang vs Rust vs Oreslang — ${matrixRows.length}-feature architecture matrix`}
+  description="Compare Erlang, Rust and Oreslang across memory safety, compact arena offsets, non-blocking I/O, embedded, FPGA/ASIC, carrier-grade Linux, mobile and desktop alongside actor and systems design."
 >
   <section class="page-hero synthesis-hero">
     <p class="kicker">Language comparisons / systems architecture</p>
@@ -107,7 +107,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
 
     <header class="synthesis-matrix-intro">
       <div>
-        <p class="eyebrow">24 technical dimensions</p>
+        <p class="eyebrow">{matrixRows.length} technical dimensions</p>
         <h2>Side-by-side feature matrix</h2>
         <p>Production facts for established ecosystems are separated from Oreslang design intentions.</p>
       </div>
@@ -126,7 +126,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       </div>
       <button id="synthesis-reset" type="button">Clear filters</button>
     </form>
-    <p id="synthesis-results" class="synthesis-results" role="status" aria-live="polite" aria-atomic="true">24 of 24 dimensions shown.</p>
+    <p id="synthesis-results" class="synthesis-results" role="status" aria-live="polite" aria-atomic="true">{matrixRows.length} of {matrixRows.length} dimensions shown.</p>
     <div class="synthesis-proof-policy" id="backend-evidence">
       <h2>Backend-specific verification: evidence, not checkboxes</h2>
       <p>Evidence source: <a href={evidenceSource.href}>{evidenceSource.referenceId}</a>
@@ -244,6 +244,8 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
         on matching hardware and release configurations before making speed or memory claims.
         See <a href="/performance/">performance evidence and its limitations</a>.
       </p>
+      <p>
+        <strong>Compact addressing is not a 32-bit address-space guarantee.</strong> A 32-bit arena offset can reduce reference storage on a 64-bit host only when the region bounds, object lifetime, alignment and generation checks are sound. Likewise, an LLVM native binary does not turn software into synthesizable FPGA or ASIC circuitry.</p>
       <p>
         <strong>Verification is backend-specific.</strong> The public Oreslang
         <a href="/language/">draft feature matrix</a> marks Java/GraalVM, LLVM, .NET and WebAssembly
