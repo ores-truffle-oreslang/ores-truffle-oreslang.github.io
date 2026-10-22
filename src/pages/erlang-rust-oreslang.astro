@@ -2,7 +2,12 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { matrixColumns, matrixRows, matrixReferences } from "../data/erlang-rust-matrix.mjs";
 import { matrixCategories, matrixSourceCatalog, matrixRowAnnotations } from "../data/erlang-rust-matrix-navigation.mjs";
+import { matrixRowEvidence, evidenceSource, promotionRequirements } from "../data/erlang-rust-evidence.mjs";
 import "../styles/erlang-rust-matrix.css";
+
+const erlangExample = "-module(counter).\n-behaviour(gen_server).\n-export([start_link/0, inc/1, init/1, handle_call/3]).\nstart_link() -> gen_server:start_link(?MODULE, 0, []).\ninc(Pid) -> gen_server:call(Pid, inc).\ninit(N) -> {ok, N}.\nhandle_call(inc, _From, N) ->\n    Next = N + 1,\n    {reply, Next, Next}.";
+const rustExample = "use tokio::sync::{mpsc, oneshot};\nenum Request { Increment(oneshot::Sender<u64>) }\nasync fn run(mut inbox: mpsc::Receiver<Request>) {\n    let mut count = 0_u64;\n    while let Some(Request::Increment(reply)) = inbox.recv().await {\n        count += 1;\n        let _ = reply.send(count);\n    }\n}";
+const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSupervisor starts typed Counter actor with actor-local arena\nCaller transfers an Increment(reply) message into mailbox\nHandler acquires a critical-write loan on actor state\n  next = state.count + 1; state.count = next\nHandler releases state loan before replying\nHandler sends rt copy next to the reply destination\nUnhandled failure -> supervisor restart policy\nNew code -> stage -> validate -> drain -> activate or roll back";
 ---
 
 <BaseLayout
@@ -44,8 +49,9 @@ import "../styles/erlang-rust-matrix.css";
     <div class="synthesis-how">
       <h2>How the pieces fit together</h2>
       <p>
-        A supervisor owns an actor group. Each actor handles messages one at a time on its execution lane,
-        even when multiple asynchronous messages are in flight. Typed messages cross actor boundaries;
+        A supervisor owns an actor group. Actor mailboxes and configured handler concurrency govern how
+        messages are scheduled; multiple asynchronous requests may be in flight, while exclusive state
+        loans protect mutation. Typed messages cross actor boundaries;
         mutable actor state is accessed through checked critical loans. The goal is to process bulk numeric
         data in contiguous CPU/GPU-friendly buffers <em>inside</em> well-defined ownership boundaries,
         rather than allocating an actor per data element.
@@ -56,6 +62,48 @@ import "../styles/erlang-rust-matrix.css";
         deadlines or outperforms BEAM/Rust without equal-workload measurement.
       </p>
     </div>
+
+
+    <section class="synthesis-walkthrough" id="actor-walkthrough" aria-labelledby="actor-walkthrough-title">
+      <p class="eyebrow">Worked architecture example / a supervised counter</p>
+      <h2 id="actor-walkthrough-title">One message, three programming models.</h2>
+      <p>
+        In each version a client requests an increment and receives a result. The important distinction is not the arithmetic:
+        it is where memory safety, message isolation, failure recovery and code replacement are enforced.
+      </p>
+      <p class="synthesis-walkthrough-warning">
+        These are <strong>short explanatory excerpts, not standalone tested programs</strong>.
+        Erlang and Rust show representative APIs; the Oreslang column is <strong>conceptual pseudocode, not valid or compiler-verified Oreslang syntax</strong>.
+      </p>
+      <div class="synthesis-example-grid">
+        <article>
+          <p class="eyebrow">Erlang / OTP</p>
+          <h3>Process isolation + supervision</h3>
+          <pre><code>{erlangExample}</code></pre>
+          <p>Run the `gen_server` under an OTP supervisor to apply a restart policy. BEAM controls per-process heaps and tracing GC. A live upgrade requires release/state migration discipline; this excerpt alone does not implement it.</p>
+        </article>
+        <article>
+          <p class="eyebrow">Rust / Tokio</p>
+          <h3>Owned channels + async execution</h3>
+          <pre><code>{rustExample}</code></pre>
+          <p>The compiler checks ownership of the sender and receiver types; the mailbox and executor come from Tokio. Supervision, restart and live upgrades require additional application or framework logic.</p>
+        </article>
+        <article>
+          <p class="eyebrow">Oreslang / intended model</p>
+          <h3>Typed actor + borrow-checked state</h3>
+          <pre><code>{oresExample}</code></pre>
+          <p>The design combines actor-local mutable storage, explicit state loans and supervised failure handling. The compiler must prove message/borrow contracts. Hot reload and cross-backend behavior remain unverified.</p>
+        </article>
+      </div>
+      <div class="synthesis-flow-summary">
+        <h3>What is combined—and what is new</h3>
+        <p><strong>From Erlang:</strong> actor failure domains, supervisor policies and code-generation changes.
+          <strong>From Rust:</strong> static ownership, checked borrows and low-level native data control.
+          <strong>Oreslang's design:</strong> a typed boundary between the two, with actor arenas, explicitly borrowed state,
+          and separate CPU-oriented tasks for bulk work instead of one actor per element.</p>
+        <p>Multiple asynchronous requests may be in flight under an actor's configured policy; a state write loan must remain exclusive. A completed website build does not prove these runtime semantics.</p>
+      </div>
+    </section>
 
     <header class="synthesis-matrix-intro">
       <div>
@@ -79,6 +127,19 @@ import "../styles/erlang-rust-matrix.css";
       <button id="synthesis-reset" type="button">Clear filters</button>
     </form>
     <p id="synthesis-results" class="synthesis-results" role="status" aria-live="polite" aria-atomic="true">24 of 24 dimensions shown.</p>
+    <div class="synthesis-proof-policy" id="backend-evidence">
+      <h2>Backend-specific verification: evidence, not checkboxes</h2>
+      <p>Evidence source: <a href={evidenceSource.href}>{evidenceSource.referenceId}</a>
+        (updated {evidenceSource.date}, non-normative). A row marked <strong>Not verified</strong>
+        has a related entry with no publicly verified compiler conformance.
+        <strong>Not assessed</strong> means the public draft does not separately evaluate that topic—not that the feature is absent or impossible.</p>
+      <details>
+        <summary>What would qualify as partial, tested or production-verified?</summary>
+        <ol>{promotionRequirements.map((requirement) => <li>{requirement}</li>)}</ol>
+        <p>Approval is per backend and feature. A green website CI run, a historical demo, or an unexecuted PR cannot promote a feature.</p>
+      </details>
+    </div>
+
     <p class="synthesis-scroll-hint">On smaller screens, scroll the matrix horizontally to see every language. Each feature has its own shareable link and primary documentation.</p>
 
     <div class="synthesis-table-scroller" role="region" aria-label="Erlang, Rust, Oreslang and other languages feature comparison" tabindex="0">
@@ -114,6 +175,23 @@ import "../styles/erlang-rust-matrix.css";
               <td>{Array.isArray(row.rust) ? <ol>{row.rust.map((item) => <li>{item}</li>)}</ol> : row.rust}</td>
               <td class="synthesis-oreslang-column">
                 <span class="synthesis-status">{row.status === "research" ? "Research / not verified" : "Design / not verified"}</span>
+                <details class="synthesis-verification">
+                  <summary>Per-backend evidence</summary>
+                  <dl>
+                    {matrixRowEvidence[row.id].backends.map((backend) => (
+                      <div>
+                        <dt>{backend.label}</dt>
+                        <dd>{backend.labelText}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  {matrixRowEvidence[row.id].features.length > 0 ? (
+                    <p>Covered draft topics: {matrixRowEvidence[row.id].features.map((feature) => feature.name).join("; ")}.</p>
+                  ) : (
+                    <p>This topic has no separate entry in the public draft; no backend support is inferred.</p>
+                  )}
+                  <a href={evidenceSource.href}>Inspect source evidence ↗</a>
+                </details>
                 {Array.isArray(row.oreslang) ? <ol>{row.oreslang.map((item) => <li>{item}</li>)}</ol> : row.oreslang}
               </td>
               <td>{Array.isArray(row.others) ? <ol>{row.others.map((item) => <li>{item}</li>)}</ol> : row.others}</td>
