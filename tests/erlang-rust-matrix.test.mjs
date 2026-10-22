@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { matrixColumns, matrixRows, matrixReferences } from "../src/data/erlang-rust-matrix.mjs";
+import { matrixCategories, matrixRowAnnotations, matrixSourceCatalog } from "../src/data/erlang-rust-matrix-navigation.mjs";
 
 const page = readFileSync(new URL("../src/pages/erlang-rust-oreslang.astro", import.meta.url), "utf8");
 const css = readFileSync(new URL("../src/styles/erlang-rust-matrix.css", import.meta.url), "utf8");
@@ -86,4 +87,54 @@ test("sources include official Erlang/Rust, RT Linux, and local Oreslang caveats
   assert.ok(urls.some((url) => url.includes("docs.kernel.org")));
   assert.ok(urls.includes("/language/"));
   assert.ok(urls.includes("/performance/"));
+});
+
+test("all 24 dimensions have safe, valid source pointers and exactly one category", () => {
+  assert.equal(Object.keys(matrixRowAnnotations).length, 24);
+  const allowed = new Set(matrixCategories.map(({ id }) => id));
+  assert.equal(allowed.size, matrixCategories.length);
+  assert.ok(allowed.has("all"));
+  assert.ok(Object.keys(matrixSourceCatalog).length >= 20);
+  for (const row of matrixRows) {
+    const annotation = matrixRowAnnotations[row.id];
+    assert.ok(annotation, "missing annotations: " + row.id);
+    assert.ok(allowed.has(annotation.category) && annotation.category !== "all");
+    assert.ok(annotation.sources.length >= 2);
+    assert.equal(new Set(annotation.sources).size, annotation.sources.length);
+    assert.ok(annotation.sources.some((s) => s === "ores_features" || s === "ores_performance"));
+    for (const sourceKey of annotation.sources) {
+      const source = matrixSourceCatalog[sourceKey];
+      assert.ok(source, "missing source key " + sourceKey);
+      assert.ok(source.label.length > 10);
+      assert.match(source.url, /^(?:https:\/\/[a-z0-9.-]+\/|\/)/u);
+      assert.ok(!/[<>"']/u.test(source.url), "unsafe source URL: " + source.url);
+    }
+  }
+});
+
+test("matrix can be searched, linked to, printed and used without JS", () => {
+  assert.match(page, /<input id="synthesis-search" type="search"/u);
+  assert.match(page, /<select id="synthesis-category"/u);
+  assert.match(page, /role="status" aria-live="polite"/u);
+  assert.match(page, /data-category=\{matrixRowAnnotations\[row.id\].category\}/u);
+  assert.match(page, /<th scope="row">/u);
+  assert.match(page, /href=\{\`#\$\{row.id\}\`\}/u);
+  assert.match(page, /<details class="synthesis-row-sources">/u);
+  assert.match(page, /new URL\(window.location.href\)/u);
+  assert.match(page, /window.addEventListener\("popstate", readUrl\)/u);
+  assert.match(page, /search.addEventListener\("input"/u);
+  assert.match(page, /reset.addEventListener\("click"/u);
+  assert.match(page, /all rows and their source links remain visible without JavaScript/u);
+  assert.match(css, /\.synthesis-table tbody tr\[hidden\] \{ display: none !important; \}/u);
+  assert.match(css, /@media print/u);
+});
+
+test("performance benchmarking copy requires parity, overload and published raw evidence", () => {
+  assert.match(page, /A fair high-load benchmark needs more than requests per second/u);
+  for (const label of ["Workload parity", "CPU and memory", "Tail latency and overload", "Failure and recovery"]) {
+    assert.ok(page.includes(label), "missing benchmarking guidance: " + label);
+  }
+  assert.match(page, /p99\.9/u);
+  assert.match(page, /raw artifacts are reproducible/u);
+  assert.match(page, /not published benchmark results/u);
 });
