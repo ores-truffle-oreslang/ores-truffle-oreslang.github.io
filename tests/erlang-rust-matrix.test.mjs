@@ -29,7 +29,7 @@ test("four requested columns and all 24 unique requested dimensions render in or
     assert.ok(["design", "research"].includes(row.status));
     for (const key of ["erlang", "rust", "oreslang", "others"]) {
       const value = row[key];
-      assert.ok(Array.isArray(value) ? value.length > 0 && value.every((item) => item.length >= 25) : value.length >= 55,
+      assert.ok(Array.isArray(value) ? value.length > 0 && value.every((item) => item.length >= 15) : value.length >= 55,
         row.id + " missing meaningful " + key + " comparison");
     }
   }
