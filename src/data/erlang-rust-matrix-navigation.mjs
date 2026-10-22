@@ -42,6 +42,11 @@ export const matrixSourceCatalog = {
   erlang_wx: { label: "OTP wxWidgets desktop integration", url: "https://www.erlang.org/doc/apps/wx/chapter.html" },
   hdl_amaranth: { label: "Amaranth FPGA hardware description toolkit", url: "https://github.com/amaranth-lang/amaranth" },
   tauri: { label: "Tauri cross-platform Rust applications", url: "https://tauri.app/" },
+  python_gradual: { label: "Python typing specification: static, dynamic and gradual typing", url: "https://typing.python.org/en/latest/spec/concepts.html" },
+  rust_infer: { label: "Rust type inference and data types", url: "https://doc.rust-lang.org/book/ch03-02-data-types.html" },
+  unity_dots: { label: "Unity Data-Oriented Technology Stack (DOTS) and ECS", url: "https://unity.com/dots" },
+  graal_static: { label: "GraalVM Native Image static and mostly-static binaries", url: "https://www.graalvm.org/reference-manual/native-image/StaticImages/" },
+  erlang_cross: { label: "Erlang/OTP cross-compilation guide", url: "https://www.erlang.org/docs/24/installation_guide/install-cross.html" },
   ores_features: { label: "Oreslang draft feature status", url: "/language/" },
   ores_performance: { label: "Oreslang performance evidence", url: "/performance/" },
 };
@@ -49,7 +54,7 @@ export const matrixSourceCatalog = {
 /** Every row must carry a category and useful documentation pointers. */
 /** @type {Record<string, {category: string, sources: string[]}>} */
 export const matrixRowAnnotations = {
-  "type-system": { category: "language", sources: ["erl_types", "rust_book", "ores_features"] },
+  "type-system": { category: "language", sources: ["erl_types", "rust_infer", "python_gradual", "ores_features"] },
   "hot-reload": { category: "operations", sources: ["erl_release", "ores_features"] },
   "build-system": { category: "tooling", sources: ["rust_cargo", "erl_docs", "ores_features"] },
   "borrow-checking": { category: "language", sources: ["rust_borrow", "ores_features"] },
@@ -59,6 +64,8 @@ export const matrixRowAnnotations = {
   "soft-real-time": { category: "operations", sources: ["erl_process", "tokio", "ores_features"] },
   "hard-real-time": { category: "operations", sources: ["kernel_rt", "ores_features"] },
   "aot-jit": { category: "runtime", sources: ["erl_docs", "rust_book", "ores_features"] },
+  "native-single-binaries": { category: "tooling", sources: ["graal_static", "rust_cargo", "ores_features"] },
+  "target-architectures": { category: "hardware", sources: ["rust_targets", "erlang_cross", "ores_features"] },
   "lambdas": { category: "networking", sources: ["aws_lambda", "rust_closures", "ores_features"] },
   "mobile-phones": { category: "networking", sources: ["rust_targets", "tauri", "ores_features"] },
   "desktop-apps": { category: "networking", sources: ["erlang_wx", "tauri", "ores_features"] },
@@ -66,6 +73,7 @@ export const matrixRowAnnotations = {
   "functional-programming": { category: "language", sources: ["rust_closures", "erl_docs", "ores_features"] },
   "adts": { category: "language", sources: ["rust_enum", "erl_types", "ores_features"] },
   "data-oriented": { category: "hardware", sources: ["rust_book", "ores_features"] },
+  "data-oriented-design": { category: "hardware", sources: ["unity_dots", "rust_book", "ores_features"] },
   "gpus": { category: "hardware", sources: ["rust_book", "ores_features"] },
   "distributed": { category: "networking", sources: ["erl_dist", "ores_features"] },
   "carrier-grade-linux": { category: "operations", sources: ["kernel_rt", "erl_docs", "ores_features"] },
