@@ -55,6 +55,9 @@ test("comparisons are transparent about hard real-time and unverified Oreslang s
   assert.match(matrixRows.find(({ id }) => id === "carrier-grade-linux").oreslang, /no CGL compliance/u);
   assert.match(matrixRows.find(({ id }) => id === "hard-real-time").oreslang, /Not certified/u);
   assert.match(matrixRows.find(({ id }) => id === "aot-jit").oreslang, /per backend/u);
+  assert.match(matrixRows.find(({ id }) => id === "borrow-checking").oreslang, /rt mut borrow/u);
+  assert.doesNotMatch(matrixRows.find(({ id }) => id === "borrow-checking").oreslang, /rt borrow mut/u);
+  assert.match(page, /Research \/ not verified/u);
 });
 
 test("matrix accessible on narrow viewports and discoverable from existing comparison route", () => {
