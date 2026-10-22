@@ -248,6 +248,52 @@ try {
           } finally {
             await comparisonPage.close();
           }
+
+          // The four-column matrix must remain usable on mobile and desktop, including
+          // deep links, native keyboard controls, category filtering and source disclosures.
+          if (width === 375 || width === 1440) {
+            const matrix = await context.newPage();
+            const errors = [];
+            matrix.on("pageerror", (error) => errors.push(error.message));
+            try {
+              const response = await matrix.goto(base + "/erlang-rust-oreslang/?category=tooling&q=ffi", { waitUntil: "load" });
+              assert.equal(response.status(), 200, engine + " matrix status");
+              const rows = matrix.locator(".synthesis-table tbody tr");
+              assert.equal(await rows.count(), 24, "all rows must remain in the static HTML");
+              assert.equal(await matrix.locator("#synthesis-category").inputValue(), "tooling");
+              assert.equal(await matrix.locator("#synthesis-search").inputValue(), "ffi");
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 1);
+              assert.equal(await matrix.locator("#ffi-abi").isVisible(), true);
+              await matrix.locator("#synthesis-search").fill("");
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 3);
+              await matrix.locator("#synthesis-category").selectOption("all");
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 24);
+              await matrix.locator("#synthesis-search").fill("not-a-real-feature-12345");
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 0);
+              assert.equal(await matrix.locator("#synthesis-empty").isVisible(), true);
+              await matrix.locator("#synthesis-reset").click();
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 24);
+              assert.equal(await matrix.locator("#synthesis-search").inputValue(), "");
+              await matrix.locator("#ffi-abi .synthesis-row-sources summary").click();
+              assert.ok(await matrix.locator("#ffi-abi .synthesis-row-sources a").count() >= 2);
+              assert.equal(await matrix.locator(".synthesis-table-scroller").evaluate(
+                (el) => getComputedStyle(el).overflowX
+              ), "auto");
+              const overflow = await matrix.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+              assert.ok(overflow <= 2, "matrix leaks horizontally at " + engine + " " + width + "px: " + overflow);
+              if (engine === "chromium" && width === 375) {
+                const report = await new AxeBuilder({ page: matrix }).withTags([
+                  "wcag2a", "wcag2aa", "wcag21a", "wcag21aa"
+                ]).analyze();
+                const serious = report.violations.filter((v) => ["serious", "critical"].includes(v.impact));
+                assert.deepEqual(serious.map((v) => v.id), [], "matrix WCAG");
+              }
+              assert.deepEqual(errors, [], "matrix uncaught browser errors");
+              console.log("PASS " + engine + " " + width + "px four-way matrix");
+            } finally {
+              await matrix.close();
+            }
+          }
         } finally {
           await context.close();
         }
