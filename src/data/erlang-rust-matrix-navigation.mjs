@@ -12,6 +12,7 @@ export const matrixCategories = [
   { id: "tooling", label: "Build and interoperability" },
 ];
 
+/** @type {Record<string, {label: string, url: string}>} */
 export const matrixSourceCatalog = {
   erl_types: { label: "Erlang types and type specifications", url: "https://www.erlang.org/doc/system/typespec.html" },
   erl_release: { label: "OTP release handling", url: "https://www.erlang.org/doc/system/release_handling.html" },
@@ -38,6 +39,7 @@ export const matrixSourceCatalog = {
 };
 
 /** Every row must carry a category and useful documentation pointers. */
+/** @type {Record<string, {category: string, sources: string[]}>} */
 export const matrixRowAnnotations = {
   "type-system": { category: "language", sources: ["erl_types", "rust_book", "ores_features"] },
   "hot-reload": { category: "operations", sources: ["erl_release", "ores_features"] },
