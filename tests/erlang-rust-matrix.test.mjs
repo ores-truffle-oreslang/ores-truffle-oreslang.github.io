@@ -11,15 +11,16 @@ const comparisons = readFileSync(new URL("../src/pages/comparisons.astro", impor
 const expectedFeatures = [
   "Type system", "Hot reloading in production", "Build system", "Borrow checking",
   "Memory safety", "Garbage collection", "32-bit pointers / compressed arena offsets", "Soft real time", "Hard real time", "AOT vs JIT",
+  "Native code and standalone single binaries", "Target architectures and portability",
   "Usage in Lambdas / serverless", "Mobile phones (Android / iOS)", "Desktop applications", "Actor system", "Functional programming",
-  "Algebraic data types (ADTs)", "Data-oriented programming", "GPUs",
+  "Algebraic data types (ADTs)", "Data-oriented programming (DOP)", "Data-oriented design (DoD) / ECS", "GPUs",
   "Distributed systems", "Carrier-grade Linux", "Embedded systems", "FPGA and ASIC integration", "WebSocket servers",
   "RTC signaling servers", "Top 5 use cases", "Stack traces",
   "High load: CPU, memory and profiling", "Concurrency model", "Non-blocking I/O by default",
   "FFI, ABI and C integration", "Package managers and module systems",
 ];
 
-test("four requested columns and all 31 unique requested dimensions render in order", () => {
+test("four requested columns and all 34 unique requested dimensions render in order", () => {
   assert.deepEqual(matrixColumns.map(({ label }) => label), [
     "Erlang", "Rust", "Oreslang (direction)", "Other languages",
   ]);
@@ -89,7 +90,7 @@ test("sources include official Erlang/Rust, RT Linux, and local Oreslang caveats
   assert.ok(urls.includes("/performance/"));
 });
 
-test("all 31 dimensions have safe, valid source pointers and exactly one category", () => {
+test("all 34 dimensions have safe, valid source pointers and exactly one category", () => {
   assert.equal(Object.keys(matrixRowAnnotations).length, matrixRows.length);
   const allowed = new Set(matrixCategories.map(({ id }) => id));
   assert.equal(allowed.size, matrixCategories.length);
@@ -142,7 +143,7 @@ test("performance benchmarking copy requires parity, overload and published raw 
 test("new platform and safety comparisons accurately distinguish native pointers, offsets, and targets", () => {
   const row = (id) => matrixRows.find((item) => item.id === id);
   const expected = ["memory-safety", "compressed-addressing", "nonblocking-io", "embedded-systems", "fpga-asic", "mobile-phones", "desktop-apps"];
-  assert.equal(matrixRows.length, 31);
+  assert.equal(matrixRows.length, 34);
   assert.equal(matrixRows.filter((item) => item.id === "carrier-grade-linux").length, 1);
   for (const id of expected) {
     assert.ok(row(id), "missing row " + id);
