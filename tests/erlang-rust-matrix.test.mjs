@@ -53,7 +53,7 @@ test("comparisons are transparent about hard real-time and unverified Oreslang s
   assert.match(page, /no head-to-head throughput, memory or CPU win is established|High-load performance needs a reproducible workload/u);
   assert.match(page, /not verified/u);
   assert.match(matrixRows.find(({ id }) => id === "garbage-collection").oreslang, /GraalVM.*managed GC/u);
-  assert.match(matrixRows.find(({ id }) => id === "carrier-grade-linux").oreslang, /no CGL compliance/u);
+  assert.match(matrixRows.find(({ id }) => id === "carrier-grade-linux").oreslang, /No independent CGL compliance/u);
   assert.match(matrixRows.find(({ id }) => id === "hard-real-time").oreslang, /Not certified/u);
   assert.match(matrixRows.find(({ id }) => id === "aot-jit").oreslang, /per backend/u);
   assert.match(matrixRows.find(({ id }) => id === "borrow-checking").oreslang, /rt mut borrow/u);
