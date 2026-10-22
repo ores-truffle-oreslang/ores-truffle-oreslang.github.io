@@ -118,7 +118,7 @@ test("matrix can be searched, linked to, printed and used without JS", () => {
   assert.match(page, /role="status" aria-live="polite"/u);
   assert.match(page, /data-category=\{matrixRowAnnotations\[row.id\].category\}/u);
   assert.match(page, /<th scope="row">/u);
-  assert.match(page, /href=\{\`#\$\{row.id\}\`\}/u);
+  assert.ok(page.includes("href={\`#${row.id}\`}") , "feature anchor binding missing");
   assert.match(page, /<details class="synthesis-row-sources">/u);
   assert.match(page, /new URL\(window.location.href\)/u);
   assert.match(page, /window.addEventListener\("popstate", readUrl\)/u);
