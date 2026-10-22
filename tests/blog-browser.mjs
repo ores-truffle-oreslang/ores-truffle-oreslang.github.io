@@ -259,7 +259,7 @@ try {
               const response = await matrix.goto(base + "/erlang-rust-oreslang/?category=tooling&q=ffi", { waitUntil: "load" });
               assert.equal(response.status(), 200, engine + " matrix status");
               const rows = matrix.locator(".synthesis-table tbody tr");
-              assert.equal(await rows.count(), 31, "all rows must remain in the static HTML");
+              assert.equal(await rows.count(), 34, "all rows must remain in the static HTML");
               assert.equal(await matrix.locator("#synthesis-category").inputValue(), "tooling");
               assert.equal(await matrix.locator("#synthesis-search").inputValue(), "ffi");
               assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 1);
@@ -270,14 +270,14 @@ try {
               assert.equal(await matrix.locator("#nonblocking-io").count(), 1);
               assert.equal(await matrix.locator("#fpga-asic").count(), 1);
               await matrix.locator("#synthesis-search").fill("");
-              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 3);
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 4);
               await matrix.locator("#synthesis-category").selectOption("all");
-              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 31);
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 34);
               await matrix.locator("#synthesis-search").fill("not-a-real-feature-12345");
               assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 0);
               assert.equal(await matrix.locator("#synthesis-empty").isVisible(), true);
               await matrix.locator("#synthesis-reset").click();
-              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 31);
+              assert.equal(await matrix.locator(".synthesis-table tbody tr:visible").count(), 34);
               assert.equal(await matrix.locator("#synthesis-search").inputValue(), "");
               await matrix.locator("#ffi-abi .synthesis-row-sources summary").click();
               assert.ok(await matrix.locator("#ffi-abi .synthesis-row-sources a").count() >= 2);
