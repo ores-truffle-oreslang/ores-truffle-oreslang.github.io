@@ -1,0 +1,130 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { matrixColumns, matrixRows, matrixReferences } from "../data/erlang-rust-matrix.mjs";
+import "../styles/erlang-rust-matrix.css";
+---
+
+<BaseLayout
+  title="Erlang vs Rust vs Oreslang — 24-feature architecture matrix"
+  description="Compare Erlang, Rust, Oreslang and other languages across 24 systems features, from actors, ownership and hot loading to WebSockets, FFI, real-time scheduling, profiling and package management."
+>
+  <section class="page-hero synthesis-hero">
+    <p class="kicker">Language comparisons / systems architecture</p>
+    <h1>Erlang + Rust, with a different memory and execution model.</h1>
+    <p>
+      Oreslang takes inspiration from <strong>Erlang's</strong> supervised, message-driven resilience
+      and <strong>Rust's</strong> compile-time ownership discipline—then pursues typed, isolated actors,
+      data-oriented memory layouts and backend-specific native execution.
+    </p>
+    <p class="synthesis-promise">
+      A design synthesis, <strong>not a claim that Oreslang already matches Erlang/OTP or Rust in production.</strong>
+      The public <a href="/language/">feature snapshot</a> does not currently certify support on any backend.
+    </p>
+  </section>
+
+  <section class="page-body synthesis-body" aria-label="How Oreslang combines the ideas">
+    <div class="synthesis-notes">
+      <article>
+        <p class="eyebrow">From Erlang</p>
+        <h2>Isolation and recovery</h2>
+        <p>Actor mailboxes, supervisor trees, recoverable failures and carefully staged code changes—not a promise of OTP protocol or runtime compatibility.</p>
+      </article>
+      <article>
+        <p class="eyebrow">From Rust</p>
+        <h2>Ownership and static safety</h2>
+        <p>Typed payloads, explicit borrows and moves, controlled mutation and native memory lifetime management—not a Rust syntax or ABI clone.</p>
+      </article>
+      <article>
+        <p class="eyebrow">Oreslang's additions</p>
+        <h2>Actors meet data locality</h2>
+        <p>Actor-owned arenas, critical state loans, CPU-conscious AoS/SoA/AoSoA layouts and target-specific AOT/JIT paths. These remain design and verification work.</p>
+      </article>
+    </div>
+    <div class="synthesis-how">
+      <h2>How the pieces fit together</h2>
+      <p>
+        A supervisor owns an actor group. Each actor handles messages one at a time on its execution lane,
+        even when multiple asynchronous messages are in flight. Typed messages cross actor boundaries;
+        mutable actor state is accessed through checked critical loans. The goal is to process bulk numeric
+        data in contiguous CPU/GPU-friendly buffers <em>inside</em> well-defined ownership boundaries,
+        rather than allocating an actor per data element.
+      </p>
+      <p>
+        An LLVM profile targets explicit actor-local native heaps without tracing GC; a GraalVM profile
+        can use off-heap actor regions while still requiring managed GC. Neither target proves real-time
+        deadlines or outperforms BEAM/Rust without equal-workload measurement.
+      </p>
+    </div>
+
+    <header class="synthesis-matrix-intro">
+      <div>
+        <p class="eyebrow">24 technical dimensions</p>
+        <h2>Side-by-side feature matrix</h2>
+        <p>Production facts for established ecosystems are separated from Oreslang design intentions.</p>
+      </div>
+      <a href="/comparisons/">Read detailed pairwise comparisons →</a>
+    </header>
+    <p class="synthesis-scroll-hint">On smaller screens, scroll the matrix horizontally to see every language.</p>
+
+    <div class="synthesis-table-scroller" role="region" aria-label="Erlang, Rust, Oreslang and other languages feature comparison" tabindex="0">
+      <table class="synthesis-table">
+        <caption>Architecture and ecosystem comparison, reviewed October 2026. Oreslang entries describe goals, not verified compiler support.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            {matrixColumns.map((column) => <th scope="col" class={column.key === "oreslang" ? "synthesis-oreslang-column" : ""}>{column.label}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {matrixRows.map((row) => (
+            <tr id={row.id}>
+              <th scope="row">{row.feature}</th>
+              <td>{Array.isArray(row.erlang) ? <ol>{row.erlang.map((item) => <li>{item}</li>)}</ol> : row.erlang}</td>
+              <td>{Array.isArray(row.rust) ? <ol>{row.rust.map((item) => <li>{item}</li>)}</ol> : row.rust}</td>
+              <td class="synthesis-oreslang-column">
+                <span class="synthesis-status">Design / not verified</span>
+                {Array.isArray(row.oreslang) ? <ol>{row.oreslang.map((item) => <li>{item}</li>)}</ol> : row.oreslang}
+              </td>
+              <td>{Array.isArray(row.others) ? <ol>{row.others.map((item) => <li>{item}</li>)}</ol> : row.others}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <section class="synthesis-caveats" aria-label="Interpreting the comparison">
+      <h2>What these comparisons do not establish</h2>
+      <p>
+        <strong>Soft real time is not hard real time.</strong> Neither Oreslang nor ordinary BEAM or Rust
+        deployment makes worst-case latency guarantees by language choice alone. Carrier-grade Linux is a
+        platform and operational discipline, not a language certification. GPU and RTC rows distinguish
+        orchestration or signaling from accelerator kernels and media processing.
+      </p>
+      <p>
+        <strong>High-load performance needs a reproducible workload.</strong> CPU utilization, RSS/heap
+        footprint, allocations, GC pauses, mailbox depth, tail latency and throughput must be measured
+        on matching hardware and release configurations before making speed or memory claims.
+        See <a href="/performance/">performance evidence and its limitations</a>.
+      </p>
+      <p>
+        <strong>Verification is backend-specific.</strong> The public Oreslang
+        <a href="/language/">draft feature matrix</a> marks Java/GraalVM, LLVM, .NET and WebAssembly
+        entries as not verified. Website builds and documentation tests do not substitute for compiler
+        conformance, ABI compatibility or operational validation.
+      </p>
+    </section>
+
+    <section class="synthesis-sources" aria-label="Primary documentation and background">
+      <h2>Sources and further reading</h2>
+      <p>Official language/runtime documentation where possible; Oreslang claims are explicitly marked as design goals.</p>
+      <ul>
+        {matrixReferences.map((source) => (
+          <li>
+            <a href={source.url} rel={source.url.startsWith("https://") ? "noopener noreferrer" : undefined}
+              target={source.url.startsWith("https://") ? "_blank" : undefined}>{source.label}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </section>
+</BaseLayout>
