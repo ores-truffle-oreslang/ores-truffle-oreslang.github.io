@@ -173,3 +173,33 @@ test("new dimension counts derive from catalog and remain accessible", () => {
   assert.match(page, /Compact addressing is not a 32-bit address-space guarantee/u);
   assert.match(page, /FPGA or ASIC circuitry/u);
 });
+
+test("DOP and DoD are distinct, native binaries and target architectures are qualified", () => {
+  const byId = Object.fromEntries(matrixRows.map((row) => [row.id, row]));
+  assert.equal(matrixRows.length, 34);
+  assert.equal(byId["data-oriented"].feature, "Data-oriented programming (DOP)");
+  assert.equal(byId["data-oriented-design"].feature, "Data-oriented design (DoD) / ECS");
+  for (const id of ["data-oriented-design", "native-single-binaries", "target-architectures"]) {
+    const row = byId[id];
+    assert.ok(row && matrixRowAnnotations[id], id + " must have comparison row and documentation");
+    assert.ok(["design", "research"].includes(row.status));
+    for (const column of ["erlang", "rust", "oreslang", "others"]) {
+      assert.ok(row[column].length >= 95, id + " lacks meaningful " + column + " comparison");
+    }
+  }
+  assert.match(byId["data-oriented"].oreslang, /SoA/u);
+  assert.match(byId["data-oriented-design"].oreslang, /archetype-style ECS/u);
+  assert.match(byId["data-oriented-design"].oreslang, /actor-owned/u);
+  assert.match(byId["native-single-binaries"].oreslang, /LLVM native AOT/u);
+  assert.match(byId["native-single-binaries"].oreslang, /static vs dynamic linking/u);
+  assert.match(byId["native-single-binaries"].erlang, /not one self-contained/u);
+  assert.match(byId["target-architectures"].rust, /x86.*ARM.*RISC-V.*WebAssembly/u);
+  assert.match(byId["target-architectures"].oreslang, /unverified for each target/u);
+  assert.match(byId["type-system"].rust, /type inference/u);
+  assert.match(byId["type-system"].erlang, /Dynamically typed/u);
+  assert.match(byId["type-system"].oreslang, /inferred local types/u);
+  assert.match(byId["type-system"].oreslang, /Gradual typing.*research question/u);
+  assert.match(byId["type-system"].others, /Python typing uses Any as a gradual form/u);
+  assert.match(page, /Inferred typing is not gradual typing/u);
+  assert.equal(matrixRows.filter((row) => row.id === "carrier-grade-linux").length, 1);
+});
