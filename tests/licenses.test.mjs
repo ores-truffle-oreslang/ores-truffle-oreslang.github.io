@@ -23,7 +23,7 @@ test("Lima 27 excludes all seven requested organizations and one individual", ()
 test("grant, restrictions and license classification are not contradictory", () => {
   for (const clause of [
     "Version 1.1", "royalty-free", "source or compiled form", "for personal or commercial purposes",
-    "No rights or permissions are granted", "acting on behalf of an Excluded Party",
+    "No rights or permissions are granted", "acting on behalf of any Excluded Party",
     "Receiving a copy", "independently obtained", "complete License",
     "does not automatically extend to other government agencies",
     "For a corporate organization named above",
