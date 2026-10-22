@@ -66,6 +66,14 @@ The site consumes its Astro adapter from
 To intentionally update the grammar used by the site, advance the submodule pointer
 to a tested highlighter commit and commit that pointer change here.
 
+## Software licenses
+
+The website publishes a [licenses page](/licenses/) with the custom Lima 27
+source-available license and exclusions. It is not OSI-approved or a free-software
+license; the page does not automatically apply Lima 27 to compiler repositories,
+third-party contributions, or previously licensed releases. Adoption requires
+an express notice by each authorized rights holder.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` checks out submodules, runs the highlighter's own test
