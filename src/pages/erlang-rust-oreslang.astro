@@ -82,7 +82,7 @@ import "../styles/erlang-rust-matrix.css";
               <td>{Array.isArray(row.erlang) ? <ol>{row.erlang.map((item) => <li>{item}</li>)}</ol> : row.erlang}</td>
               <td>{Array.isArray(row.rust) ? <ol>{row.rust.map((item) => <li>{item}</li>)}</ol> : row.rust}</td>
               <td class="synthesis-oreslang-column">
-                <span class="synthesis-status">Design / not verified</span>
+                <span class="synthesis-status">{row.status === "research" ? "Research / not verified" : "Design / not verified"}</span>
                 {Array.isArray(row.oreslang) ? <ol>{row.oreslang.map((item) => <li>{item}</li>)}</ol> : row.oreslang}
               </td>
               <td>{Array.isArray(row.others) ? <ol>{row.others.map((item) => <li>{item}</li>)}</ol> : row.others}</td>
