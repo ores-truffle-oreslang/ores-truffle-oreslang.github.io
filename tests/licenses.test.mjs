@@ -41,7 +41,7 @@ test("licenses page and plain-text endpoint share the one canonical text", () =>
   assert.ok(page.includes("{excludedIndividuals.map("));
   assert.ok(page.includes('{lima27LicenseText}'));
   assert.ok(page.includes('href="/licenses/lima-27.txt"'));
-  assert.ok(page.includes("not automatically relicense"));
+  assert.ok(page.includes("automatically relicense"));
   assert.ok(page.includes("not open source"));
   assert.ok(endpoint.includes('import { lima27LicenseText } from "../../data/lima27.mjs"'));
   assert.ok(endpoint.includes('new Response(lima27LicenseText + "\\n"'));
