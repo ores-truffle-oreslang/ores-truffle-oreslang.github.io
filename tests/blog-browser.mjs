@@ -289,6 +289,20 @@ try {
               await matrix.locator("#gpus .synthesis-verification summary").click();
               assert.equal(await matrix.locator("#gpus .synthesis-verification dd")
                 .filter({ hasText: "Not assessed in public snapshot" }).count(), 4);
+              // Candidate backend/CPU targets are intentionally unverified: web
+              // builds may never promote compiler conformance automatically.
+              assert.equal(await matrix.locator("#backend-targets .synthesis-target-backends article").count(), 4);
+              assert.equal(await matrix.locator("#backend-targets .synthesis-target-table tbody tr").count(), 10);
+              assert.equal(await matrix.locator("#backend-targets .synthesis-target-gate").count(), 50);
+              assert.equal(await matrix.locator("#backend-targets .synthesis-target-gate")
+                .filter({ hasText: "Not assessed" }).count(), 50);
+              assert.ok((await matrix.locator("#backend-targets .synthesis-target-total").innerText()).includes("0 of 50"));
+              await matrix.locator("#backend-targets .synthesis-target-stages summary").click();
+              assert.equal(await matrix.locator("#backend-targets .synthesis-target-stages dd").count(), 4);
+              assert.equal(await matrix.locator("#backend-targets .synthesis-target-scroller")
+                .evaluate((el) => getComputedStyle(el).overflowX), "auto");
+              assert.equal(await matrix.locator("#backend-targets .synthesis-target-table a").count(), 0,
+                "no fabricated compiler evidence links");
               // Example code is rendered as text, not executable guest source or raw HTML.
               assert.equal(await matrix.locator("#actor-walkthrough pre code").count(), 3);
               assert.equal(await matrix.locator('#actor-walkthrough pre[tabindex="0"][aria-label]').count(), 3);

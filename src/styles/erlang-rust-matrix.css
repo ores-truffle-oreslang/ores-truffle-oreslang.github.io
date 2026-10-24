@@ -261,3 +261,89 @@
 @media print { .synthesis-verification, .synthesis-proof-policy details { display: none; } }
 
 .synthesis-example-grid pre:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+
+/* Public backend and CPU/OS evidence inventory: readable at 375px and in print. */
+.synthesis-targets { margin: 34px 0 42px; }
+.synthesis-target-heading h2 {
+  color: var(--cream); font-size: clamp(1.3rem, 2.4vw, 1.85rem);
+  margin: 4px 0 12px;
+}
+.synthesis-target-heading > p:last-child { max-width: 950px; color: var(--paper); }
+.synthesis-target-backends {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 19px 0 17px;
+}
+.synthesis-target-backends article {
+  padding: 18px; min-width: 0; border: 1px solid var(--line);
+  background: var(--surface); border-radius: 9px;
+}
+.synthesis-target-backends h3 { margin: 0 0 8px; color: var(--cream); font-size: 1rem; }
+.synthesis-target-backends p { color: var(--paper); margin: 0; font-size: .89rem; }
+.synthesis-target-backends .synthesis-target-status {
+  color: var(--orange-soft); font-weight: 750; margin-bottom: 7px;
+}
+.synthesis-target-total { color: var(--paper); margin: 12px 0 14px; }
+.synthesis-target-total a, .synthesis-target-note a,
+.synthesis-target-table a { color: var(--orange-soft); }
+.synthesis-target-total a { display: inline-block; margin-left: 8px; }
+.synthesis-target-stages {
+  background: var(--surface); border: 1px solid var(--accent-border);
+  border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; color: var(--paper);
+}
+.synthesis-target-stages summary { color: var(--orange-soft); font-weight: 750; cursor: pointer; }
+.synthesis-target-stages dl { margin: 15px 0; }
+.synthesis-target-stages dl > div { display: grid; grid-template-columns: minmax(105px, 150px) minmax(0, 1fr); gap: 12px; margin: 8px 0; }
+.synthesis-target-stages dt { font-weight: 750; color: var(--cream); }
+.synthesis-target-stages dd { margin: 0; }
+.synthesis-target-stages p { margin-bottom: 0; }
+.synthesis-target-scroller {
+  width: 100%; max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain;
+  border-radius: 10px; border: 1px solid var(--accent-border);
+}
+.synthesis-target-scroller:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+.synthesis-target-table {
+  width: 100%; min-width: 1150px; border-spacing: 0;
+  border-collapse: separate; table-layout: fixed; font-size: .86rem;
+}
+.synthesis-target-table caption {
+  text-align: left; caption-side: top; padding: 12px 15px;
+  color: var(--paper); font-size: .83rem;
+}
+.synthesis-target-table th, .synthesis-target-table td {
+  padding: 13px 11px; vertical-align: top; text-align: left;
+  border-bottom: 1px solid var(--line); overflow-wrap: anywhere;
+}
+.synthesis-target-table thead th {
+  color: var(--cream); background: var(--surface-strong);
+  border-bottom: 2px solid var(--accent-border);
+}
+.synthesis-target-table tr > :first-child { width: 17%; }
+.synthesis-target-table tr > :nth-child(2) { width: 19%; }
+.synthesis-target-table tr > :nth-child(n+3) { width: 12.8%; }
+.synthesis-target-table tbody th {
+  background: var(--surface-strong); color: var(--cream); position: sticky; left: 0; z-index: 1;
+}
+.synthesis-target-table tbody th span { display: block; font-weight: 500; color: var(--paper); margin-top: 4px; }
+.synthesis-target-table tbody td { background: var(--surface); color: var(--paper); }
+.synthesis-target-gate { color: var(--paper); font-weight: 650; }
+.synthesis-target-table a { display: block; margin-top: 9px; }
+.synthesis-target-note { font-size: .84rem; color: var(--paper); margin: 10px 0; }
+@media (max-width: 950px) {
+  .synthesis-target-backends { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 650px) {
+  .synthesis-target-backends { grid-template-columns: minmax(0, 1fr); }
+  .synthesis-target-backends article { padding: 14px; }
+  .synthesis-target-stages dl > div { display: block; }
+  .synthesis-target-stages dd { margin-top: 4px; }
+}
+@media print {
+  .synthesis-target-backends { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .synthesis-target-scroller { overflow: visible; }
+  .synthesis-target-table { min-width: 0; table-layout: auto; font-size: 7pt; }
+  .synthesis-target-table th, .synthesis-target-table td { padding: 5pt; }
+  .synthesis-target-table tbody th { position: static; }
+  .synthesis-target-table tr { break-inside: avoid; }
+}
