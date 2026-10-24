@@ -103,6 +103,22 @@ export function validateProofLedger(candidate) {
     if (seen.has(key)) fail("duplicate target/gate");
     seen.add(key);
     if (!["implemented", "tested", "production-verified"].includes(entry.stage)) fail("unrecognized promotion stage");
+    // A source-only claim may not smuggle a nominally passing CI URL into the
+    // generated UI. Each stage has an explicit, bounded record schema.
+    const commonKeys = ["target_id", "gate_id", "stage", "compiler_commit",
+      "compiler_tree_sha", "source_sha256", "scope", "review_pr_url",
+      "compiler_commit_url"];
+    const runKeys = ["executed_run_url", "executed_result", "executed_head_sha",
+      "executed_tree_sha", "executed_test_count"];
+    const productionKeys = ["operational_review_url", "operational_scope"];
+    const allowed = new Set([
+      ...commonKeys,
+      ...(entry.stage === "implemented" ? [] : runKeys),
+      ...(entry.stage === "production-verified" ? productionKeys : [])
+    ]);
+    if (Object.keys(entry).some(prop => !allowed.has(prop))) {
+      fail("unexpected evidence fields for promotion stage");
+    }
     if (!/^[a-f0-9]{40}$/u.test(entry.compiler_commit ?? "") ||
         !/^[a-f0-9]{40}$/u.test(entry.compiler_tree_sha ?? "") ||
         !/^[a-f0-9]{64}$/u.test(entry.source_sha256 ?? "")) fail("missing immutable source/tree/input identity");
