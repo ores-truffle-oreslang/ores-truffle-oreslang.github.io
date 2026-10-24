@@ -31,7 +31,7 @@ jobs:
           actual="$(git -C vendor/html-js-css-syntax-highlighter rev-parse HEAD)"
           test -n "$expected" && test "$expected" = "$actual"
           git submodule status --recursive | tee /tmp/oreslang-submodules.txt
-          if grep -Eq '^[+\-U]' /tmp/oreslang-submodules.txt; then
+          if grep -Eq '^[+U-]' /tmp/oreslang-submodules.txt; then
             exit 1
           fi
 
