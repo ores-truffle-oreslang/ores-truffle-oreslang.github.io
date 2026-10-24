@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { matrixColumns, matrixRows, matrixReferences } from "../data/erlang-rust-matrix.mjs";
 import { matrixCategories, matrixSourceCatalog, matrixRowAnnotations } from "../data/erlang-rust-matrix-navigation.mjs";
 import { matrixRowEvidence, evidenceSource, promotionRequirements } from "../data/erlang-rust-evidence.mjs";
-import { draftBackendStatus, targetSupportRows, targetGates, proofStages, proofCount, supportSource } from "../data/oreslang-target-matrix.mjs";
+import { draftBackendStatus, targetSupportRows, targetGates, proofStages, proofCount, executedProofCount, supportSource } from "../data/oreslang-target-matrix.mjs";
 import "../styles/erlang-rust-matrix.css";
 
 const erlangExample = "-module(counter).\n-behaviour(gen_server).\n-export([start_link/0, inc/1, init/1, handle_call/3]).\nstart_link() -> gen_server:start_link(?MODULE, 0, []).\ninc(Pid) -> gen_server:call(Pid, inc).\ninit(N) -> {ok, N}.\nhandle_call(inc, _From, N) ->\n    Next = N + 1,\n    {reply, Next, Next}.";
@@ -163,7 +163,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       </div>
 
       <p class="synthesis-target-total" role="status">
-        <strong>{proofCount} of {targetSupportRows.length * targetGates.length}</strong> candidate target/gate combinations have published, independently reviewed evidence in this ledger.
+        <strong>{proofCount} of {targetSupportRows.length * targetGates.length}</strong> candidate target/gate combinations have published records in this ledger; <strong>{executedProofCount}</strong> have reviewed executed-test evidence. Record metadata alone does not prove compiler conformance.
         <a href={supportSource.ledgerUrl}>Open machine-readable evidence ledger ↗</a>
       </p>
 
@@ -200,7 +200,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
                   <td data-gate={gate.id}>
                     <span class="synthesis-target-gate">{gate.label}</span>
                     {gate.proofUrl && (
-                      <a href={gate.proofUrl} target="_blank" rel="noopener noreferrer">Execution evidence ↗</a>
+                      <a href={gate.proofUrl} target="_blank" rel="noopener noreferrer">{gate.proofLabel} ↗</a>
                     )}
                     {gate.reviewUrl && (
                       <a href={gate.reviewUrl} target="_blank" rel="noopener noreferrer">Review ↗</a>

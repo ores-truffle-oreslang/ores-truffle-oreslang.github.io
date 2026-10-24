@@ -60,3 +60,16 @@ test("deployment uses least privilege; CI has read-only repository access", () =
   assert.match(validation, /npm audit --audit-level=high/u);
   assert.ok(!existsSync(join(process.cwd(), ".github/workflows/lockfile-bootstrap.yml")), "Bootstrap must not be shipped");
 });
+
+test("submodule status guard rejects changed, uninitialized and conflict gitlinks", () => {
+  for (const file of [".github/workflows/deploy.yml", ".github/workflows/validate-site.yml"]) {
+    const yaml = read(file);
+    const guard = "grep -Eq '^[+U-]' /tmp/oreslang-submodules.txt";
+    assert.ok(yaml.includes(guard), file + " missing valid gitlink mismatch guard");
+    assert.ok(!yaml.includes("^[+\\-U]"), file + " has malformed regex range");
+    assert.match(yaml, /test -n "\$expected" && test "\$expected" = "\$actual"/u);
+  }
+  const statuses = ["+modified", "-uninitialized", "Uconflict", " unchanged"];
+  const denied = statuses.filter(s => /^[+U-]/u.test(s));
+  assert.deepEqual(denied, statuses.slice(0, 3));
+});
