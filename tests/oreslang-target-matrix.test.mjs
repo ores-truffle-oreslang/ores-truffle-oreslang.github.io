@@ -85,8 +85,8 @@ test("proof promotion requires exact source identity, independent review and exe
   assert.throws(() => validateProofLedger(entries([{ ...tested, compiler_commit: "c".repeat(40) }])), /compiler commit link mismatch/u);
   assert.throws(() => validateProofLedger(entries([{ ...tested, compiler_commit_url: "javascript:alert(1)" }])), /compiler commit link mismatch/u);
   assert.throws(() => validateProofLedger(entries([{ ...tested, review_pr_url: "https://github.com/example/fake/pull/1" }])), /independent website publication review/u);
-  assert.throws(() => validateProofLedger(entries([{ ...tested, source_sha256: "nope" }])), /immutable source\\/tree\\/input identity/u);
-  assert.throws(() => validateProofLedger(entries([{ ...tested, compiler_tree_sha: "nope" }])), /immutable source\\/tree\\/input identity/u);
+  assert.throws(() => validateProofLedger(entries([{ ...tested, source_sha256: "nope" }])), /immutable source\/tree\/input identity/u);
+  assert.throws(() => validateProofLedger(entries([{ ...tested, compiler_tree_sha: "nope" }])), /immutable source\/tree\/input identity/u);
   assert.throws(() => validateProofLedger(entries([{ ...tested, stage: "verified" }])), /unrecognized promotion stage/u);
   assert.throws(() => validateProofLedger({ ...ledger, public_draft: "untrusted", records: [] }), /invalid schema/u);
 });
