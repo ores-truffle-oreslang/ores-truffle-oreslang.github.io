@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { matrixColumns, matrixRows, matrixReferences } from "../data/erlang-rust-matrix.mjs";
 import { matrixCategories, matrixSourceCatalog, matrixRowAnnotations } from "../data/erlang-rust-matrix-navigation.mjs";
 import { matrixRowEvidence, evidenceSource, promotionRequirements } from "../data/erlang-rust-evidence.mjs";
+import { draftBackendStatus, targetSupportRows, targetGates, proofStages, proofCount, supportSource } from "../data/oreslang-target-matrix.mjs";
 import "../styles/erlang-rust-matrix.css";
 
 const erlangExample = "-module(counter).\n-behaviour(gen_server).\n-export([start_link/0, inc/1, init/1, handle_call/3]).\nstart_link() -> gen_server:start_link(?MODULE, 0, []).\ninc(Pid) -> gen_server:call(Pid, inc).\ninit(N) -> {ok, N}.\nhandle_call(inc, _From, N) ->\n    Next = N + 1,\n    {reply, Next, Next}.";
@@ -139,6 +140,84 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
         <p>Approval is per backend and feature. A green website CI run, a historical demo, or an unexecuted PR cannot promote a feature.</p>
       </details>
     </div>
+
+    <section class="synthesis-targets" id="backend-targets" aria-labelledby="synthesis-target-title">
+      <header class="synthesis-target-heading">
+        <p class="eyebrow">Backend × platform × executed evidence</p>
+        <h2 id="synthesis-target-title">Which Oreslang targets have actually been verified?</h2>
+        <p>
+          The public draft lists four backend tracks, but certifies no executable conformance.
+          The CPU/OS combinations below are <strong>candidate evaluation profiles, not a supported-platform list</strong>.
+          No per-target conformance is inferred from an LLVM, JVM, WASM or .NET toolchain alone.
+        </p>
+      </header>
+
+      <div class="synthesis-target-backends" aria-label="Public backend verification tracks">
+        {draftBackendStatus.map((backend) => (
+          <article>
+            <h3>{backend.name}</h3>
+            <p class="synthesis-target-status">{backend.draftStatus}</p>
+            <p>{backend.description}</p>
+          </article>
+        ))}
+      </div>
+
+      <p class="synthesis-target-total" role="status">
+        <strong>{proofCount} of {targetSupportRows.length * targetGates.length}</strong> candidate target/gate combinations have published, independently reviewed evidence in this ledger.
+        <a href={supportSource.ledgerUrl}>Open machine-readable evidence ledger ↗</a>
+      </p>
+
+      <details class="synthesis-target-stages">
+        <summary>Evidence levels and promotion requirements</summary>
+        <dl>
+          {proofStages.map((stage) => (
+            <div><dt>{stage.name}</dt><dd>{stage.requirement}</dd></div>
+          ))}
+        </dl>
+        <p>“Not assessed” is not “unsupported.” A site build, a source hash, a CI run with zero executed steps or a proposed target triple cannot establish compiler functionality. Compiler-run evidence must be independently checked before publishing an upgraded status.</p>
+      </details>
+
+      <p class="synthesis-scroll-hint">Scroll horizontally on a small screen; row headings remain visible as the gate columns scroll. All results are readable without JavaScript.</p>
+      <div class="synthesis-target-scroller" role="region" aria-label="Oreslang target architecture and verification status matrix" tabindex="0">
+        <table class="synthesis-target-table">
+          <caption>Evaluation-only target combinations, based on the non-normative {supportSource.reference} public draft. Verification is per compiler, target and behavioral gate.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Backend / candidate target</th>
+              <th scope="col">Distribution model</th>
+              {targetGates.map((gate) => <th scope="col" title={gate.details}>{gate.label}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {targetSupportRows.map((target) => (
+              <tr data-target-id={target.id} data-target-backend={target.backend}>
+                <th scope="row">
+                  <strong>{target.backendLabel}</strong>
+                  <span>{target.label}</span>
+                </th>
+                <td>{target.delivery}</td>
+                {target.gates.map((gate) => (
+                  <td data-gate={gate.id}>
+                    <span class="synthesis-target-gate">{gate.label}</span>
+                    {gate.proofUrl && (
+                      <a href={gate.proofUrl} target="_blank" rel="noopener noreferrer">Execution evidence ↗</a>
+                    )}
+                    {gate.reviewUrl && (
+                      <a href={gate.reviewUrl} target="_blank" rel="noopener noreferrer">Review ↗</a>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="synthesis-target-note">
+        Source: <a href={supportSource.draftUrl}>public backend draft</a> (updated {supportSource.updated})
+        and <a href={supportSource.ledgerUrl}>reviewed proof ledger</a>.
+        Candidate architectures are not endorsements or completed ports; browser wasm32 and WASI wasm32 have different host capabilities.
+      </p>
+    </section>
 
     <p class="synthesis-scroll-hint">On smaller screens, scroll the matrix horizontally to see every language. Each feature has its own shareable link and primary documentation.</p>
 
