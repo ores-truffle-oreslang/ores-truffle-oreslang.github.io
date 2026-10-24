@@ -48,6 +48,16 @@ export const targetGates = Object.freeze([
   { id: "package", label: "Package", details: "Runtime dependencies, install, startup and single-file claims are measured." }
 ]);
 
+// Only these two source repositories currently have a reviewed public compiler
+// identity. A new backend must receive an explicit provenance-policy review,
+// not a regex wildcard admitting any GitHub repository.
+export const compilerSourceByBackend = Object.freeze({
+  "java-graalvm": "ores-truffle-oreslang/oreslang-source.java",
+  llvm: "ores-truffle-oreslang/oreslang-source.llvm",
+  dotnet: null,
+  wasm: null
+});
+
 export const proofStages = Object.freeze([
   { id: "design", name: "Designed", requirement: "Published specification and constraints. A design is not backend implementation." },
   { id: "implemented", name: "Implemented", requirement: "Exact compiler/runtime revision, source identity and reviewed implementation scope." },
@@ -94,16 +104,30 @@ export function validateProofLedger(candidate) {
     seen.add(key);
     if (!["implemented", "tested", "production-verified"].includes(entry.stage)) fail("unrecognized promotion stage");
     if (!/^[a-f0-9]{40}$/u.test(entry.compiler_commit ?? "") ||
-        !/^[a-f0-9]{64}$/u.test(entry.source_sha256 ?? "")) fail("missing immutable source identity");
+        !/^[a-f0-9]{40}$/u.test(entry.compiler_tree_sha ?? "") ||
+        !/^[a-f0-9]{64}$/u.test(entry.source_sha256 ?? "")) fail("missing immutable source/tree/input identity");
     if (!/^[A-Za-z0-9 ._:/-]{25,500}$/u.test(entry.scope ?? "")) fail("missing bounded behavioral scope");
     if (!/^https:\/\/github\.com\/ores-truffle-oreslang\/ores-truffle-oreslang\.github\.io\/pull\/[1-9][0-9]*$/u.test(entry.review_pr_url ?? "")) {
       fail("independent website publication review required");
     }
-    if (!/^https:\/\/github\.com\/(?:ores-truffle-oreslang|orestra)\/[A-Za-z0-9._-]+\/commit\/[a-f0-9]{40}$/u.test(entry.compiler_commit_url ?? "") ||
-        !entry.compiler_commit_url.endsWith("/" + entry.compiler_commit)) fail("compiler commit link mismatch");
-    if (entry.stage !== "implemented" &&
-        (!/^https:\/\/github\.com\/(?:ores-truffle-oreslang|orestra)\/[A-Za-z0-9._-]+\/actions\/runs\/[1-9][0-9]*$/u.test(entry.executed_run_url ?? "") ||
-         entry.executed_result !== "passed")) fail("passing executed compiler run required");
+    const backend = targetProfiles.find(profile => profile.id === entry.target_id).backend;
+    const sourceRepo = compilerSourceByBackend[backend];
+    if (!sourceRepo) fail("backend has no approved compiler-source identity");
+    const expectedCommitUrl = "https://github.com/" + sourceRepo + "/commit/" + entry.compiler_commit;
+    if (entry.compiler_commit_url !== expectedCommitUrl) fail("compiler commit link mismatch");
+    if (entry.stage !== "implemented") {
+      const runPrefix = "https://github.com/" + sourceRepo + "/actions/runs/";
+      if (typeof entry.executed_run_url !== "string" ||
+          !entry.executed_run_url.startsWith(runPrefix) ||
+          !/^[1-9][0-9]*$/u.test(entry.executed_run_url.slice(runPrefix.length)) ||
+          entry.executed_result !== "passed" ||
+          entry.executed_head_sha !== entry.compiler_commit ||
+          entry.executed_tree_sha !== entry.compiler_tree_sha ||
+          !Number.isSafeInteger(entry.executed_test_count) ||
+          entry.executed_test_count < 1) {
+        fail("passing exact-head compiler run with executed test count required");
+      }
+    }
     if (entry.stage === "production-verified" &&
         (!/^https:\/\/github\.com\/(?:ores-truffle-oreslang|orestra)\/[A-Za-z0-9._-]+\/(?:issues|pull)\/[1-9][0-9]*$/u.test(entry.operational_review_url ?? "") ||
         !/^.{30,500}$/u.test(entry.operational_scope ?? ""))) fail("production operational review required");
@@ -124,9 +148,13 @@ export const targetSupportRows = Object.freeze(targetProfiles.map(profile => ({
       status: record?.stage ?? "not-assessed",
       label: record ? proofStages.find(stage => stage.id === record.stage).name : "Not assessed",
       proofUrl: record?.executed_run_url ?? record?.compiler_commit_url ?? null,
+      proofLabel: record ? (record.stage === "implemented" ? "Compiler source" : "Executed tests") : null,
       reviewUrl: record?.review_pr_url ?? null
     };
   })
 })));
 
+// Do not report an implemented-only source claim as verified execution.
 export const proofCount = validatedRecords.length;
+export const executedProofCount = validatedRecords.filter(entry =>
+  entry.stage === "tested" || entry.stage === "production-verified").length;
