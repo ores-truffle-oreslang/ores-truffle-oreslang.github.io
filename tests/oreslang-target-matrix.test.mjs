@@ -54,6 +54,8 @@ test("proof promotion requires exact source identity, independent review and exe
   };
   const entries = (records) => ({ ...ledger, records });
   assert.deepEqual(validateProofLedger(entries([valid])), [valid]);
+  assert.throws(() => validateProofLedger(entries([{ ...valid, executed_run_url: "https://github.com/ores-truffle-oreslang/oreslang-source.llvm/actions/runs/123" }])), /unexpected evidence fields for promotion stage/u);
+  assert.throws(() => validateProofLedger(entries([{ ...valid, source: "<script>" }])), /unexpected evidence fields for promotion stage/u);
   assert.throws(() => validateProofLedger(entries([{ ...valid, stage: "tested" }])), /passing exact-head compiler run/u);
   assert.throws(() => validateProofLedger(entries([{ ...valid, stage: "production-verified" }])), /passing exact-head compiler run/u);
   const tested = {
