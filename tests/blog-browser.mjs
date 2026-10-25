@@ -73,7 +73,7 @@ try {
           reducedMotion: "reduce",
         });
         try {
-          for (let n = 1; n <= 8; n++) {
+          for (let n = 1; n <= 9; n++) {
             const page = await context.newPage();
             const label = engine + " " + width + "px log " + n;
             const pageErrors = [];
