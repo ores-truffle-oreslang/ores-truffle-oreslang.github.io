@@ -32,8 +32,19 @@ jobs:
       - name: Checkout site and pinned submodules
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
+          # Exact-head tests must never silently validate a synthetic merge.
+          ref: ${{ github.event.pull_request.head.sha }}
           submodules: recursive
           persist-credentials: false
+
+      - name: Verify exact PR head checkout
+        env:
+          EXPECTED_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test -n "$EXPECTED_PR_HEAD_SHA"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_PR_HEAD_SHA"
 
       - name: Setup Node
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
@@ -74,7 +85,7 @@ jobs:
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build
 
-      - name: Verify rendered metadata, internal links and all nine engineering logs
+      - name: Verify rendered metadata, internal links and all published engineering logs
         run: npm run test:blogs:build
 
       - name: Parse and validate SVG architecture diagrams

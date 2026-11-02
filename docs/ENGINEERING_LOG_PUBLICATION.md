@@ -14,10 +14,15 @@ Before publishing or substantially revising a technical claim:
    result. Without those, label the example *illustrative*.
 3. Do not infer LLVM/GraalVM parity, GPU support, or guest-code AOT readiness from
    a marketing diagram, draft PR, code sample, or the existence of a repository.
-4. Keep external sources as direct references when possible; private repository
-   links cannot serve as publicly inspectable evidence for outside readers.
+4. Verify external citations against primary documentation, including versioned
+   behavior and preview status. Private repositories cannot serve as publicly
+   inspectable evidence for outside readers.
 5. Explain both correctness and limitation: throughput, safety and zero-GC
    claims need workload and measurement context.
+6. For Orleans-inspired virtual actor claims, distinguish logical identity from
+   activation, explicit writes from persistence, admission from execution,
+   default directory behavior from preview consistency features, and key identity
+   from per-dispatch authorization.
 
 ## Article publishing checklist
 
@@ -73,7 +78,7 @@ If an exact mirror cannot be established, report CI as unverified.
 
 ## Phase 3: compiler sample provenance and reproducible publishing
 
-All sixteen rendered `<pre>` / highlighted AttoLang sample blocks across the
+All twenty inventoried `<pre>` / highlighted examples across the
 nine logs are enumerated in `src/data/engineering-log-examples.json`, with
 source file, ordinal, example type, and verification status. The inventory is a
 **truth-in-labeling mechanism**, not a substitute for compiling examples.
