@@ -82,3 +82,21 @@ test("pull-request site validation checks out and verifies the exact PR head, no
   assert.match(validation, /name: Verify exact PR head checkout/u);
   assert.match(validation, /test "\$actual" = "\$EXPECTED_PR_HEAD_SHA"/u);
 });
+
+
+test("required AttoLang PR check is uniquely named and never skipped by path filters", () => {
+  const validate = read(".github/workflows/validate-site.yml");
+  const deploy = read(".github/workflows/deploy.yml");
+  const blog = read(".github/workflows/blog-quality.yml");
+  assert.match(validate, /^name: Validate marketing site$/mu);
+  assert.match(validate, /^on:\s*\n(?:[^\n]*\n)*?  pull_request:\s*$/mu);
+  assert.match(validate, /^jobs:\s*\n  build:\s*\n    name: AttoLang Site Validation$/mu);
+  assert.doesNotMatch(validate, /^\s+paths(?:-ignore)?:\s*$/mu,
+    "required checks cannot skip config-only PRs");
+  assert.doesNotMatch(validate, /^\s+branches(?:-ignore)?:\s*$/mu,
+    "required checks cannot skip target branches");
+  assert.doesNotMatch(deploy, /name: AttoLang Site Validation/u, "deployment must not reuse required check name");
+  assert.doesNotMatch(blog, /name: AttoLang Site Validation/u, "manual jobs must not reuse required check name");
+  assert.match(validate, /permissions:\s*\n\s*contents: read/u);
+  assert.match(validate, /ref: \$\{\{ github\.event\.pull_request\.head\.sha \}\}/u);
+});
