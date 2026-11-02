@@ -1,4 +1,6 @@
 import test from "node:test";
+import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, extname, relative, sep } from "node:path";
@@ -114,4 +116,28 @@ test("every public page has canonical social sharing imagery", () => {
   assert.ok(markup.has("/brand/"), "Brand downloads page missing");
   assert.match(markup.get("/"), /"alternateName":\["Oreslang","OresLang"\]/u,
     "Historical name structured data must be limited to the official homepage");
+});
+
+test("deployment manifest binds the generated site to the exact Git revision and seven local assets", () => {
+  const { createHash } = requireCrypto();
+  const { execFileSync } = requireGit();
+  const receipt = JSON.parse(readFileSync(join(root, "deployment-manifest.json"), "utf8"));
+  assert.equal(receipt.schema_version, 1);
+  const sha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  assert.match(receipt.git_commit_sha, /^[0-9a-f]{40}$/u);
+  assert.equal(receipt.git_commit_sha, sha);
+  const expected = new Map([
+    ["/", "index.html"], ["/brand/", "brand/index.html"],
+    ["/logs/9/", "logs/9/index.html"], ["/rss.xml", "rss.xml"],
+    ["/brand/attolang-social.png", "brand/attolang-social.png"],
+    ["/brand/attolang-icon-180.png", "brand/attolang-icon-180.png"],
+    ["/favicon.svg", "favicon.svg"],
+  ]);
+  assert.deepEqual(Object.keys(receipt.assets).sort(), [...expected.keys()].sort());
+  for (const [url, path] of expected) {
+    const bytes = readFileSync(join(root, path));
+    assert.equal(receipt.assets[url].bytes, bytes.length, url + " byte length");
+    assert.equal(receipt.assets[url].sha256,
+      createHash("sha256").update(bytes).digest("hex"), url + " SHA-256");
+  }
 });
