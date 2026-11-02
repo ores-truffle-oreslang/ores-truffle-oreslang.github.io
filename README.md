@@ -9,6 +9,12 @@
 
 Marketing site for [AttoLang](https://github.com/ores-truffle-oreslang), built with **Astro**.
 
+Official [brand assets](https://ores-truffle-oreslang.github.io/brand/) include the
+black and white SVG wordmarks, build-generated transparent PNGs, favicon, and
+1200 × 630 social preview. See [brand and rename guidance](docs/BRAND_IDENTITY.md).
+AttoLang was formerly named Oreslang; existing repository and tooling paths
+are retained for backward compatibility during migration.
+
 ## Local development
 
 Requires Node.js 22.20.0 or newer.
