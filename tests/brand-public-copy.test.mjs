@@ -8,6 +8,12 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const scopes = ["src/pages", "src/components", "src/layouts", "src/data", "public/language"];
 const extensions = /\.(?:astro|mjs|md|txt|json|svg)$/u;
 const formerBrand = /\bOres[Ll]ang\b/gu;
+// Exact legacy phrases in legally fixed or immutable evidence artifacts, not current product copy.
+// These must remain narrowly scoped: any other old product-name occurrence fails the test.
+const protectedHistoricalText = new Map([
+  ["src/data/lima27.mjs", "The grant concerns copyrightable Software, not independent use of the Oreslang language syntax or an independently implemented compatible language."],
+  ["src/data/schemas/oreslang-http-sweep-v1.schema.json", '"title": "Oreslang HTTP offered-load sweep evidence receipt (public report v1)"'],
+]);
 // Lowercase oreslang inside existing URLs, file/grammar identifiers, and historic prompts
 // is deliberately not rewritten. New product prose must use AttoLang.
 function visit(dir) {
@@ -24,6 +30,8 @@ test("current public-facing source copy does not regress to the previous product
     const matches = [...contents.matchAll(formerBrand)];
     for (const match of matches) {
       const line = contents.slice(0, match.index).split("\n").length;
+      const sourceLine = contents.split("\n")[line - 1];
+      if (protectedHistoricalText.get(path) && sourceLine.includes(protectedHistoricalText.get(path))) continue;
       bad.push(path + ":" + line + " (" + match[0] + ")");
     }
   }
