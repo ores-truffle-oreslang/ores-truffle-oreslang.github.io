@@ -9,7 +9,7 @@ Before publishing or substantially revising a technical claim:
 
 1. Label it **verified**, **experimental/in progress**, **proposed**, or
    **historical (as of the article date)**. Re-check old status tables when editing.
-2. A claim of *compiler-verified* Oreslang code requires a compiler repository,
+2. A claim of *compiler-verified* AttoLang code requires a compiler repository,
    immutable commit SHA, exact source example, invocation, and successful CI
    result. Without those, label the example *illustrative*.
 3. Do not infer LLVM/GraalVM parity, GPU support, or guest-code AOT readiness from
@@ -31,7 +31,7 @@ Before publishing or substantially revising a technical claim:
 - Every table-of-contents entry must resolve to a unique semantic section.
 - Include alt text and dimensions for figures. Scrolling diagrams and code
   blocks must remain keyboard-focusable.
-- If a source code fragment has not actually been compiled for a pinned Oreslang
+- If a source code fragment has not actually been compiled for a pinned AttoLang
   revision, describe it as a design example rather than a validated program.
 - Do not introduce unreviewed executable HTML, third-party embeds or external
   scripts into engineering articles.
@@ -73,7 +73,7 @@ If an exact mirror cannot be established, report CI as unverified.
 
 ## Phase 3: compiler sample provenance and reproducible publishing
 
-All sixteen rendered `<pre>` / highlighted Oreslang sample blocks across the
+All sixteen rendered `<pre>` / highlighted AttoLang sample blocks across the
 seven logs are enumerated in `src/data/engineering-log-examples.json`, with
 source file, ordinal, example type, and verification status. The inventory is a
 **truth-in-labeling mechanism**, not a substitute for compiling examples.
@@ -114,6 +114,6 @@ GitHub Actions where available.
 The site now checks approved screenshots against 18 tolerance-based visual
 signatures (three engines × two widths × three routes), seeded from a verified
 CI run. It also verifies the precise source digest of the only standalone
-Oreslang compiler candidate in the engineering logs. See
+AttoLang compiler candidate in the engineering logs. See
 [compiler evidence and visual baseline rules](ENGINEERING_LOG_EVIDENCE_AND_VISUALS.md)
 for reproducibility, limitations, and how to review any baseline refresh.

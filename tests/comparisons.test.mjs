@@ -17,7 +17,7 @@ test("all ten requested ecosystems have complete, unique editorial comparisons",
     for (const key of ["headline", "thesis", "strength", "boundary"]) {
       assert.ok(entry[key].length >= 50, entry.id + " missing " + key);
     }
-    assert.equal(entry.benefits.length, 3, entry.id + " must make three specific Oreslang arguments");
+    assert.equal(entry.benefits.length, 3, entry.id + " must make three specific AttoLang arguments");
     for (const benefit of entry.benefits) {
       assert.ok(benefit.title.length >= 12, entry.id + " missing benefit title");
       assert.ok(benefit.detail.length >= 80, entry.id + " benefit needs explanation");
@@ -30,7 +30,7 @@ test("all ten requested ecosystems have complete, unique editorial comparisons",
     for (const angle of entry.angles) {
       assert.ok(angle.topic.length > 3, entry.id + " missing angle topic");
       assert.ok(angle.peer.length >= 50, entry.id + " missing peer strengths");
-      assert.ok(angle.oreslang.length >= 100, entry.id + " missing detailed Oreslang design comparison");
+      assert.ok(angle.oreslang.length >= 100, entry.id + " missing detailed AttoLang design comparison");
       assert.ok(angle.impact.length >= 80, entry.id + " missing practical implications");
     }
     assert.ok(entry.sources.length >= 3, entry.id + " needs multiple primary references");
@@ -46,7 +46,7 @@ test("comparison views are rendered with a native accessible selector and sharea
   assert.match(nav, /label: "comparisons", href: "\/comparisons\/"/u);
   assert.match(nav, /Mobile primary navigation/u);
   assert.match(nav, /Primary navigation/u);
-  assert.match(page, /<label for="language-picker">Compare Oreslang with<\/label>/u);
+  assert.match(page, /<label for="language-picker">Compare AttoLang with<\/label>/u);
   assert.match(page, /<select id="language-picker"/u);
   assert.match(page, /aria-controls="comparison-content"/u);
   assert.match(page, /<option value=\{comparison.id\}>/u);

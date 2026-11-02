@@ -1,6 +1,6 @@
-# Oreslang marketing site
+# AttoLang marketing site
 
-Marketing site for [Oreslang](https://github.com/ores-truffle-oreslang), built with **Astro**.
+Marketing site for [AttoLang](https://github.com/ores-truffle-oreslang), built with **Astro**.
 
 ## Local development
 
@@ -53,7 +53,7 @@ npm run test:blogs:browser
 See [engineering-log publication standards](docs/ENGINEERING_LOG_PUBLICATION.md)
 for verification, accessibility, and evidence requirements.
 
-## Oreslang syntax highlighting
+## AttoLang syntax highlighting
 
 Syntax highlighting lives in the pinned submodule at
 `vendor/html-js-css-syntax-highlighter`, backed by:
@@ -118,4 +118,4 @@ and [example evidence inventory](src/data/engineering-log-examples.json), and
 
 ## Engineering policy: no Python
 
-Python is prohibited in the `ores-truffle-oreslang` GitHub organization, including scripts, build tools, tests, CI, automation and documentation examples that execute Python. Existing Python implementations must be replaced with equivalent **Rust** implementations while preserving behavior, security properties and test coverage. Do not add `.py`, `.pyi`, `.ipynb`, Python dependency manifests, `python`/`python3` commands, `pip`, `pytest`, `poetry`, `uv` or `actions/setup-python` to project workflows. Rust replacements should pass `cargo fmt`, `cargo clippy` and `cargo test`. Explanatory references to this prohibition are acceptable. The language-specific Oreslang compiler backends are not required to be rewritten in Rust solely because they are implemented in Java, C/C++ or other non-Python languages.
+Python is prohibited in the `ores-truffle-oreslang` GitHub organization, including scripts, build tools, tests, CI, automation and documentation examples that execute Python. Existing Python implementations must be replaced with equivalent **Rust** implementations while preserving behavior, security properties and test coverage. Do not add `.py`, `.pyi`, `.ipynb`, Python dependency manifests, `python`/`python3` commands, `pip`, `pytest`, `poetry`, `uv` or `actions/setup-python` to project workflows. Rust replacements should pass `cargo fmt`, `cargo clippy` and `cargo test`. Explanatory references to this prohibition are acceptable. The language-specific AttoLang compiler backends are not required to be rewritten in Rust solely because they are implemented in Java, C/C++ or other non-Python languages.

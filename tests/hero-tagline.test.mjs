@@ -13,7 +13,7 @@ test("the homepage intro is immediately followed by the exact, stylized tagline"
   assert.ok(intro >= 0 && equation > intro && aside > equation);
   const markup = home.slice(home.indexOf('<p class="hero-tldr">'), home.indexOf("</p>", equation) + 4);
   const renderedText = markup.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-  assert.equal(renderedText, "In short, oreslang = ~(erlang + rust)");
+  assert.equal(renderedText, "In short, AttoLang = ~(erlang + rust)");
   for (const token of ["hero-equation-name", "hero-equation-operator", "hero-equation-language"]) {
     assert.ok(markup.includes(token));
   }

@@ -8,7 +8,7 @@ const prompt = "Write about why actors are not merely lambdas: actors encompass 
 
 <BaseLayout
   title="Actors are not lambdas — engineering log #8"
-  description="Engineering log 008: why Oreslang actors can serve lambda-like stateless requests or long-running stateful applications, without confusing closures, actor identity, isolation, or durability."
+  description="Engineering log 008: why AttoLang actors can serve lambda-like stateless requests or long-running stateful applications, without confusing closures, actor identity, isolation, or durability."
   article={{ published: "2026-10-16", modified: "2026-10-16", author: "Alex Mills" }}
 >
   <nav class="log-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/logs/">Logs</a><span aria-hidden="true">/</span><span aria-current="page">#8</span></nav>
@@ -28,7 +28,7 @@ const prompt = "Write about why actors are not merely lambdas: actors encompass 
         <li><a href="#lambda">What a lambda gives us</a></li>
         <li><a href="#stateless">Stateless actors</a></li>
         <li><a href="#stateful">Long-running stateful actors</a></li>
-        <li><a href="#state-boundaries">State and ownership in Oreslang</a></li>
+        <li><a href="#state-boundaries">State and ownership in AttoLang</a></li>
         <li><a href="#more-than-function">What a function does not provide</a></li>
         <li><a href="#spectrum">One model, different lifetimes</a></li>
         <li><a href="#tradeoffs">Choosing the right abstraction</a></li>
@@ -44,14 +44,14 @@ const prompt = "Write about why actors are not merely lambdas: actors encompass 
         <h2>The central distinction: behavior versus a running entity</h2>
         <p>A lambda expresses callable behavior. An actor is a runtime-managed entity with an identity and a message boundary. Its handlers perform computation, but the actor also has a lifetime: it can receive another message after the first one completes, hold explicitly owned state, participate in supervision, and be addressed through an actor reference.</p>
         <p>Nothing about being an actor requires maintaining business state. Equally, nothing about being stateful requires becoming a monolithic process. <strong>State is optional; identity, message admission, and a lifecycle are the architectural difference.</strong></p>
-        <p>That gives Oreslang a useful unification. Rather than maintain one concurrency model for tiny stateless workers and a second for application servers, both can expose typed message contracts. The implementation chooses how much state and how long a lifetime it needs.</p>
+        <p>That gives AttoLang a useful unification. Rather than maintain one concurrency model for tiny stateless workers and a second for application servers, both can expose typed message contracts. The implementation chooses how much state and how long a lifetime it needs.</p>
       </section>
 
       <section class="log-section" id="lambda">
         <h2>A lambda is powerful, but it is not an actor</h2>
         <p>A lambda can transform data, close over lexical variables, be passed as a callback, and even retain mutable state through a captured environment when the language permits it. Therefore, the usual slogan that “lambdas are stateless, actors are stateful” is wrong on both sides: <strong>closures may be stateful, and actors may be stateless</strong>.</p>
         <p>The actual distinction is in the contract. Calling a function does not by itself create an addressable participant, a typed mailbox, message ownership rules, scheduling admission, actor supervision, or a resource-isolation boundary. A programmer can build those around functions, but they are not properties of a lambda merely because it is callable.</p>
-        <p>Oreslang also deliberately keeps lambdas inside ordinary class methods from implicitly capturing <code>self</code>. Receiver access must be explicit and obey the borrow and ownership rules. That prevents an innocent-looking callback from silently extending the lifetime of a whole object. Actor state is a separately designed capability, not an accidental closure capture.</p>
+        <p>AttoLang also deliberately keeps lambdas inside ordinary class methods from implicitly capturing <code>self</code>. Receiver access must be explicit and obey the borrow and ownership rules. That prevents an innocent-looking callback from silently extending the lifetime of a whole object. Actor state is a separately designed capability, not an accidental closure capture.</p>
       </section>
 
       <section class="log-section" id="stateless">
@@ -91,8 +91,8 @@ The actor may outlive any individual request.</code></pre>
       </section>
 
       <section class="log-section" id="state-boundaries">
-        <h2>Oreslang makes the state boundary explicit</h2>
-        <p>Oreslang's actor design keeps application instance data in one actor-owned <code>state</code> container rather than arbitrary mutable actor fields or direct <code>self.state</code> access. Read access is an immutable loan; a write requires an explicitly exclusive <code>critical</code> admission. The canonical surface uses <code>self.handle_state</code> or the equivalent <code>using state.read</code> / <code>using state.write(critical ...)</code> form, subject to declared effects.</p>
+        <h2>AttoLang makes the state boundary explicit</h2>
+        <p>AttoLang's actor design keeps application instance data in one actor-owned <code>state</code> container rather than arbitrary mutable actor fields or direct <code>self.state</code> access. Read access is an immutable loan; a write requires an explicitly exclusive <code>critical</code> admission. The canonical surface uses <code>self.handle_state</code> or the equivalent <code>using state.read</code> / <code>using state.write(critical ...)</code> form, subject to declared effects.</p>
         <p>These loans are scoped: they cannot escape into another actor, be retained after the callback, or cross an <code>await</code>, <code>select</code>, cancellation, or another suspension boundary. That restriction matters most for long-lived applications, where a convenient state reference otherwise becomes a hidden race or lifetime bug.</p>
         <p>Even when an actor supports multiple outstanding request lifetimes, <strong>at most one native thread executes that actor's code at a time</strong>. Logical concurrency does not mean parallel access to its state. Message admission, suspension, and exclusive state-write rules together determine when state can be read or changed.</p>
         <p>Shared, isolated/private, and untrusted actor kinds differ in what memory and capabilities they may access. A shared actor is not permission to mutate another actor's memory; a private or untrusted actor owns its confined heap. The invariant is that cross-actor coordination goes through approved messages and capabilities.</p>
@@ -137,7 +137,7 @@ The actor may outlive any individual request.</code></pre>
         <p>The important question is not “Can an actor replace a lambda?” The answer for ordinary computation is often yes, but doing so is not always sensible. The better question is: <strong>What must live beyond this particular call?</strong></p>
         <p>If the answer is “nothing,” a stateless actor can behave like a lambda at the system boundary. If the answer is “a session, a workflow, an evolving model, a connection, a device, or a whole service,” a stateful actor can own that continuity. Both use the same foundational ideas: identity, messages, explicit ownership, and a managed lifetime.</p>
         <p><strong>Actors are not lambdas because they are more than computations. They are places where computations live.</strong></p>
-        <p>These are Oreslang's intended language and runtime semantics. The diagrams are conceptual rather than compiler-verified examples; support and performance must be established for each backend independently. For the broader context, see <a href="/paradigms/">Oreslang's programming paradigms</a> and <a href="/logs/6/">actor-native long-running AI architectures</a>.</p>
+        <p>These are AttoLang's intended language and runtime semantics. The diagrams are conceptual rather than compiler-verified examples; support and performance must be established for each backend independently. For the broader context, see <a href="/paradigms/">AttoLang's programming paradigms</a> and <a href="/logs/6/">actor-native long-running AI architectures</a>.</p>
       </section>
     </article>
   </div>

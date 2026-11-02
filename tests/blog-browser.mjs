@@ -307,7 +307,7 @@ try {
               assert.equal(await matrix.locator("#actor-walkthrough pre code").count(), 3);
               assert.equal(await matrix.locator('#actor-walkthrough pre[tabindex="0"][aria-label]').count(), 3);
               assert.ok((await matrix.locator("#actor-walkthrough pre code").last().textContent())
-                .includes("NOT ORESLANG SOURCE SYNTAX"));
+                .includes("NOT ATTOLANG SOURCE SYNTAX"));
               assert.equal(await matrix.locator(".synthesis-table-scroller").evaluate(
                 (el) => getComputedStyle(el).overflowX
               ), "auto");

@@ -12,7 +12,7 @@
     <li><strong>Proof:</strong> Which runnable example, benchmark, design note, or test supports the claim?</li>
     <li><strong>Limit:</strong> What is still experimental, incomplete, or unsupported?</li>
   </ul>
-  <p>For Oreslang, an honest introduction can describe the language's goals around actors, ownership, and multiple backends while distinguishing those design goals from independently verified, shipping capabilities. A claim that is precise today is more valuable than one that must be walked back tomorrow.</p>
+  <p>For AttoLang, an honest introduction can describe the language's goals around actors, ownership, and multiple backends while distinguishing those design goals from independently verified, shipping capabilities. A claim that is precise today is more valuable than one that must be walked back tomorrow.</p>
 </section>
 
 <section id="first-run" class="log-section">
@@ -52,7 +52,7 @@
     <li><strong>Executable truth:</strong> Make examples compiler-checked and backend-labeled. A generated snippet should be formatted, typechecked, run where appropriate, and checked against conformance tests.</li>
     <li><strong>Tool integration:</strong> Where practical, expose syntax lookup, diagnostics, formatting, and compile/test operations through an editor integration or MCP server. Prefer a live compiler result over a model's remembered guess.</li>
   </ul>
-  <p>For Oreslang, this suggests an authoritative language-spec index, a public cookbook, and a test suite where each published snippet is validated against the declared compiler/backend version. Publishing experimental syntax without a status label would teach agents the wrong language.</p>
+  <p>For AttoLang, this suggests an authoritative language-spec index, a public cookbook, and a test suite where each published snippet is validated against the declared compiler/backend version. Publishing experimental syntax without a status label would teach agents the wrong language.</p>
   <p>Google's <a href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide">SEO Starter Guide</a> emphasizes useful, unique, understandable content rather than guaranteed ranking shortcuts. AI discovery deserves the same discipline.</p>
 </section>
 
@@ -77,7 +77,7 @@
     </table>
   </div>
   <p>Do not manufacture low-quality questions or blanket every forum with promotional answers. Instead, help developers solve genuine problems, link back to canonical references, and keep examples current. Public availability also does not waive licenses, privacy obligations, platform rules, or data-provider agreements.</p>
-  <h3>Four different kinds of “the AI knows Oreslang”</h3>
+  <h3>Four different kinds of “the AI knows AttoLang”</h3>
   <ul>
     <li><strong>Parametric knowledge:</strong> syntax and conventions were learned by a model during training. You cannot update that model's weights by publishing an article today, nor guarantee when or whether a provider will retrain.</li>
     <li><strong>Search-time knowledge:</strong> a product searches or opens an indexed page for the current question. Pages must be accessible, discoverable, relevant, and actually retrieved during that interaction.</li>
@@ -88,10 +88,10 @@
 </section>
 
 <section id="canonical-corpus" class="log-section">
-  <h2>6. Create a canonical, versioned Oreslang knowledge corpus</h2>
+  <h2>6. Create a canonical, versioned AttoLang knowledge corpus</h2>
   <p>A language evolves faster than general-purpose LLMs are retrained. The single biggest problem is contradictory examples: old syntax in issues, proposed syntax in design threads, and working syntax in compiler tests. Solve this by maintaining a public, machine-readable corpus generated from the same source of truth as the released language.</p>
   <p>As a proposed documentation structure—not a claim that these paths already exist—organize the corpus like this:</p>
-  <pre aria-label="Suggested Oreslang AI documentation layout" tabindex="0"><code>docs/
+  <pre aria-label="Suggested AttoLang AI documentation layout" tabindex="0"><code>docs/
   stable/           # Versioned, released language semantics
   experimental/     # Proposals, explicitly not guaranteed to compile
   grammar/          # Formal syntax and parsing rules
@@ -116,15 +116,15 @@ llms.txt            # Curated pointers to authoritative resources</code></pre>
     <li><strong>Canonical conflict resolution:</strong> Specify that current released docs and passing conformance cases outrank draft PRs, engineering-log speculation, stale Q&amp;A, or generated examples.</li>
   </ul>
   <p>The relevant references include the <a href="https://developers.google.com/search/docs/appearance/ai-features">Google Search guidance for AI features</a>, <a href="https://developers.openai.com/api/docs/bots">OpenAI crawler guidance</a>, <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap">Google's sitemap guidance</a>, and the <a href="https://llmstxt.org/">llms.txt proposal</a>. Google's guidance emphasizes foundational SEO for AI Search rather than an extra special optimization requirement.</p>
-  <p><strong>Implemented on this marketing site:</strong> a discoverable <a href="/sitemap.xml">XML sitemap</a>, <a href="/robots.txt">robots.txt</a>, and a conservative <a href="/llms.txt">llms.txt discovery index</a>. These improve navigation and machine-readable pointers; they do not establish a complete released Oreslang language specification or guarantee that any model consumed it.</p>
+  <p><strong>Implemented on this marketing site:</strong> a discoverable <a href="/sitemap.xml">XML sitemap</a>, <a href="/robots.txt">robots.txt</a>, and a conservative <a href="/llms.txt">llms.txt discovery index</a>. These improve navigation and machine-readable pointers; they do not establish a complete released AttoLang language specification or guarantee that any model consumed it.</p>
 </section>
 
 <section id="agent-context" class="log-section">
   <h2>7. Put the language in coding agents' context before generation</h2>
-  <p>For a developer who opens a fresh project and asks an assistant to create an Oreslang program, the immediate problem is not whether the model has seen Oreslang in training. It is whether the assistant has an authoritative versioned reference available <em>in this session</em>. Package the reference so users do not have to paste the language manual with every prompt.</p>
+  <p>For a developer who opens a fresh project and asks an assistant to create an AttoLang program, the immediate problem is not whether the model has seen AttoLang in training. It is whether the assistant has an authoritative versioned reference available <em>in this session</em>. Package the reference so users do not have to paste the language manual with every prompt.</p>
   <h3>Agent instructions: small bootstrap, not a copied manual</h3>
-  <p>Ship an <code>AGENTS.md</code> template for Oreslang projects and, where useful, a <code>.github/copilot-instructions.md</code> file. Different assistants and IDE integrations support different instruction locations, so test the target products. GitHub documents repository and path-specific custom instructions for Copilot; none of these files is automatically installed into an unrelated chat session.</p>
-  <pre aria-label="Example Oreslang agent guidance" tabindex="0"><code># Oreslang coding agent instructions (proposed template)
+  <p>Ship an <code>AGENTS.md</code> template for AttoLang projects and, where useful, a <code>.github/copilot-instructions.md</code> file. Different assistants and IDE integrations support different instruction locations, so test the target products. GitHub documents repository and path-specific custom instructions for Copilot; none of these files is automatically installed into an unrelated chat session.</p>
+  <pre aria-label="Example AttoLang agent guidance" tabindex="0"><code># AttoLang coding agent instructions (proposed template)
 - Identify the installed compiler and its release/commit first.
 - Retrieve the matching stable language spec before writing code.
 - Prefer compiler-verified examples over remembered syntax.
@@ -135,8 +135,8 @@ llms.txt            # Curated pointers to authoritative resources</code></pre>
 - If diagnostics conflict with an old example, trust the
   selected compiler version and report the documentation drift.</code></pre>
   <h3>Tooling: documentation lookup plus a compiler feedback loop</h3>
-  <p>A proposed Oreslang MCP server or equivalent editor integration could expose a small, version-aware interface:</p>
-  <div class="log-table-scroll" role="region" tabindex="0" aria-label="Proposed Oreslang model context protocol tools">
+  <p>A proposed AttoLang MCP server or equivalent editor integration could expose a small, version-aware interface:</p>
+  <div class="log-table-scroll" role="region" tabindex="0" aria-label="Proposed AttoLang model context protocol tools">
     <table>
       <thead><tr><th scope="col">Proposed tool</th><th scope="col">Purpose</th><th scope="col">Safety or correctness condition</th></tr></thead>
       <tbody>
@@ -160,24 +160,24 @@ llms.txt            # Curated pointers to authoritative resources</code></pre>
     <li><strong>Evidence and repair:</strong> Record diagnostics and exit status, bind the tested artifact to an exact compiler/backend identity, and stop on repeated failures rather than silently claiming success.</li>
   </ul>
   <p>For an AI-generated application, use a repeatable cycle: <strong>retrieve the matching spec → choose a verified recipe → generate a small implementation → format and typecheck → test behavior → repair using diagnostics → report what was actually verified.</strong> For untrusted code, compilation and execution require isolation, quotas, and explicit permissions; do not grant arbitrary network or filesystem access just to make a demo pass.</p>
-  <p>For users outside Oreslang repositories, make the same onboarding available as an installable editor extension, an explicitly connected MCP tool, a CLI quickstart, and a copyable short prompt pointing to a stable docs URL. There is no universal way to inject instructions into every provider's general chat interface without the user's participation or a product integration.</p>
+  <p>For users outside AttoLang repositories, make the same onboarding available as an installable editor extension, an explicitly connected MCP tool, a CLI quickstart, and a copyable short prompt pointing to a stable docs URL. There is no universal way to inject instructions into every provider's general chat interface without the user's participation or a product integration.</p>
 </section>
 
 <section id="architectural-ai" class="log-section">
   <h2>8. Teach architectural problem solving, not just syntax completion</h2>
-  <p>A model might correctly write a function and still design a broken concurrent system. To make Oreslang useful for nontrivial user prompts, publish <strong>complete, tested architectural recipes</strong> describing requirements, tradeoffs, invariants, and failure cases—not just fragments of syntax.</p>
+  <p>A model might correctly write a function and still design a broken concurrent system. To make AttoLang useful for nontrivial user prompts, publish <strong>complete, tested architectural recipes</strong> describing requirements, tradeoffs, invariants, and failure cases—not just fragments of syntax.</p>
   <ul>
     <li><strong>Actor and supervisor topology:</strong> Who owns mutable state? What crosses actor boundaries? What happens on cancellation, restart, failure, or dropped messages?</li>
     <li><strong>Channels and streaming:</strong> How do backpressure, bounded buffers, shutdown, fairness, and sender/receiver lifetimes work on each supported runtime?</li>
     <li><strong>Type-system recipes:</strong> Show correct structural typing, records and structs, generics, result types, pattern matching, borrowing, and compile-time diagnostics; distinguish stable from proposed syntax.</li>
-    <li><strong>Distributed-systems examples:</strong> Model leases, idempotency, fencing tokens, and failure handling. Be explicit about what an Oreslang example proves and what requires an external service or operational guarantees.</li>
+    <li><strong>Distributed-systems examples:</strong> Model leases, idempotency, fencing tokens, and failure handling. Be explicit about what an AttoLang example proves and what requires an external service or operational guarantees.</li>
     <li><strong>Cross-backend portability:</strong> Give an actual compatibility matrix and explain differences between released Java/GraalVM and LLVM implementations. Do not infer parity from a proposal or a passing test in only one backend.</li>
     <li><strong>End-to-end applications:</strong> Add an HTTP service, command-line utility, concurrent worker, streaming pipeline, and test harness only as each can be built and run against a declared toolchain.</li>
   </ul>
   <p>Each recipe should include: <strong>problem statement, constraints, architecture diagram or explanation, full source, commands, tests, expected output, failure injection, backend/version support, and alternatives.</strong> For syntax that is not yet implemented, publish a clearly labeled design example rather than a copy-ready sample.</p>
   <h3>Build a public code-generation evaluation suite</h3>
-  <p>Measure the ability of <em>fresh sessions</em> to solve real Oreslang tasks without relying on undocumented prompt tricks. Maintain a set of prompts spanning simple functions, type errors, actor messaging, supervised failure, and multi-file application design. Run representative assistants in at least three modes: no extra context, searchable public docs, and docs plus compiler tools. Where provider policies allow, record model/version, prompt, retrieved documents, generated code, build logs, and outcomes.</p>
-  <div class="log-table-scroll" role="region" tabindex="0" aria-label="Oreslang AI generation quality metrics">
+  <p>Measure the ability of <em>fresh sessions</em> to solve real AttoLang tasks without relying on undocumented prompt tricks. Maintain a set of prompts spanning simple functions, type errors, actor messaging, supervised failure, and multi-file application design. Run representative assistants in at least three modes: no extra context, searchable public docs, and docs plus compiler tools. Where provider policies allow, record model/version, prompt, retrieved documents, generated code, build logs, and outcomes.</p>
+  <div class="log-table-scroll" role="region" tabindex="0" aria-label="AttoLang AI generation quality metrics">
     <table>
       <thead><tr><th scope="col">Metric</th><th scope="col">What it establishes</th></tr></thead>
       <tbody>
@@ -249,8 +249,8 @@ llms.txt            # Curated pointers to authoritative resources</code></pre>
 </section>
 
 <section id="oreslang" class="log-section">
-  <h2>13. Applying the playbook to Oreslang</h2>
-  <p>Oreslang is an especially interesting example because it spans language design, runtime semantics, and multiple implementation targets. Those subjects attract technical curiosity, but curiosity only becomes adoption when examples are correct and current.</p>
+  <h2>13. Applying the playbook to AttoLang</h2>
+  <p>AttoLang is an especially interesting example because it spans language design, runtime semantics, and multiple implementation targets. Those subjects attract technical curiosity, but curiosity only becomes adoption when examples are correct and current.</p>
   <ul>
     <li><strong>Lead with a real task:</strong> Provide a minimal, runnable actor or ownership example tied to a supported compiler release.</li>
     <li><strong>Document design versus delivery:</strong> Label experimental features, draft proposals, backend differences, and released behavior separately.</li>
@@ -258,7 +258,7 @@ llms.txt            # Curated pointers to authoritative resources</code></pre>
     <li><strong>Use engineering logs as evidence:</strong> Connect each claim to design discussions, CI runs, benchmarks, and known limitations.</li>
     <li><strong>Invite the right contributions:</strong> Seek reproducible bug reports, compiler conformance cases, tutorials, and language tooling—not just stars.</li>
   </ul>
-  <p>Start with the <a href="https://github.com/ores-truffle-oreslang">Oreslang GitHub organization</a> and the <a href="/logs/">engineering-log archive</a>. The next marketing milestone should be a developer successfully building a real example, not merely a larger audience for a roadmap.</p>
+  <p>Start with the <a href="https://github.com/ores-truffle-oreslang">AttoLang GitHub organization</a> and the <a href="/logs/">engineering-log archive</a>. The next marketing milestone should be a developer successfully building a real example, not merely a larger audience for a roadmap.</p>
 </section>
 
 <section id="closing" class="log-section">

@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 630" role="img" aria-labelledby="title desc">
-<title id="title">Oreslang shared incremental compiler architecture</title>
-<desc id="desc">Oreslang source flows through a shared semantic frontend into a query engine and persistent cache, branching to Java GraalVM, .NET, LLVM, Forge, and WebAssembly backends, and then into native or portable artifacts.</desc>
+<title id="title">AttoLang shared incremental compiler architecture</title>
+<desc id="desc">AttoLang source flows through a shared semantic frontend into a query engine and persistent cache, branching to Java GraalVM, .NET, LLVM, Forge, and WebAssembly backends, and then into native or portable artifacts.</desc>
 <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#0b1921"/><stop offset="1" stop-color="#090d18"/></linearGradient><linearGradient id="core" x1="0" x2="1"><stop stop-color="#113b3a"/><stop offset="1" stop-color="#133047"/></linearGradient><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#89a8ba"/></marker></defs>
 <rect width="1100" height="630" rx="20" fill="url(#bg)"/>
-<g font-family="IBM Plex Sans,Arial,sans-serif"><text x="50" y="56" fill="#a9d8ce" font-size="17" font-weight="700" letter-spacing="3">ORESLANG / COMPILER ARCHITECTURE</text>
+<g font-family="IBM Plex Sans,Arial,sans-serif"><text x="50" y="56" fill="#a9d8ce" font-size="17" font-weight="700" letter-spacing="3">ATTOLANG / COMPILER ARCHITECTURE</text>
 <text x="50" y="86" fill="#edf7f4" font-size="27" font-weight="700">One semantic engine. Multiple compilation targets.</text>
-<rect x="346" y="114" width="408" height="62" rx="12" fill="#192a32" stroke="#729cac"/><text x="550" y="140" fill="#f0f7f9" font-size="20" font-weight="700" text-anchor="middle">Oreslang source</text><text x="550" y="160" fill="#b4c9d0" font-size="13" text-anchor="middle">files · modules · declarations · imports</text>
+<rect x="346" y="114" width="408" height="62" rx="12" fill="#192a32" stroke="#729cac"/><text x="550" y="140" fill="#f0f7f9" font-size="20" font-weight="700" text-anchor="middle">AttoLang source</text><text x="550" y="160" fill="#b4c9d0" font-size="13" text-anchor="middle">files · modules · declarations · imports</text>
 <path d="M550 176V209" fill="none" stroke="#89a8ba" stroke-width="2" marker-end="url(#arr)"/>
 <rect x="166" y="217" width="768" height="113" rx="14" fill="url(#core)" stroke="#5ce4c0"/><text x="550" y="251" fill="#90f5dc" font-size="14" font-weight="800" text-anchor="middle" letter-spacing="2">SHARED INCREMENTAL SEMANTIC CORE — PROPOSED</text><text x="550" y="280" fill="#f4f9fa" font-size="21" font-weight="600" text-anchor="middle">parse → typed HIR → types &amp; borrows → MIR → verify</text><text x="550" y="309" fill="#d2e5e8" font-size="15" text-anchor="middle">target-neutral declarations, effects, capabilities, semantic identities</text>
 <path d="M550 330V357" fill="none" stroke="#89a8ba" stroke-width="2" marker-end="url(#arr)"/>

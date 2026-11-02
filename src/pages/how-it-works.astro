@@ -4,7 +4,7 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
 ---
 
 <BaseLayout
-  title="How OresVM Works — Oreslang execution, actors and scheduling"
+  title="How OresVM Works — AttoLang execution, actors and scheduling"
   description="Explore OresVM architecture, proof-gated LLVM zero-GC memory, minimal-GC JVM/GraalVM execution, AOT/JIT, actor isolation, and scheduling."
 >
   <section class="page-hero">
@@ -15,7 +15,7 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
 
   <div class="page-body technical-page">
     <div class="prose">
-      <p class="status-note"><strong>Implementation status matters.</strong> The Java/GraalVM runtime implements substantially more of Oreslang than the experimental LLVM compiler. A GraalVM Native Image executable can be AOT-compiled <em>as a runtime</em> without each Oreslang application handler yet being independently compiled to native machine code. The protected-worker/physical-isolate roadmap is not interchangeable with an already proven hostile-tenant sandbox.</p>
+      <p class="status-note"><strong>Implementation status matters.</strong> The Java/GraalVM runtime implements substantially more of AttoLang than the experimental LLVM compiler. A GraalVM Native Image executable can be AOT-compiled <em>as a runtime</em> without each AttoLang application handler yet being independently compiled to native machine code. The protected-worker/physical-isolate roadmap is not interchangeable with an already proven hostile-tenant sandbox.</p>
 
       <h2>Inside OresVM</h2>
       <p>OresVM separates the source contract from execution and scheduling. The front end parses and checks source; the runtime owns the root scheduler, continuation tasks, actor mailboxes, capability policies and execution carriers. Backend choice changes how work is executed, not what an actor, future or declared type means.</p>
@@ -61,7 +61,7 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
         <table class="tech-table">
           <thead><tr><th scope="col">Profile</th><th scope="col">Execution today</th><th scope="col">Trade-off / limitation</th></tr></thead>
           <tbody>
-            <tr><th scope="row">JVM + Graal/Truffle JIT</th><td>Runs Oreslang via the Truffle evaluator; hot guest paths can be optimized by Graal.</td><td>JVM hosting and warmup; not an ahead-of-time guest binary.</td></tr>
+            <tr><th scope="row">JVM + Graal/Truffle JIT</th><td>Runs AttoLang via the Truffle evaluator; hot guest paths can be optimized by Graal.</td><td>JVM hosting and warmup; not an ahead-of-time guest binary.</td></tr>
             <tr><th scope="row">Graal Native Image AOT-only</th><td>Native-compiles the reachable Java interpreter/runtime and disables guest JIT.</td><td>Guest handlers are still interpreted; not yet general guest-code AOT lowering.</td></tr>
             <tr><th scope="row">Graal Native Image hybrid</th><td>AOT-hosted runtime plus optional guest JIT where the build supports it.</td><td>Hot-code behavior must be measured; requires the hybrid-capable image.</td></tr>
             <tr><th scope="row">LLVM native backend</th><td>Experimental compiler emitting verified LLVM IR for a small integer-function subset.</td><td>Actor, async, GC and full-language compilation parity remain future work.</td></tr>
@@ -125,7 +125,7 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
         and transport latency can still interfere even across collectors.
       </p>
       <p>
-        Current Oreslang work:
+        Current AttoLang work:
         <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/563">Java/Graal actor FFM regions (draft)</a> ·
         <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/580">persistent and scratch arenas (draft)</a> ·
         <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/558">pooled untrusted isolate contract (draft)</a> ·
@@ -151,7 +151,7 @@ import MemoryProfiles from "../components/MemoryProfiles.astro";
       </p>
 
       <h2>Cooperative scheduling + scheduling un-cooperative code</h2>
-      <p>Oreslang does not schedule at each source-code line. There are <strong>checkpoints</strong> (observe cancellation, interruption and quotas) and <strong>resumable boundaries</strong> (save a continuation, relinquish the carrier, then schedule the remainder). Confusing those two would make CPU fairness claims that the runtime cannot guarantee.</p>
+      <p>AttoLang does not schedule at each source-code line. There are <strong>checkpoints</strong> (observe cancellation, interruption and quotas) and <strong>resumable boundaries</strong> (save a continuation, relinquish the carrier, then schedule the remainder). Confusing those two would make CPU fairness claims that the runtime cannot guarantee.</p>
       <div class="schedule-grid">
         <article class="schedule-tile"><strong><code>await</code></strong><p>An incomplete future suspends a compiler-lowered async continuation. Its result or failure resumes through the Ores-owned scheduler; an actor dispatcher should not block a carrier waiting for it. Some actor async source paths are still being hardened.</p></article>
         <article class="schedule-tile"><strong><code>select</code></strong><p>Waits for channel, future, timeout or cancellation readiness, choosing a ready arm under the select contract. When nothing is ready it can suspend rather than busy-wait.</p></article>

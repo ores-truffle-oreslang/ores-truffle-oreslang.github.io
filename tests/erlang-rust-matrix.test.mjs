@@ -22,7 +22,7 @@ const expectedFeatures = [
 
 test("four requested columns and all 34 unique requested dimensions render in order", () => {
   assert.deepEqual(matrixColumns.map(({ label }) => label), [
-    "Erlang", "Rust", "Oreslang (direction)", "Other languages",
+    "Erlang", "Rust", "AttoLang (direction)", "Other languages",
   ]);
   assert.deepEqual(matrixRows.map(({ feature }) => feature), expectedFeatures);
   assert.equal(new Set(matrixRows.map(({ id }) => id)).size, expectedFeatures.length);
@@ -37,7 +37,7 @@ test("four requested columns and all 34 unique requested dimensions render in or
   }
 });
 
-test("top five use cases are exactly five per column and clearly qualify Oreslang", () => {
+test("top five use cases are exactly five per column and clearly qualify AttoLang", () => {
   const topFive = matrixRows.find(({ id }) => id === "top-five");
   assert.ok(topFive);
   for (const key of ["erlang", "rust", "oreslang", "others"]) {
@@ -47,8 +47,8 @@ test("top five use cases are exactly five per column and clearly qualify Oreslan
   assert.ok(topFive.oreslang.every((useCase) => useCase.startsWith("Proposed:")));
 });
 
-test("comparisons are transparent about hard real-time and unverified Oreslang support", () => {
-  assert.match(page, /not a claim that Oreslang already matches Erlang\/OTP or Rust in production/u);
+test("comparisons are transparent about hard real-time and unverified AttoLang support", () => {
+  assert.match(page, /not a claim that AttoLang already matches Erlang\/OTP or Rust in production/u);
   assert.match(page, /public.*feature snapshot/u);
   assert.match(page, /Soft real time is not hard real time/u);
   assert.match(page, /no head-to-head throughput, memory or CPU win is established|High-load performance needs a reproducible workload/u);
@@ -75,7 +75,7 @@ test("matrix accessible on narrow viewports and discoverable from existing compa
   assert.match(comparisons, /href="\/erlang-rust-oreslang\/"/u);
 });
 
-test("sources include official Erlang/Rust, RT Linux, and local Oreslang caveats", () => {
+test("sources include official Erlang/Rust, RT Linux, and local AttoLang caveats", () => {
   const urls = matrixReferences.map(({ url }) => url);
   assert.ok(matrixReferences.length >= 10);
   assert.equal(new Set(urls).size, urls.length);

@@ -14,15 +14,15 @@ const badImport = `// ores:targets=browser,server
 import fnc read_secret from "./server/fs.ores";`;
 ---
 
-<p>What if the same Oreslang source could move from a cloud server to a browser, a phone, an edge worker, or an embedded board—and the compiler could explain <em>before deployment</em> why a particular file cannot go with it?</p>
-<p>GraalVM and LLVM are useful foundations, but they should not define the set of places Oreslang can run. The bigger idea is <strong>one language contract, multiple executable formats, and compile-time admission of code into explicitly declared environments.</strong></p>
+<p>What if the same AttoLang source could move from a cloud server to a browser, a phone, an edge worker, or an embedded board—and the compiler could explain <em>before deployment</em> why a particular file cannot go with it?</p>
+<p>GraalVM and LLVM are useful foundations, but they should not define the set of places AttoLang can run. The bigger idea is <strong>one language contract, multiple executable formats, and compile-time admission of code into explicitly declared environments.</strong></p>
 
 <section id="three-axes" class="log-section">
   <h2>1. Three things we must stop conflating</h2>
-  <p>“Runs in the browser” is not a compiler backend. “Compiles to Wasm” is not a permission policy. And “safe for iOS” does not mean a package has been proven trustworthy. Oreslang should track these as independent dimensions.</p>
+  <p>“Runs in the browser” is not a compiler backend. “Compiles to Wasm” is not a permission policy. And “safe for iOS” does not mean a package has been proven trustworthy. AttoLang should track these as independent dimensions.</p>
   <div class="log2-axis-grid">
     <div class="log2-axis"><span>01 / HOST ENVIRONMENT</span><strong>Where can it run?</strong><p>Browser, iOS, Android, embedded, desktop, server, JavaScript edge workers, WASI edge runtimes.</p></div>
-    <div class="log2-axis"><span>02 / CODE FORMAT</span><strong>What does it run as?</strong><p>Native machine code, WebAssembly, JVM class files, Android DEX, JavaScript, C, or Oreslang bytecode.</p></div>
+    <div class="log2-axis"><span>02 / CODE FORMAT</span><strong>What does it run as?</strong><p>Native machine code, WebAssembly, JVM class files, Android DEX, JavaScript, C, or AttoLang bytecode.</p></div>
     <div class="log2-axis"><span>03 / EFFECTS &amp; AUTHORITY</span><strong>What may it do?</strong><p>Network client/server, file I/O, host interop, threads, device APIs, heap allocation and dynamic code loading.</p></div>
   </div>
   <p>The compiler's job is to check all three: <strong>environment compatibility, backend/ABI support, and an explicit capability budget</strong>. The runtime still has to enforce actual authority and resource limits.</p>
@@ -31,7 +31,7 @@ import fnc read_secret from "./server/fs.ores";`;
 <section id="runtime-landscape" class="log-section">
   <h2>2. Beyond GraalVM and LLVM: the execution landscape</h2>
   <p>We do not need a totally new compiler for every platform. We do need adapters, runtimes and packaging that respect how each host actually works.</p>
-  <div class="log-table-scroll" role="region" tabindex="0" aria-label="Portable Oreslang execution targets">
+  <div class="log-table-scroll" role="region" tabindex="0" aria-label="Portable AttoLang execution targets">
     <table>
       <thead><tr><th scope="col">Technology or output</th><th scope="col">Useful environments</th><th scope="col">What it contributes</th></tr></thead>
       <tbody>
@@ -42,7 +42,7 @@ import fnc read_secret from "./server/fs.ores";`;
         <tr><td><strong>JavaScript / TypeScript source</strong></td><td>Browsers, web workers, JavaScript edge</td><td>Native access to the web/worker ecosystem, with language-semantic and sandbox constraints.</td></tr>
         <tr><td><strong>C source generation</strong></td><td>Embedded and legacy targets</td><td>Broad established toolchains when native LLVM cross-compilation is impractical.</td></tr>
         <tr><td><strong>Cranelift</strong></td><td>Native development and JIT scenarios</td><td>Alternative fast code generation, especially attractive for an optional JIT tier.</td></tr>
-        <tr><td><strong>Custom Oreslang bytecode</strong></td><td>Constrained devices, embedded, debugging</td><td>Small interpreter and controlled execution, if measurements justify maintaining a VM.</td></tr>
+        <tr><td><strong>Custom AttoLang bytecode</strong></td><td>Constrained devices, embedded, debugging</td><td>Small interpreter and controlled execution, if measurements justify maintaining a VM.</td></tr>
         <tr><td><strong>MLIR</strong></td><td>Shared compiler infrastructure</td><td>Higher-level intermediate representation and optimization options; not itself a deployment runtime.</td></tr>
       </tbody>
     </table>
@@ -68,14 +68,14 @@ import fnc read_secret from "./server/fs.ores";`;
       </tbody>
     </table>
   </div>
-  <p>Neither WebAssembly nor native code automatically implements Oreslang's actors, structured concurrency, cancellation, ownership or zero-GC guarantees. The runtime contract must remain the same even when its implementation changes dramatically.</p>
+  <p>Neither WebAssembly nor native code automatically implements AttoLang's actors, structured concurrency, cancellation, ownership or zero-GC guarantees. The runtime contract must remain the same even when its implementation changes dramatically.</p>
 </section>
 
 <section id="file-headers" class="log-section">
   <h2>4. A file-level admission contract, not just “use client”</h2>
-  <p>Next.js has demonstrated the usefulness of distinguishing server-side and browser-side code. Oreslang should go further: each participating source file can <strong>explicitly whitelist environments and declare its required host capabilities</strong>.</p>
+  <p>Next.js has demonstrated the usefulness of distinguishing server-side and browser-side code. AttoLang should go further: each participating source file can <strong>explicitly whitelist environments and declare its required host capabilities</strong>.</p>
   <p>This is the initial <em>opt-in prototype syntax</em> in the Java compiler branch. The header lines are currently comments so they do not break the existing parser; a dedicated admission checker interprets them.</p>
-  <OresCode code={headerExample} caption="Proposed Oreslang file header · prototype" />
+  <OresCode code={headerExample} caption="Proposed AttoLang file header · prototype" />
   <p>The meaning is intentional: <code>targets</code> says where this file claims to work; <code>requires</code> says what it needs. Neither line <em>grants</em> a permission. The build's declared capability budget and the actual host enforce that separately.</p>
   <div class="log2-rule"><span>IMPORT COMPATIBILITY</span><strong><code>targets(A) ⊆ targets(B)</code></strong><p>If file A unconditionally imports file B, every environment promised by A must also be supported by B.</p></div>
   <div class="log2-rule"><span>CAPABILITY PROPAGATION</span><strong><code>requires(B) ⊆ requires(A)</code></strong><p>An importer must account for the capabilities required by its dependency. An innocent-looking wrapper cannot silently add filesystem or host-interop powers.</p></div>
@@ -88,11 +88,11 @@ import fnc read_secret from "./server/fs.ores";`;
   <h2>5. The compiler should check the whole graph</h2>
   <p>A file header is only useful if imports cannot bypass it. Resolution should use actual parsed imports and the same pinned dependency identities the compiler will link—not string searches, heuristics, or a second resolver that might disagree at runtime.</p>
   <figure class="log2-architecture">
-    <div class="log2-stage"><span>INPUT</span><strong>Oreslang source + package policy</strong><small>File headers · dependency versions · build target</small></div>
+    <div class="log2-stage"><span>INPUT</span><strong>AttoLang source + package policy</strong><small>File headers · dependency versions · build target</small></div>
     <div class="log2-flow-arrow" aria-hidden="true">↓</div>
     <div class="log2-stage"><span>ONE SEMANTIC GATE</span><strong>Parsed import graph + typed effects</strong><small>Targets · capabilities · ownership · async · ABI support</small></div>
     <div class="log2-flow-arrow" aria-hidden="true">↓</div>
-    <div class="log2-stage"><span>SHARED COMPILER DESIGN</span><strong>Typed Oreslang IR</strong><small>OresHIR → OresMIR · code generation contracts</small></div>
+    <div class="log2-stage"><span>SHARED COMPILER DESIGN</span><strong>Typed AttoLang IR</strong><small>OresHIR → OresMIR · code generation contracts</small></div>
     <div class="log2-flow-arrow" aria-hidden="true">↓</div>
     <div class="log2-output-grid">
       <div><strong>LLVM/native</strong><span>iOS · embedded · server</span></div>
@@ -100,7 +100,7 @@ import fnc read_secret from "./server/fs.ores";`;
       <div><strong>JVM / DEX</strong><span>Android · server</span></div>
       <div><strong>JS / VM</strong><span>Browser · small hosts</span></div>
     </div>
-    <figcaption>Target architecture, not a depiction of completed Oreslang backend support. Oreslang does not yet have one shared cross-backend typed IR.</figcaption>
+    <figcaption>Target architecture, not a depiction of completed AttoLang backend support. AttoLang does not yet have one shared cross-backend typed IR.</figcaption>
   </figure>
   <p>The first pass can check explicit file declarations. The stronger long-term design must infer effects through function calls, closures, exported symbols, host imports, actor handlers, FFI and transitive dependencies. Conditional imports need target-specific checking after valid compile-time specialization; dynamic imports must be admitted through equally strict rules.</p>
 </section>
@@ -129,14 +129,14 @@ require_file_header = true</code></pre>
 
 <section id="actor-portability" class="log-section">
   <h2>7. Actors and async I/O must survive the move</h2>
-  <p>Oreslang's actor model should be portable at the semantic level while accepting different implementations underneath. A browser may lower actors onto Web Workers or cooperative tasks; an iPhone can use native dispatch and system I/O; a small MCU may need a single-threaded scheduler with bounded queues and statically allocated state.</p>
+  <p>AttoLang's actor model should be portable at the semantic level while accepting different implementations underneath. A browser may lower actors onto Web Workers or cooperative tasks; an iPhone can use native dispatch and system I/O; a small MCU may need a single-threaded scheduler with bounded queues and statically allocated state.</p>
   <p>Likewise, <code>async</code>, <code>suspends</code>, <code>await</code>, channels, cancellation and <code>select</code> require explicit scheduling and host-polling contracts. WASI 0.3's async interfaces—including futures and streams—are promising, but only usable where the component toolchain and host actually implement the relevant ABI. WASI 0.2 is a sensible compatibility baseline to evaluate first.</p>
   <p>A no-GC embedded profile should statically reject allocations it cannot bound, borrowed references that outlive their regions, hidden heap-owning host calls and cross-actor transfers without a valid ownership policy. A metadata declaration is not sufficient to establish those properties.</p>
 </section>
 
 <section id="implementation-status" class="log-section">
   <h2>8. What exists, and the next gates</h2>
-  <p>As of October 10, 2026, this is an engineering direction with early compiler work—not an announcement of full browser, iOS, Android, edge or embedded Oreslang support.</p>
+  <p>As of October 10, 2026, this is an engineering direction with early compiler work—not an announcement of full browser, iOS, Android, edge or embedded AttoLang support.</p>
   <div class="log2-status">
     <article><span>JAVA / GRAALVM</span><h3>Prototype in review</h3><p><a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/586">PR #586</a> introduces opt-in target/capability import-closure checks, loader integration, a validation-only CLI path and tests. The header contract is not yet standard execution enforcement or compiler-inferred effects.</p></article>
     <article><span>NATIVE / LLVM</span><h3>Fail-closed safeguard in review</h3><p><a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/pull/74">PR #74</a> rejects unverified environment headers and adds a negative regression check. Full target admission, package imports and portable outputs remain future work.</p></article>
@@ -149,7 +149,7 @@ require_file_header = true</code></pre>
     <li><strong>Ship one portable artifact path.</strong> Start with a browser/Wasm or WASI integration slice that can be tested end to end.</li>
     <li><strong>Expand by deployment class.</strong> Add mobile bridges, Android DEX/native paths, embedded profiles and size/latency budget verification.</li>
   </ol>
-  <p>The guiding principle is simple: <strong>a backend decides how Oreslang executes; the language and its compiler decide what the code means and where it is admissible.</strong></p>
+  <p>The guiding principle is simple: <strong>a backend decides how AttoLang executes; the language and its compiler decide what the code means and where it is admissible.</strong></p>
   <p>Further reading: <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/blob/main/docs/PROJECT_MANIFEST.md">current project manifest contract</a>, <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/pull/586">Java portability admission PR</a>, <a href="https://github.com/ores-truffle-oreslang/oreslang-source.llvm/pull/74">native parity safeguard PR</a>, <a href="https://component-model.bytecodealliance.org/">WebAssembly Component Model</a>.</p>
 </section>
 

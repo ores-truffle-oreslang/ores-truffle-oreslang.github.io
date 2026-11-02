@@ -1,6 +1,6 @@
 # Engineering-log compiler and visual evidence
 
-The Oreslang marketing repository contains architecture notes, not a released
+The AttoLang marketing repository contains architecture notes, not a released
 compiler specification. Publishing a code-looking block does not mean that
 GraalVM, LLVM, or a future WebAssembly backend accepts it.
 
@@ -9,7 +9,7 @@ GraalVM, LLVM, or a future WebAssembly backend accepts it.
 The versioned inventory at `src/data/engineering-log-examples.json`
 differentiates:
 - **11 non-compiler artifacts:** diagrams, shell commands, TOML examples,
-  documentation templates and pseudocode. They are not executable Oreslang.
+  documentation templates and pseudocode. They are not executable AttoLang.
 - **1 proposed language feature:** Log 001's `@Realtime` form.
 - **1 example requiring external imports:** Log 002's file header/import.
 - **1 intentionally invalid import:** Log 002's browser/server conflict.

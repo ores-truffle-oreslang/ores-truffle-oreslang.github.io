@@ -53,7 +53,7 @@ test("OresVM technical explanation includes all requested scheduling and actor p
 test("performance page covers six auditable suites and never invents results", () => {
   assert.equal((perf.match(/number: "0[1-6]"/g) || []).length, 6);
   assert.equal((perf.match(/rows: \[/g) || []).length, 6);
-  assert.equal((perf.match(/"No verified Ores(?:lang|VM) run"/g) || []).length, 17);
+  assert.equal((perf.match(/"No verified (?:AttoLang|OresVM) run"/g) || []).length, 17);
   for (const id of ["http-plaintext", "http-json", "http-routing", "http-database",
     "actor-mailbox", "scheduling-and-startup"]) {
     assert.ok(perf.includes('id: "' + id + '"'), "missing suite " + id);
@@ -96,7 +96,7 @@ test("Application Areas title is consistent on home, destination, and navigation
   assert.ok(home.includes('title="Application Areas" href="/problem-spaces/"'));
   assert.ok(applicationAreas.includes("<h1>Application Areas</h1>"));
   assert.ok(nav.includes('label: "application areas", href: hrefFor("problem-spaces")'));
-  assert.ok(!home.includes('title="Where Oreslang is meant to matter"'));
+  assert.ok(!home.includes('title="Where AttoLang is meant to matter"'));
 });
 
 
@@ -151,7 +151,7 @@ test("paired-source-kernel observations have explicit non-parity caveats and sou
   assert.ok(perf.includes("separate shared GitHub-hosted runner executions"));
   assert.ok(perf.includes("not a controlled direct winner/loser comparison"));
   assert.ok(perf.includes("must not</strong> be compared"));
-  assert.equal((perf.match(/"No verified Ores(?:lang|VM) run"/g)||[]).length, 17);
+  assert.equal((perf.match(/"No verified (?:AttoLang|OresVM) run"/g)||[]).length, 17);
 });
 
 test("HTTP comparison explicitly limits OresVM integration claims", () => {

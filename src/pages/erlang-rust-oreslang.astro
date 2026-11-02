@@ -8,28 +8,28 @@ import "../styles/erlang-rust-matrix.css";
 
 const erlangExample = "-module(counter).\n-behaviour(gen_server).\n-export([start_link/0, inc/1, init/1, handle_call/3]).\nstart_link() -> gen_server:start_link(?MODULE, 0, []).\ninc(Pid) -> gen_server:call(Pid, inc).\ninit(N) -> {ok, N}.\nhandle_call(inc, _From, N) ->\n    Next = N + 1,\n    {reply, Next, Next}.";
 const rustExample = "use tokio::sync::{mpsc, oneshot};\nenum Request { Increment(oneshot::Sender<u64>) }\nasync fn run(mut inbox: mpsc::Receiver<Request>) {\n    let mut count = 0_u64;\n    while let Some(Request::Increment(reply)) = inbox.recv().await {\n        count += 1;\n        let _ = reply.send(count);\n    }\n}";
-const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSupervisor starts typed Counter actor with actor-local arena\nCaller transfers an Increment(reply) message into mailbox\nHandler acquires a critical-write loan on actor state\n  next = state.count + 1; state.count = next\nHandler releases state loan before replying\nHandler sends rt copy next to the reply destination\nUnhandled failure -> supervisor restart policy\nNew code -> stage -> validate -> drain -> activate or roll back";
+const oresExample = "# CONCEPTUAL FLOW — NOT ATTOLANG SOURCE SYNTAX\nSupervisor starts typed Counter actor with actor-local arena\nCaller transfers an Increment(reply) message into mailbox\nHandler acquires a critical-write loan on actor state\n  next = state.count + 1; state.count = next\nHandler releases state loan before replying\nHandler sends rt copy next to the reply destination\nUnhandled failure -> supervisor restart policy\nNew code -> stage -> validate -> drain -> activate or roll back";
 ---
 
 <BaseLayout
-  title={`Erlang vs Rust vs Oreslang — ${matrixRows.length}-feature architecture matrix`}
-  description="Compare Erlang, Rust and Oreslang across inferred and gradual typing, data-oriented programming and design, native single binaries, target architectures, memory safety, actor systems, embedded and mobile applications."
+  title={`Erlang vs Rust vs AttoLang — ${matrixRows.length}-feature architecture matrix`}
+  description="Compare Erlang, Rust and AttoLang across inferred and gradual typing, data-oriented programming and design, native single binaries, target architectures, memory safety, actor systems, embedded and mobile applications."
 >
   <section class="page-hero synthesis-hero">
     <p class="kicker">Language comparisons / systems architecture</p>
     <h1>Erlang + Rust, with a different memory and execution model.</h1>
     <p>
-      Oreslang takes inspiration from <strong>Erlang's</strong> supervised, message-driven resilience
+      AttoLang takes inspiration from <strong>Erlang's</strong> supervised, message-driven resilience
       and <strong>Rust's</strong> compile-time ownership discipline—then pursues typed, isolated actors,
       data-oriented memory layouts and backend-specific native execution.
     </p>
     <p class="synthesis-promise">
-      A design synthesis, <strong>not a claim that Oreslang already matches Erlang/OTP or Rust in production.</strong>
+      A design synthesis, <strong>not a claim that AttoLang already matches Erlang/OTP or Rust in production.</strong>
       The public <a href="/language/">feature snapshot</a> does not currently certify support on any backend.
     </p>
   </section>
 
-  <section class="page-body synthesis-body" aria-label="How Oreslang combines the ideas">
+  <section class="page-body synthesis-body" aria-label="How AttoLang combines the ideas">
     <div class="synthesis-notes">
       <article>
         <p class="eyebrow">From Erlang</p>
@@ -42,7 +42,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
         <p>Typed payloads, explicit borrows and moves, controlled mutation and native memory lifetime management—not a Rust syntax or ABI clone.</p>
       </article>
       <article>
-        <p class="eyebrow">Oreslang's additions</p>
+        <p class="eyebrow">AttoLang's additions</p>
         <h2>Actors meet data locality</h2>
         <p>Actor-owned arenas, critical state loans, CPU-conscious AoS/SoA/AoSoA layouts and target-specific AOT/JIT paths. These remain design and verification work.</p>
       </article>
@@ -74,7 +74,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       </p>
       <p class="synthesis-walkthrough-warning">
         These are <strong>short explanatory excerpts, not standalone tested programs</strong>.
-        Erlang and Rust show representative APIs; the Oreslang column is <strong>conceptual pseudocode, not valid or compiler-verified Oreslang syntax</strong>.
+        Erlang and Rust show representative APIs; the AttoLang column is <strong>conceptual pseudocode, not valid or compiler-verified AttoLang syntax</strong>.
       </p>
       <div class="synthesis-example-grid">
         <article>
@@ -90,9 +90,9 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
           <p>The compiler checks ownership of the sender and receiver types; the mailbox and executor come from Tokio. Supervision, restart and live upgrades require additional application or framework logic.</p>
         </article>
         <article>
-          <p class="eyebrow">Oreslang / intended model</p>
+          <p class="eyebrow">AttoLang / intended model</p>
           <h3>Typed actor + borrow-checked state</h3>
-          <pre tabindex="0" aria-label="Conceptual Oreslang example, not valid source code"><code>{oresExample}</code></pre>
+          <pre tabindex="0" aria-label="Conceptual AttoLang example, not valid source code"><code>{oresExample}</code></pre>
           <p>The design combines actor-local mutable storage, explicit state loans and supervised failure handling. The compiler must prove message/borrow contracts. Hot reload and cross-backend behavior remain unverified.</p>
         </article>
       </div>
@@ -100,7 +100,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
         <h3>What is combined—and what is new</h3>
         <p><strong>From Erlang:</strong> actor failure domains, supervisor policies and code-generation changes.
           <strong>From Rust:</strong> static ownership, checked borrows and low-level native data control.
-          <strong>Oreslang's design:</strong> a typed boundary between the two, with actor arenas, explicitly borrowed state,
+          <strong>AttoLang's design:</strong> a typed boundary between the two, with actor arenas, explicitly borrowed state,
           and separate CPU-oriented tasks for bulk work instead of one actor per element.</p>
         <p>Multiple asynchronous requests may be in flight under an actor's configured policy; a state write loan must remain exclusive. A completed website build does not prove these runtime semantics.</p>
       </div>
@@ -110,7 +110,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       <div>
         <p class="eyebrow">{matrixRows.length} technical dimensions</p>
         <h2>Side-by-side feature matrix</h2>
-        <p>Production facts for established ecosystems are separated from Oreslang design intentions.</p>
+        <p>Production facts for established ecosystems are separated from AttoLang design intentions.</p>
       </div>
       <a href="/comparisons/">Read detailed pairwise comparisons →</a>
     </header>
@@ -144,7 +144,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
     <section class="synthesis-targets" id="backend-targets" aria-labelledby="synthesis-target-title">
       <header class="synthesis-target-heading">
         <p class="eyebrow">Backend × platform × executed evidence</p>
-        <h2 id="synthesis-target-title">Which Oreslang targets have actually been verified?</h2>
+        <h2 id="synthesis-target-title">Which AttoLang targets have actually been verified?</h2>
         <p>
           The public draft lists four backend tracks, but certifies no executable conformance.
           The CPU/OS combinations below are <strong>candidate evaluation profiles, not a supported-platform list</strong>.
@@ -178,7 +178,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       </details>
 
       <p class="synthesis-scroll-hint">Scroll horizontally on a small screen; row headings remain visible as the gate columns scroll. All results are readable without JavaScript.</p>
-      <div class="synthesis-target-scroller" role="region" aria-label="Oreslang target architecture and verification status matrix" tabindex="0">
+      <div class="synthesis-target-scroller" role="region" aria-label="AttoLang target architecture and verification status matrix" tabindex="0">
         <table class="synthesis-target-table">
           <caption>Evaluation-only target combinations, based on the non-normative {supportSource.reference} public draft. Verification is per compiler, target and behavioral gate.</caption>
           <thead>
@@ -221,9 +221,9 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
 
     <p class="synthesis-scroll-hint">On smaller screens, scroll the matrix horizontally to see every language. Each feature has its own shareable link and primary documentation.</p>
 
-    <div class="synthesis-table-scroller" role="region" aria-label="Erlang, Rust, Oreslang and other languages feature comparison" tabindex="0">
+    <div class="synthesis-table-scroller" role="region" aria-label="Erlang, Rust, AttoLang and other languages feature comparison" tabindex="0">
       <table class="synthesis-table">
-        <caption>Architecture and ecosystem comparison, reviewed October 2026. Oreslang entries describe goals, not verified compiler support.</caption>
+        <caption>Architecture and ecosystem comparison, reviewed October 2026. AttoLang entries describe goals, not verified compiler support.</caption>
         <thead>
           <tr>
             <th scope="col">Feature</th>
@@ -285,7 +285,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       <p class="eyebrow">Before comparing performance</p>
       <h2>A fair high-load benchmark needs more than requests per second.</h2>
       <p>
-        Erlang, Rust and Oreslang expose different runtime and allocation strategies. Treat the
+        Erlang, Rust and AttoLang expose different runtime and allocation strategies. Treat the
         following as a <strong>measurement protocol, not published benchmark results</strong>.
       </p>
       <div class="synthesis-benchmark-grid">
@@ -312,7 +312,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
     <section class="synthesis-caveats" aria-label="Interpreting the comparison">
       <h2>What these comparisons do not establish</h2>
       <p>
-        <strong>Soft real time is not hard real time.</strong> Neither Oreslang nor ordinary BEAM or Rust
+        <strong>Soft real time is not hard real time.</strong> Neither AttoLang nor ordinary BEAM or Rust
         deployment makes worst-case latency guarantees by language choice alone. Carrier-grade Linux is a
         platform and operational discipline, not a language certification. GPU and RTC rows distinguish
         orchestration or signaling from accelerator kernels and media processing.
@@ -328,11 +328,11 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
       <p>
         <strong>Inferred typing is not gradual typing.</strong> Static inference fills in types without
         weakening static checks; gradual typing introduces explicitly dynamic type boundaries and
-        requires a defined checking and runtime contract. Oreslang's public draft does not certify
+        requires a defined checking and runtime contract. AttoLang's public draft does not certify
         gradual typing, native single-file packaging, target-specific ABI parity or verified ECS layouts.
       </p>
       <p>
-        <strong>Verification is backend-specific.</strong> The public Oreslang
+        <strong>Verification is backend-specific.</strong> The public AttoLang
         <a href="/language/">draft feature matrix</a> marks Java/GraalVM, LLVM, .NET and WebAssembly
         entries as not verified. Website builds and documentation tests do not substitute for compiler
         conformance, ABI compatibility or operational validation.
@@ -341,7 +341,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSuperviso
 
     <section class="synthesis-sources" aria-label="Primary documentation and background">
       <h2>Sources and further reading</h2>
-      <p>Official language/runtime documentation where possible; Oreslang claims are explicitly marked as design goals.</p>
+      <p>Official language/runtime documentation where possible; AttoLang claims are explicitly marked as design goals.</p>
       <ul>
         {matrixReferences.map((source) => (
           <li>

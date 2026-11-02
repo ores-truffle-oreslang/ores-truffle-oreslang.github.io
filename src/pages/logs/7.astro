@@ -3,17 +3,17 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import LogPrompt from "../../components/LogPrompt.astro";
 import "../../styles/logs.css";
 
-const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositories. Should we add WebAssembly, what are we missing, and how can we achieve total incremental compilation across the language and backends?";
+const prompt = "We have AttoLang's Java, .NET, LLVM, and Forge source repositories. Should we add WebAssembly, what are we missing, and how can we achieve total incremental compilation across the language and backends?";
 ---
 <BaseLayout
-  title="Five backends, one incremental compiler: Oreslang's next architecture — engineering log #7"
-  description="Engineering log 007: a proposed shared verified HIR/MIR, fine-grained incremental compilation, cache correctness, AOT and WASI across Oreslang backend projects."
+  title="Five backends, one incremental compiler: AttoLang's next architecture — engineering log #7"
+  description="Engineering log 007: a proposed shared verified HIR/MIR, fine-grained incremental compilation, cache correctness, AOT and WASI across AttoLang backend projects."
   article={{ published: "2026-10-14", modified: "2026-10-14", author: "Alex Mills" }}
 >
   <nav class="log-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/logs/">Logs</a><span aria-hidden="true">/</span><span aria-current="page">#7</span></nav>
   <header class="log-entry-header">
     <p class="kicker">Engineering log / 007</p>
-    <h1>Five backends, one incremental compiler: Oreslang's next architecture</h1>
+    <h1>Five backends, one incremental compiler: AttoLang's next architecture</h1>
     <LogPrompt prompt={prompt} label="The engineering question" headingTag="span" />
     <div class="log-entry-meta"><span>Authored by <strong>Alex Mills</strong></span><span aria-hidden="true">·</span><time datetime="2026-10-14">October 14, 2026</time></div>
     <p class="log-entry-intro">Wasm is important, but the bigger opportunity is a shared, verified semantic core with function-level incremental compilation. Change one function; rebuild only what truly depends on it—without invalidating ownership proofs or compromising AOT.</p>
@@ -29,7 +29,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
         <li><a href="#incrementality">What total incrementality means</a></li>
         <li><a href="#invalidations">Dependency tracking</a></li>
         <li><a href="#query-model">Query model and cache</a></li>
-        <li><a href="#oreslang-specific">Oreslang's hard cases</a></li>
+        <li><a href="#oreslang-specific">AttoLang's hard cases</a></li>
         <li><a href="#aot">AOT and linking limits</a></li>
         <li><a href="#verification">Verification</a></li>
         <li><a href="#roadmap">Migration roadmap</a></li>
@@ -38,18 +38,18 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
     </aside>
 
     <article class="log-article prose" aria-label="Engineering log #7">
-      <p>The answer is <strong>yes, support WebAssembly</strong>—but do not turn five backends into five divergent definitions of Oreslang. A common language contract and a query-based compilation engine are more fundamental than adding another code generator.</p>
+      <p>The answer is <strong>yes, support WebAssembly</strong>—but do not turn five backends into five divergent definitions of AttoLang. A common language contract and a query-based compilation engine are more fundamental than adding another code generator.</p>
 
       <section class="log-section" id="inventory">
         <h2>What exists today: five efforts, different levels of maturity</h2>
         <p>An October 14, 2026 repository review found the following. These are descriptions of the documented state, <em>not</em> claims of feature parity:</p>
-        <div class="log-table-scroll" role="region" aria-label="Oreslang compiler repositories" tabindex="0">
+        <div class="log-table-scroll" role="region" aria-label="AttoLang compiler repositories" tabindex="0">
           <table><thead><tr><th>Repository</th><th>Current role</th><th>Documented maturity</th></tr></thead><tbody>
             <tr><td><code>oreslang-source.java</code></td><td>Java / GraalVM / Truffle reference implementation</td><td>Documents file-granular incremental compilation; a larger language and runtime implementation than the experimental backends</td></tr>
             <tr><td><code>oreslang-source.llvm</code></td><td>Native compiler and runtime</td><td>Experimental source-to-LLVM subset; major actor, async and heap features remain unsupported</td></tr>
             <tr><td><code>oreslang-source.net</code></td><td>Windows-first .NET Native AOT</td><td>Scaffold, not a full compiler</td></tr>
             <tr><td><code>oreslang-source.forge</code></td><td>Independent C++20 compiler and runtime experiment</td><td>Bootstrap parser/IR; minimal native machine-code generation</td></tr>
-            <tr><td><code>oreslang-wasm</code></td><td>Wasm runtime ABI, host integration and LLVM bridge</td><td>Runnable proof of concept; no complete Oreslang-to-Wasm compiler</td></tr>
+            <tr><td><code>oreslang-wasm</code></td><td>Wasm runtime ABI, host integration and LLVM bridge</td><td>Runnable proof of concept; no complete AttoLang-to-Wasm compiler</td></tr>
           </tbody></table>
         </div>
         <p>These descriptions are an engineering snapshot drawn from repository documentation, not independent verification of every advertised feature. Some of the source repositories are private and their READMEs are not accessible to all site visitors.</p>
@@ -59,10 +59,10 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
 
       <section class="log-section" id="wasm">
         <h2>Wasm belongs in the architecture—but is not a magic sandbox</h2>
-        <p>The near-term compilation route is verified Oreslang MIR → LLVM lowering → wasm32 object/module, with a versioned runtime ABI. Later, support component-model interfaces through WIT and explicitly pinned WASI host profiles. A direct MIR → Wasm backend should be considered only if the added maintenance cost is justified by proven advantages over LLVM's Wasm target.</p>
+        <p>The near-term compilation route is verified AttoLang MIR → LLVM lowering → wasm32 object/module, with a versioned runtime ABI. Later, support component-model interfaces through WIT and explicitly pinned WASI host profiles. A direct MIR → Wasm backend should be considered only if the added maintenance cost is justified by proven advantages over LLVM's Wasm target.</p>
         <figure class="log7-figure">
           <div class="log7-diagram-scroller" role="region" aria-label="Wasm deployment profiles: horizontally scrollable diagram" tabindex="0">
-            <img src="/logs/7/wasm-profiles.svg" alt="A verified Oreslang Wasm module deploys either inside a browser Worker or inside a WASI server or edge host, with independent import, capability and resource controls." width="1100" height="360" loading="lazy" decoding="async" />
+            <img src="/logs/7/wasm-profiles.svg" alt="A verified AttoLang Wasm module deploys either inside a browser Worker or inside a WASI server or edge host, with independent import, capability and resource controls." width="1100" height="360" loading="lazy" decoding="async" />
           </div>
           <figcaption>Two portable Wasm deployment families, with different host obligations. <a href="/logs/7/wasm-profiles.svg" aria-label="Open full-size wasm deployment profiles diagram">View full-size diagram ↗</a></figcaption>
         </figure>
@@ -75,7 +75,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
         <p>Share language meaning, not backend object representations. The frontend produces typed high-level IR (HIR); lowering produces verified mid-level IR (MIR) with explicit control flow, ownership transfers, cleanup and effects. Backend adapters own platform layout, code emission and runtime bindings.</p>
         <figure class="log7-figure">
           <div class="log7-diagram-scroller" role="region" aria-label="Shared compiler architecture: horizontally scrollable diagram" tabindex="0">
-            <img src="/logs/7/compiler-architecture.svg" alt="Oreslang sources pass through a proposed shared incremental semantic core, then a persistent query cache, and finally five adapters: Java GraalVM, .NET Native AOT, LLVM, Forge, and Wasm." width="1100" height="630" loading="lazy" decoding="async" />
+            <img src="/logs/7/compiler-architecture.svg" alt="AttoLang sources pass through a proposed shared incremental semantic core, then a persistent query cache, and finally five adapters: Java GraalVM, .NET Native AOT, LLVM, Forge, and Wasm." width="1100" height="630" loading="lazy" decoding="async" />
           </div>
           <figcaption>Proposed end state. The shared semantic engine and full cross-backend integration are not implemented yet. <a href="/logs/7/compiler-architecture.svg" aria-label="Open full-size shared compiler architecture diagram">View full-size diagram ↗</a></figcaption>
         </figure>
@@ -103,7 +103,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
 
       <section class="log-section" id="invalidations">
         <h2>Track exactly what changed, and exactly who depends on it</h2>
-        <p>Consider an existing Oreslang function:</p>
+        <p>Consider an existing AttoLang function:</p>
         <pre tabindex="0"><code>pub fnc calculate(int x) : int &#123;
     return x * 2;
 &#125;</code></pre>
@@ -138,7 +138,7 @@ const prompt = "We have Oreslang's Java, .NET, LLVM, and Forge source repositori
       </section>
 
       <section class="log-section" id="oreslang-specific">
-        <h2>Oreslang's special incremental correctness hazards</h2>
+        <h2>AttoLang's special incremental correctness hazards</h2>
         <p><strong>Borrowing and isolation:</strong> cached proofs must depend on complete control-flow semantics, type facts, alias analysis, ownership contracts, and relevant runtime rules. A compiler upgrade or a change affecting a live borrow across <code>await</code>, <code>select</code>, actor send, or cleanup can invalidate a proof even if the textual function body looks unchanged.</p>
         <p><strong>Actors and effects:</strong> actor message sendability, capabilities, error effects, mailbox contracts, and cancellation behavior are part of the semantic dependency graph. Target-profile admission is independent of runtime capability grants; each side must enforce its own obligations.</p>
         <p><strong>Generic specialization:</strong> cache instantiated functions by a canonical identity including resolved type arguments, relevant trait implementations and any target-dependent layout. Adding a competing implementation can change an earlier resolution.</p>
@@ -184,9 +184,9 @@ Verify:
 
       <section class="log-section" id="outcome">
         <h2>The real definition of success</h2>
-        <p>The ambition is simple: <strong>one Oreslang language, five production-ready execution strategies eventually, and no needless recompilation.</strong> Progress should be expressed as verified semantic coverage and measured invalidation boundaries—not repository count or cache-hit percentages in isolation.</p>
+        <p>The ambition is simple: <strong>one AttoLang language, five production-ready execution strategies eventually, and no needless recompilation.</strong> Progress should be expressed as verified semantic coverage and measured invalidation boundaries—not repository count or cache-hit percentages in isolation.</p>
         <p>For a function-body edit, we want unchanged interface dependents to stay valid, affected code and inlined callers to regenerate correctly, and the resulting program to behave exactly like a clean build. For a contract change, we want precise, transitive invalidation. For every actor and borrow proof, we want fail-closed correctness.</p>
-        <p>That is the path toward genuinely incremental Oreslang compilation without sacrificing the two defining goals of the language: predictable concurrency and explicit isolation.</p>
+        <p>That is the path toward genuinely incremental AttoLang compilation without sacrificing the two defining goals of the language: predictable concurrency and explicit isolation.</p>
       </section>
     </article>
   </div>

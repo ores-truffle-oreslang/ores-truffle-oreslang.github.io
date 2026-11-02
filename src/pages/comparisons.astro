@@ -5,22 +5,22 @@ import "../styles/comparisons.css";
 ---
 
 <BaseLayout
-  title="Why Oreslang? Deep comparisons with Rust, Go, Erlang and more"
-  description="Why Oreslang combines ownership, lightweight Tasks, supervised actors, native compilation and hot code replacement. Detailed tradeoffs versus ten languages."
+  title="Why AttoLang? Deep comparisons with Rust, Go, Erlang and more"
+  description="Why AttoLang combines ownership, lightweight Tasks, supervised actors, native compilation and hot code replacement. Detailed tradeoffs versus ten languages."
 >
   <section class="page-hero comparisons-hero">
     <p class="kicker">Comparisons / language design</p>
     <h1>Own your memory. Supervise your failures. Keep your code running.</h1>
-    <p><strong>Oreslang = ~(Erlang + Rust).</strong> The ambition: the static safety of ownership, the resilience of actors and the freedom of native compilation, without assembling separate runtimes for every part of your system.</p>
-    <div class="comparison-value-bar" aria-label="Oreslang's core design advantages">
+    <p><strong>AttoLang = ~(Erlang + Rust).</strong> The ambition: the static safety of ownership, the resilience of actors and the freedom of native compilation, without assembling separate runtimes for every part of your system.</p>
+    <div class="comparison-value-bar" aria-label="AttoLang's core design advantages">
       <span>Typed ownership</span>
       <span>Tasks + actors</span>
       <span>Supervision + hot reload</span>
       <span>LLVM + GraalVM directions</span>
     </div>
-    <p><a href="/erlang-rust-oreslang/">Explore the 24-feature comparison table: Erlang · Rust · Oreslang · other languages →</a></p>
+    <p><a href="/erlang-rust-oreslang/">Explore the 24-feature comparison table: Erlang · Rust · AttoLang · other languages →</a></p>
     <p class="comparison-disclaimer">
-      <strong>Architecture goals, not unverified promises.</strong> This is a comparison of intended designs, not a claim that Oreslang has shipped every feature or wins every benchmark.
+      <strong>Architecture goals, not unverified promises.</strong> This is a comparison of intended designs, not a claim that AttoLang has shipped every feature or wins every benchmark.
       The <a href="/language/">public feature matrix</a> currently marks backend support as unverified.
     </p>
   </section>
@@ -28,8 +28,8 @@ import "../styles/comparisons.css";
   <section class="page-body comparisons-body" aria-label="Language comparisons">
     <div class="comparison-toolbar">
       <div>
-        <label for="language-picker">Compare Oreslang with</label>
-        <p>Ten ecosystems. Five deep technical contrasts each. A clear case for when Oreslang matters.</p>
+        <label for="language-picker">Compare AttoLang with</label>
+        <p>Ten ecosystems. Five deep technical contrasts each. A clear case for when AttoLang matters.</p>
       </div>
       <select id="language-picker" name="language" aria-controls="comparison-content">
         {comparisons.map((comparison) => (
@@ -48,17 +48,17 @@ import "../styles/comparisons.css";
           hidden={index !== 0}
         >
           <div class="comparison-intro">
-            <p class="eyebrow">Oreslang / {comparison.name}</p>
-            <h2 id={`compare-title-${comparison.id}`}>Oreslang vs. {comparison.name}</h2>
+            <p class="eyebrow">AttoLang / {comparison.name}</p>
+            <h2 id={`compare-title-${comparison.id}`}>AttoLang vs. {comparison.name}</h2>
             <p class="comparison-headline">{comparison.headline}</p>
           </div>
 
           <div class="comparison-thesis">
-            <p class="eyebrow">The Oreslang case</p>
+            <p class="eyebrow">The AttoLang case</p>
             <p>{comparison.thesis}</p>
           </div>
 
-          <div class="comparison-benefits" aria-label={`Three reasons to choose Oreslang's direction over ${comparison.name}`}>
+          <div class="comparison-benefits" aria-label={`Three reasons to choose AttoLang's direction over ${comparison.name}`}>
             {comparison.benefits.map((benefit, index) => (
               <section class="comparison-benefit">
                 <span class="comparison-benefit-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
@@ -85,7 +85,7 @@ import "../styles/comparisons.css";
                     <p>{angle.peer}</p>
                   </div>
                   <div>
-                    <h4>Oreslang direction</h4>
+                    <h4>AttoLang direction</h4>
                     <p>{angle.oreslang}</p>
                   </div>
                 </div>
@@ -98,7 +98,7 @@ import "../styles/comparisons.css";
           </div>
 
           <section class="comparison-use-cases">
-            <h3 class="comparison-section-title">Where Oreslang's direction is especially compelling</h3>
+            <h3 class="comparison-section-title">Where AttoLang's direction is especially compelling</h3>
             <div class="comparison-use-grid">
               {comparison.useCases.map((useCase) => (
                 <div class="comparison-use-card">
@@ -155,7 +155,7 @@ import "../styles/comparisons.css";
       }
       if (announcement) {
         const name = picker.selectedOptions[0]?.textContent ?? language;
-        announcement.textContent = `Showing Oreslang compared with ${name}.`;
+        announcement.textContent = `Showing AttoLang compared with ${name}.`;
       }
     };
 

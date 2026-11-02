@@ -27,14 +27,14 @@ end
 ---
 
 <BaseLayout
-  title="Oreslang — isolation-first systems programming"
-  description="Oreslang is an isolation-first language with a zero-GC design goal for LLVM and minimal-GC memory profiles for JVM/GraalVM, plus actors, safety, and AOT/JIT."
+  title="AttoLang — isolation-first systems programming"
+  description="AttoLang is an isolation-first language with a zero-GC design goal for LLVM and minimal-GC memory profiles for JVM/GraalVM, plus actors, safety, and AOT/JIT."
   home={true}
 >
   <section class="hero">
     <div>
       <p class="kicker">Isolation-first language design</p>
-      <h1><span class="display-word">oreslang</span><br />safe code moves fast.</h1>
+      <h1><span class="display-word">AttoLang</span><br />safe code moves fast.</h1>
       <p class="hero-copy">
         A language for actor-based systems where isolation, option-safe data, hot code loading,
         explicit compilation, and predictable concurrency are part of the model—not a pile of conventions added later.
@@ -42,9 +42,9 @@ end
       <p class="hero-platforms">Built for <strong>GraalVM</strong> and <strong>LLVM</strong></p>
       <p class="hero-tldr">
         <span class="hero-tldr-label">In short,</span>
-        <code class="hero-equation"><span class="hero-equation-name">oreslang</span><span class="hero-equation-operator"> = ~(</span><span class="hero-equation-language">erlang</span><span class="hero-equation-operator"> + </span><span class="hero-equation-language">rust</span><span class="hero-equation-operator">)</span></code>
+        <code class="hero-equation"><span class="hero-equation-name">AttoLang</span><span class="hero-equation-operator"> = ~(</span><span class="hero-equation-language">erlang</span><span class="hero-equation-operator"> + </span><span class="hero-equation-language">rust</span><span class="hero-equation-operator">)</span></code>
       </p>
-      <p><a href="/erlang-rust-oreslang/">How Erlang and Rust ideas come together in Oreslang — 24-feature matrix →</a></p>
+      <p><a href="/erlang-rust-oreslang/">How Erlang and Rust ideas come together in AttoLang — 24-feature matrix →</a></p>
     </div>
     <aside class="hero-note">
       <strong>Built for hostile boundaries.</strong>
@@ -54,10 +54,10 @@ end
 
   <section class="section" id="about">
     <div class="section-grid">
-      <SectionTitle eyebrow="01 / About" title="Why Oreslang" href="/about/" />
+      <SectionTitle eyebrow="01 / About" title="Why AttoLang" href="/about/" />
       <div class="prose">
         <p>
-          Oreslang starts from a different default: code units should have explicit boundaries,
+          AttoLang starts from a different default: code units should have explicit boundaries,
           actor messages should be safe to move, and the compiler should reject whole categories
           of lifetime and data-flow mistakes before the runtime needs to clean them up.
         </p>
@@ -80,7 +80,7 @@ end
           </article>
         </div>
         <p>
-          Oreslang is authored by <a href="https://github.com/oresoftware">Oresoftware Dev House</a>.
+          AttoLang is authored by <a href="https://github.com/oresoftware">Oresoftware Dev House</a>.
           Click the section title to open the dedicated About page.
         </p>
       </div>
@@ -92,7 +92,7 @@ end
       <SectionTitle eyebrow="02 / Philosophy" title="Spend syntax to buy certainty" href="/philosophy/" />
       <div class="prose">
         <p class="manifesto-lede">
-          In the age of AI-assisted programming, terseness is less sacred. Oreslang is more explicit
+          In the age of AI-assisted programming, terseness is less sacred. AttoLang is more explicit
           when those extra tokens reduce ambiguity and make static analysis, AOT compilation, and
           JIT specialization faster.
         </p>
@@ -101,19 +101,19 @@ end
         <section class="language-shifts-home" aria-labelledby="language-shifts-home-title">
           <p class="eyebrow">From 2010–2022, and beyond</p>
           <h3 id="language-shifts-home-title">Twelve shifts. One language ambition.</h3>
-          <p>Oreslang draws on what programming learned—and asks how those strengths can work together.</p>
+          <p>AttoLang draws on what programming learned—and asks how those strengths can work together.</p>
           <ul class="language-shifts-checklist">
             {languageProgress.map((theme) => (
               <li><span class="progress-check" aria-hidden="true">✓</span><span>{theme.label}</span></li>
             ))}
           </ul>
           <p class="progress-caveat">
-            This checks off <em>ideas worth addressing</em>, not finished Oreslang features.
-            <a href="/philosophy/#language-progress">Explore the shifts, Oreslang's response, and the work ahead →</a>
+            This checks off <em>ideas worth addressing</em>, not finished AttoLang features.
+            <a href="/philosophy/#language-progress">Explore the shifts, AttoLang's response, and the work ahead →</a>
           </p>
         </section>
 
-        <div class="terminal-trace terminal-trace-home code-editor" data-code-editor="true" data-code-key="home-runtime-trace" data-editor-theme="vscode" aria-label="Illustrative Oreslang runtime stack trace">
+        <div class="terminal-trace terminal-trace-home code-editor" data-code-editor="true" data-code-key="home-runtime-trace" data-editor-theme="vscode" aria-label="Illustrative AttoLang runtime stack trace">
           <div class="terminal-bar">
             <span class="terminal-dot"></span>
             <span class="terminal-dot"></span>
@@ -139,7 +139,7 @@ stack trace:
         <div class="compile-strip">
           <strong>AOT for startup. JIT for heat.</strong>
           <p>
-            Oreslang's explicit static surface is designed to feed both ahead-of-time compilation for
+            AttoLang's explicit static surface is designed to feed both ahead-of-time compilation for
             predictable startup and deployment, and runtime specialization of hot code paths when a JIT is available.
           </p>
         </div>
@@ -163,7 +163,7 @@ stack trace:
           <a href="/how-it-works/#memory-management">Read the memory-management contract →</a>
         </p>
 
-        <div class="keyword-rail" aria-label="Oreslang design themes">
+        <div class="keyword-rail" aria-label="AttoLang design themes">
           <span>borrow checker</span>
           <span>no nulls</span>
           <span>static types</span>
@@ -199,7 +199,7 @@ stack trace:
       <SectionTitle eyebrow="03 / Paradigms" title="More than one way to be fast" href="/paradigms/" />
       <div class="prose">
         <p class="manifesto-lede">
-          Oreslang is intentionally multi-paradigm: actor isolation for concurrency, functional
+          AttoLang is intentionally multi-paradigm: actor isolation for concurrency, functional
           composition for data flow, data-oriented layouts for throughput, hot-loading for change,
           and contracts for large static codebases.
         </p>
@@ -242,7 +242,7 @@ stack trace:
           </article>
         </div>
 
-        <p><a href="/paradigms/">Explore Oreslang's programming and runtime paradigms →</a></p>
+        <p><a href="/paradigms/">Explore AttoLang's programming and runtime paradigms →</a></p>
       </div>
     </div>
   </section>
@@ -256,7 +256,7 @@ stack trace:
         <OresCode caption="Unary HTTP actor: Fetch-style response (proposed)" code={httpCode} />
         <OresCode caption="Select one ready channel operation" code={selectCode} />
         <OresCode caption="Closed inferred structs + structural matching" code={structCode} />
-        <p class="progress-caveat">Illustrative Oreslang design syntax, not compiler-verified examples. Empty actors show topology; ML and HTTP APIs are proposed. <a href="/language/">See current language verification status →</a></p>
+        <p class="progress-caveat">Illustrative AttoLang design syntax, not compiler-verified examples. Empty actors show topology; ML and HTTP APIs are proposed. <a href="/language/">See current language verification status →</a></p>
       </div>
     </div>
   </section>
@@ -266,7 +266,7 @@ stack trace:
       <SectionTitle eyebrow="05 / Application areas" title="Application Areas" href="/problem-spaces/" />
       <div class="prose">
         <p>
-          Oreslang is aimed at domains where ordinary process boundaries are too expensive,
+          AttoLang is aimed at domains where ordinary process boundaries are too expensive,
           shared memory is too risky, dense compute needs hardware-aware data layouts, or a runtime
           must safely host code it does not fully trust.
         </p>
@@ -314,7 +314,7 @@ stack trace:
       <div class="prose">
         <p>The project is being designed and implemented in the open.</p>
         <div class="link-list">
-          <a href="https://github.com/ores-truffle-oreslang"><span>Oreslang GitHub organization</span><span>↗</span></a>
+          <a href="https://github.com/ores-truffle-oreslang"><span>AttoLang GitHub organization</span><span>↗</span></a>
           <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java"><span>Compiler / VM source</span><span>↗</span></a>
           <a href="https://github.com/oresoftware"><span>Oresoftware Dev House</span><span>↗</span></a>
         </div>

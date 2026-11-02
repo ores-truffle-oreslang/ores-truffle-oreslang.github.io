@@ -1,6 +1,6 @@
 /**
  * Reader navigation and public documentation pointers for the 31-row comparison.
- * Links establish where to verify established ecosystems, NOT Oreslang conformance.
+ * Links establish where to verify established ecosystems, NOT AttoLang conformance.
  */
 export const matrixCategories = [
   { id: "all", label: "All dimensions" },
@@ -47,8 +47,8 @@ export const matrixSourceCatalog = {
   unity_dots: { label: "Unity Data-Oriented Technology Stack (DOTS) and ECS", url: "https://unity.com/dots" },
   graal_static: { label: "GraalVM Native Image static and mostly-static binaries", url: "https://www.graalvm.org/reference-manual/native-image/StaticImages/" },
   erlang_cross: { label: "Erlang/OTP cross-compilation guide", url: "https://www.erlang.org/docs/24/installation_guide/install-cross.html" },
-  ores_features: { label: "Oreslang draft feature status", url: "/language/" },
-  ores_performance: { label: "Oreslang performance evidence", url: "/performance/" },
+  ores_features: { label: "AttoLang draft feature status", url: "/language/" },
+  ores_performance: { label: "AttoLang performance evidence", url: "/performance/" },
 };
 
 /** Every row must carry a category and useful documentation pointers. */

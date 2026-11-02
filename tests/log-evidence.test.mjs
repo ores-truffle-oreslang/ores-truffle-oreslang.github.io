@@ -49,9 +49,9 @@ test("every rendered or highlighted blog sample is accounted for in an evidence 
 
 test("production blog prose must not imply unchecked examples were compiler-verified", () => {
   const source = read("src/components/Log4Content.astro");
-  assert.doesNotMatch(source, /formatter-verified Oreslang/u);
+  assert.doesNotMatch(source, /formatter-verified AttoLang/u);
   const llvm = read("src/components/Log1Content.astro");
-  assert.match(llvm, /proposed syntax, not implemented Oreslang/u);
+  assert.match(llvm, /proposed syntax, not implemented AttoLang/u);
   const actor = read("src/pages/logs/6.astro");
   assert.match(actor, /They do not calculate derivatives/u);
 });

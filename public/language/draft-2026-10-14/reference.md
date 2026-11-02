@@ -1,7 +1,7 @@
-# Oreslang AI language reference — draft snapshot 2026-10-14
+# AttoLang AI language reference — draft snapshot 2026-10-14
 
 > **STATUS: DOCUMENTATION DRAFT — NOT A RELEASED, CONFORMANCE-VERIFIED LANGUAGE SPECIFICATION.**
-> This material summarizes publicly discussed language-design goals. It does not prove that a compiler accepts any particular syntax. Always query the installed compiler, select the backend, and obtain test evidence before generating production Oreslang.
+> This material summarizes publicly discussed language-design goals. It does not prove that a compiler accepts any particular syntax. Always query the installed compiler, select the backend, and obtain test evidence before generating production AttoLang.
 
 **Reference ID:** `draft-2026-10-14`  
 **Publication scope:** public concepts and migration hazards; no private compiler implementation or source code  
@@ -26,7 +26,7 @@ The public demo inventory is itself pinned to commit `3acd6ced34dea7ebd85428d885
 
 ### Modules and visibility
 
-Oreslang is designed around explicit declaration visibility: exported declarations use `pub` and unmarked declarations are private by default. The design prefers canonical `define pub` when `define` appears. A formatter may accept older spellings and normalize them only after the language parser and semantic checks agree. **Status:** design summary; confirm the selected compiler before copying syntax.
+AttoLang is designed around explicit declaration visibility: exported declarations use `pub` and unmarked declarations are private by default. The design prefers canonical `define pub` when `define` appears. A formatter may accept older spellings and normalize them only after the language parser and semantic checks agree. **Status:** design summary; confirm the selected compiler before copying syntax.
 
 ### Types, generics and aliases
 
@@ -64,7 +64,7 @@ The publicly accessible `oreslang-demos` repository includes older `fnc ... =>` 
 
 ## Documentation and implementation links
 
-- [Oreslang AI reference landing page](https://ores-truffle-oreslang.github.io/language/)
+- [AttoLang AI reference landing page](https://ores-truffle-oreslang.github.io/language/)
 - [Machine-readable feature matrix](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/features.json)
 - [Agent bootstrap guide](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/agent-guide.md)
 - [Historical public example inventory](https://github.com/ores-truffle-oreslang/oreslang-demos/blob/3acd6ced34dea7ebd85428d885139dd38848d8d4/ai/examples.manifest.json)
