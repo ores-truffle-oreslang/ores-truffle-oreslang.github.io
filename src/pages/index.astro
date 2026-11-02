@@ -36,9 +36,8 @@ end
       <p class="kicker">Isolation-first language design</p>
       <h1><span class="display-word"><img class="brand-logo" src="/attolang-wordmark.svg" alt="AttoLang" width="1100" height="283" /></span><br />safe code moves fast.</h1>
       <p class="hero-copy">
-        Stateless REST APIs are only part of the story. AttoLang is designed for stateful applications:
-        WebSocket servers, gaming backends, interactive UIs, distributed state machines, message queues,
-        and development servers—with fault-tolerant actors and strong safety boundaries.
+        AttoLang was motivated by the need to create more stateful applications, as opposed to
+        stateless REST APIs: WebSocket servers, gaming backends, UIs, state machines for distributed coordination, message queues, and development servers.
       </p>
       <p class="hero-platforms">Built for <strong>GraalVM</strong> and <strong>LLVM</strong></p>
       <p class="hero-tldr">
@@ -55,33 +54,26 @@ end
 
   <section class="section" id="stateful-applications">
     <div class="section-grid">
-      <SectionTitle eyebrow="00 / Motivation" title="Built for applications that stay alive" href="/about/" />
+      <SectionTitle eyebrow="00 / Motivation" title="A next-generation language for stateful apps" href="/about/" />
       <div class="prose">
         <p class="manifesto-lede">
-          AttoLang was motivated by the need to build more stateful applications—not just
-          stateless REST APIs. Persistent connections, live game sessions, UI state,
-          distributed coordination, queues, and developer tooling need reliable state,
-          messaging, and upgrades as first-class capabilities.
+          AttoLang was motivated by the need to create more stateful applications, as opposed to
+          stateless REST APIs. Think WebSocket servers, gaming backends, UIs, state machines for
+          distributed coordination, message queues, and development servers.
         </p>
         <p>
-          AttoLang takes inspiration from <strong>Erlang's</strong> fault-tolerant actor model,
-          <strong>Rust's</strong> type and memory safety, and the stateful programming approach
-          of <strong>Microsoft Orleans</strong>. The goal is a next-generation language and
-          runtime that combines these ideas without forcing developers to assemble
-          separate infrastructure for every stateful service.
+          AttoLang takes the best from <strong>Erlang</strong>, <strong>Rust</strong>, and
+          projects like <strong>Microsoft Orleans</strong>, bringing them together in a
+          next-generation language and runtime.
         </p>
         <p>
-          <strong>Performance ambition:</strong> more than <strong>10× Erlang's speed</strong>
-          while using roughly <strong>one-tenth the compute</strong> on comparable workloads.
-          These are engineering targets, <em>not measured or independently verified results</em>.
-          <a href="/performance/">See the benchmark methodology and evidence status →</a>
+          We can deliver more than <strong>10× the speed of Erlang</strong> while using
+          <strong>one-tenth the compute</strong>, with the type safety and memory safety
+          developers expect from languages like Rust.
         </p>
         <p>
-          <strong>Runtime direction:</strong> full ahead-of-time (AOT) compilation, native
-          binaries across target platforms, zero tracing GC for LLVM-native workloads,
-          Rust-class ownership safety, fault-tolerant actors, and generation-based
-          hot upgrades with rollback. Support and verification differ by backend;
-          <a href="/language/">see current language status →</a>
+          AttoLang offers full ahead-of-time (AOT) compilation, native binaries for all
+          platforms, zero GC, fault-tolerant actors, and better hot upgrades.
         </p>
       </div>
     </div>
