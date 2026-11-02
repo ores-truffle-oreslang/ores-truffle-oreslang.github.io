@@ -28,7 +28,7 @@ end
 
 <BaseLayout
   title="AttoLang — isolation-first systems programming"
-  description="AttoLang is an isolation-first language with a zero-GC design goal for LLVM and minimal-GC memory profiles for JVM/GraalVM, plus actors, safety, and AOT/JIT."
+  description="AttoLang is a stateful-first language and actor runtime inspired by Erlang, Rust, and Microsoft Orleans—built for WebSockets, games, distributed coordination, messaging, and safe native deployment."
   home={true}
 >
   <section class="hero">
@@ -36,8 +36,9 @@ end
       <p class="kicker">Isolation-first language design</p>
       <h1><span class="display-word"><img class="brand-logo" src="/attolang-wordmark.svg" alt="AttoLang" width="1100" height="283" /></span><br />safe code moves fast.</h1>
       <p class="hero-copy">
-        A language for actor-based systems where isolation, option-safe data, hot code loading,
-        explicit compilation, and predictable concurrency are part of the model—not a pile of conventions added later.
+        Stateless REST APIs are only part of the story. AttoLang is designed for stateful applications:
+        WebSocket servers, gaming backends, interactive UIs, distributed state machines, message queues,
+        and development servers—with fault-tolerant actors and strong safety boundaries.
       </p>
       <p class="hero-platforms">Built for <strong>GraalVM</strong> and <strong>LLVM</strong></p>
       <p class="hero-tldr">
@@ -50,6 +51,40 @@ end
       <strong>Built for hostile boundaries.</strong>
       <p>Mobile sandboxes. FaaS runtimes. Multi-tenant actors. Trusted and untrusted code living in one system without sharing the wrong things.</p>
     </aside>
+  </section>
+
+  <section class="section" id="stateful-applications">
+    <div class="section-grid">
+      <SectionTitle eyebrow="00 / Motivation" title="Built for applications that stay alive" href="/about/" />
+      <div class="prose">
+        <p class="manifesto-lede">
+          AttoLang was motivated by the need to build more stateful applications—not just
+          stateless REST APIs. Persistent connections, live game sessions, UI state,
+          distributed coordination, queues, and developer tooling need reliable state,
+          messaging, and upgrades as first-class capabilities.
+        </p>
+        <p>
+          AttoLang takes inspiration from <strong>Erlang's</strong> fault-tolerant actor model,
+          <strong>Rust's</strong> type and memory safety, and the stateful programming approach
+          of <strong>Microsoft Orleans</strong>. The goal is a next-generation language and
+          runtime that combines these ideas without forcing developers to assemble
+          separate infrastructure for every stateful service.
+        </p>
+        <p>
+          <strong>Performance ambition:</strong> more than <strong>10× Erlang's speed</strong>
+          while using roughly <strong>one-tenth the compute</strong> on comparable workloads.
+          These are engineering targets, <em>not measured or independently verified results</em>.
+          <a href="/performance/">See the benchmark methodology and evidence status →</a>
+        </p>
+        <p>
+          <strong>Runtime direction:</strong> full ahead-of-time (AOT) compilation, native
+          binaries across target platforms, zero tracing GC for LLVM-native workloads,
+          Rust-class ownership safety, fault-tolerant actors, and generation-based
+          hot upgrades with rollback. Support and verification differ by backend;
+          <a href="/language/">see current language status →</a>
+        </p>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="about">
