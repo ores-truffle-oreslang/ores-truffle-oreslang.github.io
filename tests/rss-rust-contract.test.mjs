@@ -24,5 +24,10 @@ test("push and PR workflows execute Rust validation with pinned toolchain", () =
     const test=content.indexOf("npm run test:rss:build");
     assert.ok(rust >= 0 && test > rust, "Rust setup before validator: " + file);
   }
-  assert.match(read(".github/workflows/validate-site.yml"), /"tools\/\*\*"/u);
+  // The required status check must execute for every PR, including Rust-only
+  // changes; an explicit tools/** filter leaves unrelated PRs unvalidated.
+  const prWorkflow = read(".github/workflows/validate-site.yml");
+  assert.match(prWorkflow, /^on:\s*\n(?:\s*#.*\n)*\s*pull_request:\s*$/mu);
+  assert.doesNotMatch(prWorkflow, /^\s*(?:paths|paths-ignore|branches|branches-ignore):\s*$/mu);
+  assert.match(prWorkflow, /name: AttoLang Site Validation/u);
 });
