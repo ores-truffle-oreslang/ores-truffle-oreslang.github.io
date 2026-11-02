@@ -81,4 +81,4 @@ TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, NO LICENSOR OR CONTRIBUTOR SH
 
 This is a custom, free-of-charge, source-available software license with specific recipient exclusions. Because it discriminates between persons and organizations, Lima 27 does not meet the Open Source Initiative's Open Source Definition and must not be described as an OSI-approved open-source license or a free-software license.
 
-The grant concerns copyrightable Software, not independent use of the AttoLang language syntax or an independently implemented compatible language. This License cannot revoke rights previously granted under other valid licenses.`;
+The grant concerns copyrightable Software, not independent use of the Oreslang language syntax or an independently implemented compatible language. This License cannot revoke rights previously granted under other valid licenses.`;
