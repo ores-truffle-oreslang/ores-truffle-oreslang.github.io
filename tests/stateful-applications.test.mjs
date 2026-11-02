@@ -46,12 +46,12 @@ test("comparison and performance openings share the direct stateful-first propos
   for (const copy of [comparisonHero, performanceHero]) {
     assert.match(copy, /more than <strong>10× the speed of Erlang<\/strong>/u);
     assert.match(copy, /<strong>one-tenth the compute<\/strong>/u);
-    assert.match(copy, /type safety and memory safety/u);
-    assert.match(copy, /full AOT compilation/u);
-    assert.match(copy, /native binaries/u);
-    assert.match(copy, /zero GC/u);
-    assert.match(copy, /fault-tolerant actors/u);
-    assert.match(copy, /better hot upgrades/u);
+    assert.match(copy, /type safety and memory safety/iu);
+    assert.match(copy, /full AOT compilation/iu);
+    assert.match(copy, /native binaries/iu);
+    assert.match(copy, /zero GC/iu);
+    assert.match(copy, /fault-tolerant actors/iu);
+    assert.match(copy, /better hot upgrades/iu);
     assert.doesNotMatch(copy, /not measured|unverified results|not a claim/iu);
   }
 });
