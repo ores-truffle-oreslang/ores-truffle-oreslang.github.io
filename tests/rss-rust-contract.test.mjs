@@ -31,3 +31,23 @@ test("push and PR workflows execute Rust validation with pinned toolchain", () =
   assert.doesNotMatch(prWorkflow, /^\s*(?:paths|paths-ignore|branches|branches-ignore):\s*$/mu);
   assert.match(prWorkflow, /name: AttoLang Site Validation/u);
 });
+
+test("Rust validator dependency graph is committed, checksummed and immutable", () => {
+  const lock = read("tools/rss-validator/Cargo.lock");
+  assert.match(lock, /^version = 4$/mu);
+  for (const [name, version, checksum] of [
+    ["chrono", "0.4.42", "145052bdd345b87320e369255277e3fb5152762ad123a901ef5c262dd38fe8d2"],
+    ["roxmltree", "0.21.1", "f1964b10c76125c36f8afe190065a4bf9a87bf324842c05701330bba9f1cacbb"],
+    ["num-traits", "0.2.19", "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841"],
+    ["memchr", "2.8.3", "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"],
+    ["autocfg", "1.5.1", "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"],
+  ]) {
+    assert.ok(lock.includes('name = "' + name + '"'), "Missing locked crate " + name);
+    assert.ok(lock.includes('version = "' + version + '"'), "Wrong locked version for " + name);
+    assert.ok(lock.includes('checksum = "' + checksum + '"'), "Wrong lock checksum for " + name);
+  }
+  const script = JSON.parse(read("package.json")).scripts["test:rss:build"];
+  assert.match(script, /git diff --exit-code -- tools\/rss-validator\/Cargo\.lock/u);
+  assert.match(script, /cargo test --locked/u);
+  assert.match(script, /cargo run --locked/u);
+});
