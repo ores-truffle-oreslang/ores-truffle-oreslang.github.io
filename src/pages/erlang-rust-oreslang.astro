@@ -8,7 +8,7 @@ import "../styles/erlang-rust-matrix.css";
 
 const erlangExample = "-module(counter).\n-behaviour(gen_server).\n-export([start_link/0, inc/1, init/1, handle_call/3]).\nstart_link() -> gen_server:start_link(?MODULE, 0, []).\ninc(Pid) -> gen_server:call(Pid, inc).\ninit(N) -> {ok, N}.\nhandle_call(inc, _From, N) ->\n    Next = N + 1,\n    {reply, Next, Next}.";
 const rustExample = "use tokio::sync::{mpsc, oneshot};\nenum Request { Increment(oneshot::Sender<u64>) }\nasync fn run(mut inbox: mpsc::Receiver<Request>) {\n    let mut count = 0_u64;\n    while let Some(Request::Increment(reply)) = inbox.recv().await {\n        count += 1;\n        let _ = reply.send(count);\n    }\n}";
-const oresExample = "# CONCEPTUAL FLOW — NOT ORESLANG SOURCE SYNTAX\nSupervisor starts typed Counter actor with actor-local arena\nCaller transfers an Increment(reply) message into mailbox\nHandler acquires a critical-write loan on actor state\n  next = state.count + 1; state.count = next\nHandler releases state loan before replying\nHandler sends rt copy next to the reply destination\nUnhandled failure -> supervisor restart policy\nNew code -> stage -> validate -> drain -> activate or roll back";
+const oresExample = "# CONCEPTUAL FLOW — NOT ATTOLANG SOURCE SYNTAX\nSupervisor starts typed Counter actor with actor-local arena\nCaller transfers an Increment(reply) message into mailbox\nHandler acquires a critical-write loan on actor state\n  next = state.count + 1; state.count = next\nHandler releases state loan before replying\nHandler sends rt copy next to the reply destination\nUnhandled failure -> supervisor restart policy\nNew code -> stage -> validate -> drain -> activate or roll back";
 ---
 
 <BaseLayout

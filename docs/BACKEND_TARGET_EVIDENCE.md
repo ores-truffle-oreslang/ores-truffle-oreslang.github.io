@@ -1,4 +1,4 @@
-# Oreslang backend/architecture evidence protocol
+# AttoLang backend/architecture evidence protocol
 
 This public site lists **candidate evaluation profiles**, not supported release triples. The source of truth is the non-normative [draft feature inventory](../public/language/draft-2026-10-14/features.json). Its four backend tracks are `java-graalvm`, `llvm`, `dotnet`, `wasm`; their public support status remains `not-verified`.
 
@@ -10,7 +10,7 @@ This public site lists **candidate evaluation profiles**, not supported release 
 - **Tested**: Above, plus source-identified executed, passing guest-behavior or native-target tests on an exact target. A workflow failing at runner admission or recording zero executed test steps **does not qualify**.
 - **Production verified**: Above, plus independently reviewed rollout, recovery/rollback, resource limits, and operational evidence with explicit scope.
 
-A passing marketing build, GitHub file SHA alone, green infrastructure-only checks, vendor compiler marketing page, or an unrelated language's native build cannot promote Oreslang conformance. A backend-level status never certifies an individual CPU/OS target.
+A passing marketing build, GitHub file SHA alone, green infrastructure-only checks, vendor compiler marketing page, or an unrelated language's native build cannot promote AttoLang conformance. A backend-level status never certifies an individual CPU/OS target.
 
 ## Gates per candidate target
 
@@ -32,4 +32,4 @@ Each gate is independent: a native host smoke test is not guest-language executi
 6. Independently audit evidence before merging. The static `validateProofLedger` validator catches malformed, conflicting, out-of-scope and cross-backend records but **cannot verify actual GitHub logs, exact-tree inputs, the true executed test count, or review approval**. Human review of upstream commit, tree, CI steps and result is mandatory. Published record totals are distinct from tested/production execution evidence.
 7. Run website unit tests, Astro check/build, links, Chromium/Firefox/WebKit accessibility and visual checks, and verify the deployed page and evidence JSON after GitHub Pages deployment.
 
-Current [machine-readable ledger](../public/language/backend-target-evidence.json) deliberately contains **zero** verified entries. The comparison page renders **0 of 50** individual target/gate records; this is the honest publicly assessed coverage, not a claim that Oreslang has no implementation. The website does not presently perform automated cross-repository conformance collection or attestations.
+Current [machine-readable ledger](../public/language/backend-target-evidence.json) deliberately contains **zero** verified entries. The comparison page renders **0 of 50** individual target/gate records; this is the honest publicly assessed coverage, not a claim that AttoLang has no implementation. The website does not presently perform automated cross-repository conformance collection or attestations.
