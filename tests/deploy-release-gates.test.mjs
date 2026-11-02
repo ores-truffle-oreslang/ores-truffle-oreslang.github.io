@@ -23,3 +23,17 @@ test("single canonical renderer and exact PNG social metadata are retained", () 
   assert.match(layout, /brand\/attolang-social\.png/u);
   assert.match(layout, /content="image\/png"/u);
 });
+
+test("build embeds exact SHA receipt and deployment smoke test checks the same SHA", () => {
+  const pkg = JSON.parse(source("package.json"));
+  assert.match(pkg.scripts.build, /node scripts\/write-deployment-manifest\.mjs/u);
+  const build = source("scripts/write-deployment-manifest.mjs");
+  assert.match(build, /git_commit_sha: sha/u);
+  assert.match(build, /createHash\("sha256"\)/u);
+  const live = source("scripts/verify-live-pages.mjs");
+  assert.match(live, /git_commit_sha, expectedSha/u);
+  assert.match(live, /differs from source-built SHA-256 receipt/u);
+  const deploy = source(".github/workflows/deploy.yml");
+  assert.match(deploy, /verify-live-pages\.mjs "\$GITHUB_SHA"/u);
+  assert.match(deploy, /test -s dist\/deployment-manifest\.json/u);
+});
