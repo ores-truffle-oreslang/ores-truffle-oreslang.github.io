@@ -40,3 +40,16 @@ The [USPTO's confusion guidance](https://www.uspto.gov/trademarks/search/likelih
 `npm test` validates ledger integrity and **fail-closed status only**: no CI run can certify trademark freedom or linguistic safety. All legal/registry gates remain pending.
 
 Use the existing source-repository Actions first. A job with `steps=[]`/`null` is a runner-admission failure, not a pass or fail of code. Only if source Actions admission fails, evaluate an **authorized private** destination with funded Actions minutes; mirror the exact permitted Git tree without cross-org tokens, verify source/destination tree identity and submodules/LFS, and execute the destination's own workflow with minimal read permissions. Never mirror private code into a public repository and never add secrets or unreviewed workflows. That fallback is unnecessary for this public naming-only change if the source CI executes.
+
+## Scoped registration findings (research only; no legal clearance)
+
+- [U.S. ATTO registration 2680135 / serial 76312586](https://trademarks.justia.com/763/12/atto-76312586.html) is reported for **specific data-management/storage hardware and software** and also lists historical Class 37 and 42 services. A broad claim that it covers all software would be misleading. This is a third-party index; the official current status, cancellations and current exact identification must be re-read in USPTO TSDR.
+- [U.S. ATTO registration 2680136 / serial 76312590](https://uspto.report/TM/76312590) is reported as renewed with a **partial Section 8 cancellation in 2022**. The original identification and the current surviving services may differ; counsel must verify the exact current register from USPTO before assessing relatedness.
+- The [mark owner's public list](https://www.atto.com/about-atto-technology/compliance/trademark-information/) confirms that the company claims ATTO as a registered mark for certain computer software and hardware. This does not itself decide AttoLang's registrability.
+- [USPTO's search guidance](https://www.uspto.gov/trademarks/search/federal-trademark-searching) explicitly emphasizes related goods/services, variations in sound and spelling, and multiple search passes. Class numbers alone do not answer confusion.
+
+## Evidence workflow (schema v2)
+
+Each gate starts as `pending`. A reviewer may mark a **specific gate** `documented` only with HTTPS evidence, observation date, defined scope, a reviewer identifier/role and a scoped conclusion. Legal-confusion conclusions require a qualified trademark-counsel role. Individual languages require separate native-speaker evidence; domain and registry results require per-identifier verification. No combination of machine-readable statuses makes the name **globally cleared**.
+
+`ready_for_owner_decision` is only an administrative routing status after documentary prerequisite gates, **not** a legal conclusion. The owner must review the underlying originals and receive counsel's opinion separately. CI validates shape and fail-closed conditions, not the authenticity, ownership, freshness, accuracy or legal sufficiency of a supplied URL. Changing the ledger to claim global clearance is deliberately rejected.

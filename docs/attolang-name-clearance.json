@@ -1,16 +1,72 @@
 {
-  "schema_version": 1,
-  "as_of": "2026-11-01",
+  "schema_version": 2,
+  "as_of": "2026-11-02",
   "candidate": "AttoLang",
   "status": "provisional_not_cleared",
   "decision_gates": {
-    "formal_us_search": "pending",
-    "formal_international_search": "pending",
-    "counsel_confusion_review": "pending",
-    "native_linguist_review": "pending",
-    "domain_registrar_review": "pending",
-    "package_registry_review": "pending",
-    "owner_signoff": "pending"
+    "formal_us_search": {
+      "status": "pending",
+      "evidence": [],
+      "reviewed_at": null,
+      "reviewer_role": null,
+      "reviewer_id": null,
+      "scope": null,
+      "conclusion": null
+    },
+    "formal_international_search": {
+      "status": "pending",
+      "evidence": [],
+      "reviewed_at": null,
+      "reviewer_role": null,
+      "reviewer_id": null,
+      "scope": null,
+      "conclusion": null
+    },
+    "counsel_confusion_review": {
+      "status": "pending",
+      "evidence": [],
+      "reviewed_at": null,
+      "reviewer_role": null,
+      "reviewer_id": null,
+      "scope": null,
+      "conclusion": null
+    },
+    "native_linguist_review": {
+      "status": "pending",
+      "evidence": [],
+      "reviewed_at": null,
+      "reviewer_role": null,
+      "reviewer_id": null,
+      "scope": null,
+      "conclusion": null
+    },
+    "domain_registrar_review": {
+      "status": "pending",
+      "evidence": [],
+      "reviewed_at": null,
+      "reviewer_role": null,
+      "reviewer_id": null,
+      "scope": null,
+      "conclusion": null
+    },
+    "package_registry_review": {
+      "status": "pending",
+      "evidence": [],
+      "reviewed_at": null,
+      "reviewer_role": null,
+      "reviewer_id": null,
+      "scope": null,
+      "conclusion": null
+    },
+    "owner_signoff": {
+      "status": "pending",
+      "evidence": [],
+      "reviewed_at": null,
+      "reviewer_role": null,
+      "reviewer_id": null,
+      "scope": null,
+      "conclusion": null
+    }
   },
   "verified_public_findings": [
     {
@@ -40,13 +96,13 @@
     {
       "id": "atto-us-reg-2680135",
       "kind": "third_party_registry",
-      "finding": "Third-party record associates ATTO registration 2680135 with ATTO Technology and storage-specific computer software and hardware.",
+      "finding": "Third-party trademark record associates ATTO registration 2680135 (serial 76312586) with ATTO Technology, showing data-storage-specific hardware/software and related classes 009, 037 and 042; current exact status and scope require official USPTO TSDR review.",
       "url": "https://trademarks.justia.com/763/12/atto-76312586.html"
     },
     {
       "id": "atto-us-reg-2680136",
       "kind": "third_party_registry",
-      "finding": "Third-party record identifies ATTO registration 2680136; independently confirm its current scope/status with USPTO.",
+      "finding": "Third-party trademark record associates ATTO registration 2680136 (serial 76312590) with ATTO Technology. The 2022 renewal involved a partial Section 8 cancellation; surviving goods/services must be verified through the official TSDR record, not inferred from the original filing.",
       "url": "https://uspto.report/TM/76312590"
     },
     {
@@ -60,6 +116,18 @@
       "kind": "regulator_guidance",
       "finding": "WIPO Global Brand Database does not itself issue a legal opinion and prohibits automated bulk querying.",
       "url": "https://www.wipo.int/en/web/global-brand-database/terms_and_conditions"
+    },
+    {
+      "id": "uspto-clearance-method",
+      "kind": "regulator_guidance",
+      "finding": "USPTO advises searching state and federal marks, related offerings, variant spellings and market use; exact class overlap is not the sole criterion.",
+      "url": "https://www.uspto.gov/trademarks/search/federal-trademark-searching"
+    },
+    {
+      "id": "atto-us-reg-2680136-maintenance",
+      "kind": "third_party_registry",
+      "finding": "Third-party copy of an official USPTO notice records 2022 Section 8 acceptance and renewal context for registration 2680136; counsel must verify surviving scope in official TSDR.",
+      "url": "https://uspto.report/TM/76312590/ACC20220712235146/"
     }
   ],
   "languages": [
@@ -268,5 +336,5 @@
       "nuget": "unverified"
     }
   },
-  "legal_note": "The cited registrations are not a blanket prohibition on AttoLang. Registration status, actual scope, commercial use, similarity and likely confusion require qualified legal analysis. No legal clearance claimed."
+  "legal_note": "Desk research only. Named ATTO registrations do not create a blanket prohibition on language compilers. Class 009/037/042 descriptions concern specific goods/services, 2680136 has a partial Section 8 history, and any live legal status, common-law rights and likelihood of confusion must be verified by qualified counsel. This CI validator cannot authenticate legal or registrar evidence."
 }
