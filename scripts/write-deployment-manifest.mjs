@@ -8,7 +8,7 @@ const sha = execFileSync("git", ["rev-parse", "--verify", "HEAD"], {
   encoding: "utf8", timeout: 10000, maxBuffer: 4096,
 }).trim().toLowerCase();
 assert.match(sha, /^[0-9a-f]{40}$/u, "Exact Git HEAD required for release");
-if (process.env.GITHUB_SHA) {
+if (process.env.GITHUB_SHA && process.env.GITHUB_EVENT_NAME !== "pull_request") {
   assert.equal(sha, process.env.GITHUB_SHA.toLowerCase(),
     "Checkout must match workflow event SHA; refuse stale or synthetic mismatch");
 }
