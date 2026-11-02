@@ -1,11 +1,11 @@
 <p>A model is only one part of an ML system. Data must arrive, become tensors, reach available hardware, return useful results and survive failures. Actors give those steps a natural shape: independent workers with private state, explicit messages and a lifecycle the runtime can supervise.</p>
-<p>Our direction for Oreslang is to make that architecture practical for <strong>AI/ML, data engineering and high-performance computing</strong>. The language should describe the flow and ownership of work; established numerical and model libraries should do the mathematics.</p>
+<p>Our direction for AttoLang is to make that architecture practical for <strong>AI/ML, data engineering and high-performance computing</strong>. The language should describe the flow and ownership of work; established numerical and model libraries should do the mathematics.</p>
 
 <section id="why-actors" class="log-section">
   <h2>1. State that stays close to the work</h2>
   <p>A preprocessing worker may need CPU time and little persistent state. An inference worker may need an expensive GPU and gigabytes of resident weights. Treating both as short-lived requests hides that difference.</p>
   <p>A stateful inference actor can load a model when its incarnation starts, warm it, announce readiness and serve many requests. Its mailbox becomes the admission point for batching, deadlines and overload. A model revision or restart may require another load; the useful goal is <strong>one load per healthy incarnation and model revision</strong>, rather than one load per request.</p>
-  <p>This is an established pattern. <a href="https://docs.ray.io/en/latest/ray-core/actors.html">Ray's actors</a> maintain state between calls. Oreslang's opportunity is to pair that pattern with language-level ownership and typing, so the boundaries around model state and data are explicit.</p>
+  <p>This is an established pattern. <a href="https://docs.ray.io/en/latest/ray-core/actors.html">Ray's actors</a> maintain state between calls. AttoLang's opportunity is to pair that pattern with language-level ownership and typing, so the boundaries around model state and data are explicit.</p>
 </section>
 
 <section id="pipeline" class="log-section">
@@ -24,9 +24,9 @@
 </section>
 
 <section id="oreslang-strengths" class="log-section">
-  <h2>3. The strength of Oreslang actors</h2>
+  <h2>3. The strength of AttoLang actors</h2>
   <p>The interesting combination is <strong>typed communication, explicit ownership and supervised execution</strong>. Those properties let us reason about what each stage accepts, who may mutate a buffer, and what happens when a worker stops.</p>
-  <div class="log-table-scroll" role="region" tabindex="0" aria-label="Oreslang actor design and its benefits for ML pipelines">
+  <div class="log-table-scroll" role="region" tabindex="0" aria-label="AttoLang actor design and its benefits for ML pipelines">
     <table>
       <thead><tr><th scope="col">Language or runtime design</th><th scope="col">Why it matters for a pipeline</th></tr></thead>
       <tbody>
@@ -66,17 +66,17 @@
 
 <section id="hpc" class="log-section">
   <h2>7. Keep the numerical engines fed</h2>
-  <p>Inference is one workload. Training-data preparation, evaluation, simulation and numerical batch processing also need predictable admission, locality and reduction of results. Oreslang can coordinate those stages while existing libraries perform tensor kernels and collective communication.</p>
+  <p>Inference is one workload. Training-data preparation, evaluation, simulation and numerical batch processing also need predictable admission, locality and reduction of results. AttoLang can coordinate those stages while existing libraries perform tensor kernels and collective communication.</p>
   <p>The <a href="https://github.com/ores-truffle-oreslang/oreslang-source.java/issues/469">trusted HPC profile</a> explores arenas, NUMA placement, dedicated cores and native data paths. Those features require host admission and hardware evidence. They are separate from general-purpose or untrusted actor execution.</p>
   <p>We will measure useful throughput, queue age, tail latency, GPU utilization, memory, copies, startup and recovery. JIT optimization is an opportunity, not proof of C-level throughput. Native compilation is an opportunity, not proof of an end-to-end no-GC or realtime guarantee.</p>
 </section>
 
 <section id="delivery-status" class="log-section">
   <h2>8. The plan, and the proof we need</h2>
-  <p><strong>This entry records the engineering direction as of October 12, 2026; it does not announce a completed distributed ML runtime.</strong> The Java/Truffle backend leads the first integration. LLVM's current main branch describes an experimental compiler that rejects actors and async pipelines; native host harnesses do not establish compiled Oreslang parity.</p>
+  <p><strong>This entry records the engineering direction as of October 12, 2026; it does not announce a completed distributed ML runtime.</strong> The Java/Truffle backend leads the first integration. LLVM's current main branch describes an experimental compiler that rejects actors and async pipelines; native host harnesses do not establish compiled AttoLang parity.</p>
   <ol>
     <li><strong>Define shared contracts.</strong> Tensor ownership, typed messages, resource requests and explicit backend capability gates.</li>
-    <li><strong>Run a local vertical slice.</strong> Real Oreslang ingestion, preprocessing, warm model inference and aggregation under bounded load.</li>
+    <li><strong>Run a local vertical slice.</strong> Real AttoLang ingestion, preprocessing, warm model inference and aggregation under bounded load.</li>
     <li><strong>Prove distributed recovery.</strong> Durable delivery, scoped payload transport, overload handling and stale-commit fencing.</li>
     <li><strong>Add protected agent actions.</strong> Durable MPA, independent quorum and executor-enforced capabilities.</li>
     <li><strong>Publish workload evidence.</strong> Inference, HPC numerical work, a training-data feeder and an authorized fleet, with matched baselines and reproducible builds.</li>
