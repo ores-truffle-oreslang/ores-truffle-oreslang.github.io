@@ -56,10 +56,10 @@ test("missing public snapshot entries are unassessed rather than called unsuppor
   assert.ok(promotionRequirements.length >= 4);
 });
 
-test("examples clarify Erlang OTP, Rust Tokio and Oreslang illustrative contract", () => {
+test("examples clarify Erlang OTP, Rust Tokio and AttoLang illustrative contract", () => {
   for (const x of ["actor-walkthrough", "erlangExample", "rustExample", "oresExample",
-    "gen_server", "tokio::sync", "rt copy", "NOT ORESLANG SOURCE SYNTAX",
-    "not valid or compiler-verified Oreslang syntax", "critical-write",
+    "gen_server", "tokio::sync", "rt copy", "NOT ATTOLANG SOURCE SYNTAX",
+    "not valid or compiler-verified AttoLang syntax", "critical-write",
     "Per-backend evidence", "Not assessed", "What would qualify as partial"]) {
     assert.ok(page.includes(x), x);
   }
