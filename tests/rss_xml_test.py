@@ -9,7 +9,7 @@ feed = ElementTree.parse(dist / "rss.xml").getroot()
 assert feed.tag == "rss" and feed.attrib.get("version") == "2.0"
 channel = feed.find("channel")
 assert channel is not None
-assert channel.findtext("title") == "Oreslang engineering logs"
+assert channel.findtext("title") == "AttoLang engineering logs"
 assert channel.findtext("link") == "https://ores-truffle-oreslang.github.io/logs/"
 items = channel.findall("item")
 assert len(items) == 8, f"Expected eight articles, found {len(items)}"
