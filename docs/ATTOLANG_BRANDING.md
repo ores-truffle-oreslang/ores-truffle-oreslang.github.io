@@ -8,6 +8,6 @@ The current public language name is **AttoLang** (capital A and L). The existing
 - Do not rewrite quoted historical prompts, immutable benchmark receipts, legal terms, or external citations merely to eliminate the old text.
 - Public sample code remains illustrative unless exact compiler and backend evidence is linked. Branding must not imply unsupported runtime parity.
 - New public assets should use the checked-in `attolang-wordmark.svg`; the favicon is a simple monochrome o-with-caret companion.
-- `social-preview.svg` is vector source for a 1200×630 social graphic. Some social crawlers reject SVG; publish and independently validate a PNG/JPEG equivalent before claiming universal social-card compatibility.
+- `social-preview.svg` is the canonical vector source. `npm run build` renders a 1200×630 PNG at `public/social-preview.png` using pinned Playwright/Chromium; the PNG is copied into deployed static output and is the `og:image`/Twitter preview. The generated PNG is ignored by Git and must be rebuilt from the SVG. Browser availability is a required build dependency (`npx playwright install --with-deps chromium`). Verify the image HTTP response after deployment before claiming live publication.
 
 Run `npm test`, `npm run build`, site/RSS checks, and real browser accessibility/visual checks against the exact PR head. A zero-step or skipped CI run is **not** evidence of passing tests.
