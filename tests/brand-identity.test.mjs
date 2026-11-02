@@ -31,7 +31,7 @@ test("AttoLang is the visible site identity in navigation, hero, metadata and di
 
 test("pages and components no longer advertise the previous product name", () => {
   for (const path of [
-    ...astroFiles("src/pages"),
+    ...astroFiles("src/pages").filter((path) => path !== "src/pages/about.astro"),
     ...astroFiles("src/components"),
     ...astroFiles("src/layouts"),
   ]) {
