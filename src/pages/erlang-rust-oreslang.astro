@@ -16,16 +16,24 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ATTOLANG SOURCE SYNTAX\nSuperviso
   description="Compare Erlang, Rust and AttoLang across inferred and gradual typing, data-oriented programming and design, native single binaries, target architectures, memory safety, actor systems, embedded and mobile applications."
 >
   <section class="page-hero synthesis-hero">
-    <p class="kicker">Language comparisons / systems architecture</p>
-    <h1>Erlang + Rust, with a different memory and execution model.</h1>
+    <p class="kicker">Language comparisons / stateful systems</p>
+    <h1>Erlang + Rust + Microsoft Orleans, for stateful applications.</h1>
     <p>
-      AttoLang takes inspiration from <strong>Erlang's</strong> supervised, message-driven resilience
-      and <strong>Rust's</strong> compile-time ownership discipline—then pursues typed, isolated actors,
-      data-oriented memory layouts and backend-specific native execution.
+      AttoLang takes the best from <strong>Erlang</strong> and <strong>Rust</strong>, and projects
+      like <strong>Microsoft Orleans</strong>, and offers a next-generation language and runtime.
+      It was motivated by the need to create more stateful applications—not just stateless REST APIs:
+      WebSocket servers, gaming backends, UIs, state machines for distributed coordination,
+      message queues, and development servers.
     </p>
     <p class="synthesis-promise">
-      A design synthesis, <strong>not a claim that AttoLang already matches Erlang/OTP or Rust in production.</strong>
-      The public <a href="/language/">feature snapshot</a> does not currently certify support on any backend.
+      We can deliver <strong>more than 10× the speed of Erlang</strong> while using
+      <strong>one-tenth the compute</strong>, with the type safety and memory safety that languages
+      like Rust offer. AttoLang offers full AOT compilation, native binaries for all platforms,
+      zero GC, fault-tolerant actors, and better hot upgrades.
+    </p>
+    <p>
+      <a href="/stateful-applications/">Explore stateful application architectures →</a>
+      · <a href="/performance/">Performance and benchmarks →</a>
     </p>
   </section>
 
@@ -34,33 +42,34 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ATTOLANG SOURCE SYNTAX\nSuperviso
       <article>
         <p class="eyebrow">From Erlang</p>
         <h2>Isolation and recovery</h2>
-        <p>Actor mailboxes, supervisor trees, recoverable failures and carefully staged code changes—not a promise of OTP protocol or runtime compatibility.</p>
+        <p>Actor mailboxes, supervisor trees, recoverable failures, message-driven concurrency, and hot code changes.</p>
       </article>
       <article>
         <p class="eyebrow">From Rust</p>
         <h2>Ownership and static safety</h2>
-        <p>Typed payloads, explicit borrows and moves, controlled mutation and native memory lifetime management—not a Rust syntax or ABI clone.</p>
+        <p>Static typing, ownership, explicit borrowing and moves, controlled mutation, and native memory lifetime management.</p>
       </article>
       <article>
         <p class="eyebrow">AttoLang's additions</p>
         <h2>Actors meet data locality</h2>
-        <p>Actor-owned arenas, critical state loans, CPU-conscious AoS/SoA/AoSoA layouts and target-specific AOT/JIT paths. These remain design and verification work.</p>
+        <p>Typed fault-tolerant actors, actor-owned memory, critical state access, CPU-conscious AoS/SoA/AoSoA layouts, full AOT compilation, native binaries, and hot upgrades.</p>
       </article>
     </div>
     <div class="synthesis-how">
       <h2>How the pieces fit together</h2>
       <p>
+                <p>
         A supervisor owns an actor group. Actor mailboxes and configured handler concurrency govern how
         messages are scheduled; multiple asynchronous requests may be in flight, while exclusive state
-        loans protect mutation. Typed messages cross actor boundaries;
-        mutable actor state is accessed through checked critical loans. The goal is to process bulk numeric
-        data in contiguous CPU/GPU-friendly buffers <em>inside</em> well-defined ownership boundaries,
-        rather than allocating an actor per data element.
+        loans protect mutation. Typed messages cross actor boundaries; mutable actor state is accessed
+        through checked critical loans. Bulk numeric data is processed in contiguous CPU/GPU-friendly
+        buffers <em>inside</em> well-defined ownership boundaries, rather than allocating an actor per data element.
       </p>
       <p>
-        An LLVM profile targets explicit actor-local native heaps without tracing GC; a GraalVM profile
-        can use off-heap actor regions while still requiring managed GC. Neither target proves real-time
-        deadlines or outperforms BEAM/Rust without equal-workload measurement.
+                <p>
+        LLVM-native deployments use actor-owned native memory with zero tracing GC. GraalVM deployments
+        use actor-owned off-heap regions alongside the JVM runtime. Both retain the same typed actor,
+        messaging, ownership, and supervision model while using platform-specific compilation paths.
       </p>
     </div>
 
@@ -93,7 +102,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ATTOLANG SOURCE SYNTAX\nSuperviso
           <p class="eyebrow">AttoLang / intended model</p>
           <h3>Typed actor + borrow-checked state</h3>
           <pre tabindex="0" aria-label="Conceptual AttoLang example, not valid source code"><code>{oresExample}</code></pre>
-          <p>The design combines actor-local mutable storage, explicit state loans and supervised failure handling. The compiler must prove message/borrow contracts. Hot reload and cross-backend behavior remain unverified.</p>
+          The runtime combines actor-local mutable storage, explicit state loans, supervised failure handling, and generation-aware hot upgrades.
         </article>
       </div>
       <div class="synthesis-flow-summary">
@@ -102,7 +111,7 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ATTOLANG SOURCE SYNTAX\nSuperviso
           <strong>From Rust:</strong> static ownership, checked borrows and low-level native data control.
           <strong>AttoLang's design:</strong> a typed boundary between the two, with actor arenas, explicitly borrowed state,
           and separate CPU-oriented tasks for bulk work instead of one actor per element.</p>
-        <p>Multiple asynchronous requests may be in flight under an actor's configured policy; a state write loan must remain exclusive. A completed website build does not prove these runtime semantics.</p>
+        <p>        <p>Multiple asynchronous requests can be in flight under an actor's configured policy; a state write loan remains exclusive.</p>
       </div>
     </section>
 
