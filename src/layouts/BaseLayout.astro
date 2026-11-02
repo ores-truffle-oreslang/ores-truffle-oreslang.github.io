@@ -14,7 +14,7 @@ interface Props {
 
 const { title, description, home = false, article } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const socialImage = new URL("/social-preview.svg", Astro.site).href;
+const socialImage = new URL("/social-preview.png", Astro.site).href;
 const articleJsonLd = article ? JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
@@ -68,7 +68,7 @@ const articleJsonLd = article ? JSON.stringify({
     <meta property="og:type" content={article ? "article" : "website"} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:image" content={socialImage} />
-    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="AttoLang — actor-first systems programming" />
