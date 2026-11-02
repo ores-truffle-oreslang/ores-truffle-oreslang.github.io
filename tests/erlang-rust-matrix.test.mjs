@@ -49,7 +49,7 @@ test("top five use cases are exactly five per column and clearly qualify AttoLan
 
 test("comparisons are transparent about hard real-time and unverified AttoLang support", () => {
   assert.match(page, /AttoLang takes the best from/u);
-  assert.match(page, /more than <strong>10× the speed of Erlang<\/strong>/u);
+  assert.match(page, /We can deliver <strong>more than 10× the speed of Erlang<\/strong>/u);
   assert.match(page, /<strong>one-tenth the compute<\/strong>/u);
   assert.match(page, /public draft does not separately evaluate that topic/u);
   assert.match(page, /Soft real time is not hard real time/u);
