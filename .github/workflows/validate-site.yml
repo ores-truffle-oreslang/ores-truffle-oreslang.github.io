@@ -75,8 +75,19 @@ jobs:
         with:
           toolchain: "1.91.0"
 
+      - name: Generate Rust lockfile for bootstrap, then validate in locked mode
+        run: cargo generate-lockfile --manifest-path tools/rss-validator/Cargo.toml
+
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build
+
+      - name: Upload generated Cargo lockfile for commit bootstrap
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: rss-cargo-lockfile-bootstrap
+          path: tools/rss-validator/Cargo.lock
+          if-no-files-found: error
+          retention-days: 1
 
       - name: Verify rendered metadata, internal links and all published engineering logs
         run: npm run test:blogs:build
