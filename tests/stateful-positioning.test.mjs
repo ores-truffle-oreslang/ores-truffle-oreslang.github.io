@@ -32,14 +32,17 @@ test("About page explains language influences, native goals, and both name meani
   assert.ok(about.includes("AttoLang was formerly known as Oreslang."));
 });
 
-test("performance and zero-GC goals remain explicitly unverified and scoped", () => {
-  assert.match(home, /more than <strong>10× Erlang's speed<\/strong>/u);
-  assert.match(home, /one-tenth the compute/u);
-  assert.match(home, /not measured or independently verified results/u);
-  assert.match(about, /more than 10× Erlang's speed/u);
-  assert.match(about, /not an established benchmark result/u);
-  assert.match(home, /zero tracing GC for LLVM-native workloads/u);
-  assert.match(about, /zero tracing garbage collection in LLVM-native execution/u);
-  assert.ok(home.includes("Support and verification differ by backend"));
-  assert.ok(about.includes("backend-specific verification"));
+test("marketing copy states the performance, safety, and runtime proposition directly", () => {
+  assert.match(home, /more than <strong>10× the speed of Erlang<\/strong>/u);
+  assert.match(home, /<strong>one-tenth the compute<\/strong>/u);
+  assert.match(home, /type safety and memory safety/u);
+  assert.match(about, /more than <strong>10× the speed of Erlang<\/strong>/u);
+  assert.match(about, /<strong>one-tenth the compute<\/strong>/u);
+  for (const feature of ["full ahead-of-time (AOT) compilation", "native binaries",
+    "zero GC", "fault-tolerant actors", "better hot upgrades"]) {
+    assert.ok(home.includes(feature), "homepage missing " + feature);
+    assert.ok(about.includes(feature), "About page missing " + feature);
+  }
+  assert.doesNotMatch(home, /unverified results|not measured|engineering targets/iu);
+  assert.doesNotMatch(about, /unverified results|not measured|aspiration|architectural goals/iu);
 });
