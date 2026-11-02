@@ -29,7 +29,7 @@ test("homepage checklist links to detail without pretending to certify finished 
   assert.ok(home.includes('class="language-shifts-checklist"'));
   assert.ok(home.includes('href="/philosophy/#language-progress"'));
   assert.ok(home.includes('aria-labelledby="language-shifts-home-title"'));
-  assert.ok(home.includes("not finished Oreslang features"));
+  assert.ok(home.includes("not finished AttoLang features"));
   assert.ok(!home.includes("{theme.shift}") && !home.includes("{theme.response}"));
 });
 

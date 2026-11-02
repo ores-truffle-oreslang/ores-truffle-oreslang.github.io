@@ -96,7 +96,7 @@ test("Application Areas title is consistent on home, destination, and navigation
   assert.ok(home.includes('title="Application Areas" href="/problem-spaces/"'));
   assert.ok(applicationAreas.includes("<h1>Application Areas</h1>"));
   assert.ok(nav.includes('label: "application areas", href: hrefFor("problem-spaces")'));
-  assert.ok(!home.includes('title="Where Oreslang is meant to matter"'));
+  assert.ok(!home.includes('title="Where AttoLang is meant to matter"'));
 });
 
 
