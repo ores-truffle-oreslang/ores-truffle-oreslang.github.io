@@ -8,26 +8,61 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 >
   <section class="page-hero">
     <p class="kicker">About</p>
-    <h1>Isolation is a language feature.</h1>
-    <p>AttoLang is being built around the idea that concurrency, code loading, ownership, and trust boundaries should reinforce one another instead of being separate subsystems.</p>
+    <h1>Stateful applications deserve a better language.</h1>
+    <p>AttoLang is designed for long-lived, actor-based software where state, concurrency, ownership, hot upgrades, and isolation work together—not just stateless REST endpoints.</p>
   </section>
 
   <section class="page-body">
     <div class="prose">
-      <h3>Motivations</h3>
+      <h3>Why we started AttoLang</h3>
       <p>
-        Modern runtimes routinely need to host many independent jobs inside one machine: app plugins,
-        serverless functions, actors, background tasks, user-authored code, and hot-reloaded modules.
-        Process isolation is strong but can be expensive; shared memory is cheap but easy to misuse.
-        AttoLang is exploring a middle ground where the compiler and VM cooperate on isolation.
+        AttoLang was motivated by the need to create more <strong>stateful applications</strong>,
+        rather than treating everything as a stateless REST API. WebSocket servers, gaming backends,
+        interactive UIs, state machines for distributed coordination, message queues, and development
+        servers all depend on long-lived state, reliable messaging, and safe evolution while running.
       </p>
       <p>
-        The goal is not merely memory safety. The language model should make it difficult to create
-        accidental ambient authority, dangling references, unsafe actor messages, or mutable data
-        races—and it should make the safe path ergonomic enough to use by default.
+        Modern runtimes also host many independent jobs inside one machine: application plugins,
+        serverless functions, actors, background tasks, and user-authored code. Process isolation can
+        be expensive; unrestricted shared memory can be dangerous. AttoLang explores a compiler-and-VM
+        approach to explicit isolation, actor ownership, and controlled capabilities.
+      </p>
+
+      <h3>Erlang's resilience, Rust's safety, Orleans-style state</h3>
+      <p>
+        AttoLang draws on <strong>Erlang</strong> for messaging, supervision, and fault-tolerant actors;
+        <strong>Rust</strong> for static typing, ownership, and memory-safety principles; and
+        <strong>Microsoft Orleans</strong> for its approach to stateful, actor-oriented applications.
+        The aim is a next-generation language and runtime that makes distributed state and
+        concurrency easier to reason about without sacrificing low-level control.
+      </p>
+      <p>
+        The goal is not merely memory safety. The language model should reject accidental ambient
+        authority, dangling references, unsafe actor messages, and mutable data races before
+        they become production failures—and keep the safe path ergonomic.
+      </p>
+
+      <h3>Performance and deployment ambitions</h3>
+      <p>
+        The performance target is <strong>more than 10× Erlang's speed with roughly one-tenth the
+        compute</strong> on equivalent, reproducible workloads. This is an <strong>aspiration,
+        not an established benchmark result</strong>. The <a href="/performance/">performance page</a>
+        tracks measurement methodology and evidence.
+      </p>
+      <p>
+        AttoLang is pursuing full ahead-of-time (AOT) compilation, native binaries for target
+        platforms, zero tracing garbage collection in LLVM-native execution, and Rust-class
+        type and memory safety. Its actor runtime is designed for fault tolerance and
+        generation-fenced hot upgrades with rollback. These are architectural goals;
+        <a href="/language/">feature status</a> and backend-specific verification remain important.
       </p>
 
       <h3>About the name</h3>
+      <p>
+        In Italian, <em>atto</em> means an act or deed: action. In Japanese,
+        <em>attō</em> (圧倒) conveys overwhelming or overpowering. Together those ideas
+        express the name's intent: action with the ability to handle demanding systems.
+      </p>
       <p>
         AttoLang was formerly known as Oreslang. Some GitHub repository names, source-file
         extensions and compatibility identifiers still use the original name while the
