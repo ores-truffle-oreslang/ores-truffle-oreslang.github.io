@@ -81,3 +81,20 @@ test("every generated HTML route has exactly one canonical sitemap entry", () =>
     assert.ok(canonicalPaths.has(route), "Missing route in sitemap: " + route);
   }
 });
+
+
+test("generated social preview is a genuine 1200x630 PNG referenced by homepage and log nine", () => {
+  const png = readFileSync(join(root, "social-preview.png"));
+  assert.ok(png.length > 12000 && png.length < 3_000_000, "Unexpected social preview payload size");
+  assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 630);
+  const url = origin + "/social-preview.png";
+  for (const route of ["/", "/logs/9/"]) {
+    const html = markup.get(route);
+    assert.ok(html, route + " missing");
+    assert.match(html, /property="og:image:type" content="image\/png"/u);
+    assert.ok(html.includes('property="og:image" content="' + url + '"'), route + " missing OG image");
+    assert.ok(html.includes('name="twitter:image" content="' + url + '"'), route + " missing Twitter image");
+  }
+});
