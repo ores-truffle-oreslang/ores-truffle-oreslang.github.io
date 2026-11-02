@@ -82,8 +82,8 @@ fn read(path: &Path) -> Check<String> {
 fn main() {
     let args: Vec<_> = env::args().collect();
     if args.len() != 3 { eprintln!("Usage: rss-validator rss.xml sitemap.xml"); std::process::exit(2); }
-    if let Err(e) = validate(&read(Path::new(&args[1])).unwrap_or_else(fail),
-                             &read(Path::new(&args[2])).unwrap_or_else(fail)) {
+    if let Err(e) = validate(&read(Path::new(&args[1])).unwrap_or_else(|e| fail(e)),
+                             &read(Path::new(&args[2])).unwrap_or_else(|e| fail(e))) {
         eprintln!("RSS validation failed: {e}");
         std::process::exit(1);
     }
