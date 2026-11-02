@@ -50,7 +50,7 @@ await trainer.train(dataset);
 // Proposed Fetch-style response; not yet compiler-verified.
 define unary http actor HelloHttp as
   run(HttpMessage request): HttpResponse {
-    return new HttpResponse("hello from Oreslang", {
+    return new HttpResponse("hello from AttoLang", {
       status: 200,
       headers: {
         "Content-Type": "text/plain; charset=utf-8"

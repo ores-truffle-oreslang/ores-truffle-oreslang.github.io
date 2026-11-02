@@ -1,8 +1,8 @@
-/** Editorial design comparison. Oreslang support is not compiler-conformance evidence. */
+/** Editorial design comparison. AttoLang support is not compiler-conformance evidence. */
 export const matrixColumns = [
   { key: "erlang", label: "Erlang" },
   { key: "rust", label: "Rust" },
-  { key: "oreslang", label: "Oreslang (direction)" },
+  { key: "oreslang", label: "AttoLang (direction)" },
   { key: "others", label: "Other languages" },
 ];
 
@@ -381,11 +381,11 @@ export const matrixReferences = [
     "url": "https://docs.kernel.org/core-api/real-time/differences.html"
   },
   {
-    "label": "Oreslang public draft and verification status",
+    "label": "AttoLang public draft and verification status",
     "url": "/language/"
   },
   {
-    "label": "Oreslang measured performance evidence",
+    "label": "AttoLang measured performance evidence",
     "url": "/performance/"
   }
 ];
