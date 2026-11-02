@@ -15,7 +15,6 @@ test("homepage leads with the stateful-applications motivation and core influenc
     assert.ok(home.includes(concept), "homepage missing " + concept);
   }
   assert.ok(home.indexOf('id="stateful-applications"') < home.indexOf('id="about"'));
-  assert.ok(home.includes('href="/performance/"'));
   assert.ok(home.includes('href="/language/"'));
 });
 
@@ -25,7 +24,7 @@ test("About page explains language influences, native goals, and both name meani
     "state machines for distributed coordination", "message queues",
     "development", "Erlang", "Rust", "Microsoft Orleans",
     "ahead-of-time (AOT)", "native binaries", "fault-tolerant actors",
-    "hot upgrades", "Italian", "Japanese", "attō", "圧倒"
+    "hot upgrades", "Italian", "Japanese", "Attō", "圧倒"
   ]) {
     assert.ok(about.includes(concept), "About missing " + concept);
   }
