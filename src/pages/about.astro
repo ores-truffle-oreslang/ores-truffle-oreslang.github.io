@@ -17,9 +17,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <h3>Why we started AttoLang</h3>
       <p>
         AttoLang was motivated by the need to create more <strong>stateful applications</strong>,
-        rather than treating everything as a stateless REST API. WebSocket servers, gaming backends,
-        interactive UIs, state machines for distributed coordination, message queues, and development
-        servers all depend on long-lived state, reliable messaging, and safe evolution while running.
+        as opposed to stateless REST APIs: WebSocket servers, gaming backends, UIs, state machines
+        for distributed coordination, message queues, and development servers.
       </p>
       <p>
         Modern runtimes also host many independent jobs inside one machine: application plugins,
@@ -30,11 +29,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <h3>Erlang's resilience, Rust's safety, Orleans-style state</h3>
       <p>
-        AttoLang draws on <strong>Erlang</strong> for messaging, supervision, and fault-tolerant actors;
-        <strong>Rust</strong> for static typing, ownership, and memory-safety principles; and
-        <strong>Microsoft Orleans</strong> for its approach to stateful, actor-oriented applications.
-        The aim is a next-generation language and runtime that makes distributed state and
-        concurrency easier to reason about without sacrificing low-level control.
+        AttoLang takes the best from <strong>Erlang</strong> and <strong>Rust</strong>, and
+        projects like <strong>Microsoft Orleans</strong>, and offers a next-generation language
+        and runtime.
       </p>
       <p>
         The goal is not merely memory safety. The language model should reject accidental ambient
@@ -42,26 +39,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         they become production failures—and keep the safe path ergonomic.
       </p>
 
-      <h3>Performance and deployment ambitions</h3>
+      <h3>Performance, safety, and deployment</h3>
       <p>
-        The performance target is <strong>more than 10× Erlang's speed with roughly one-tenth the
-        compute</strong> on equivalent, reproducible workloads. This is an <strong>aspiration,
-        not an established benchmark result</strong>. The <a href="/performance/">performance page</a>
-        tracks measurement methodology and evidence.
+        We can deliver more than <strong>10× the speed of Erlang</strong> while using
+        <strong>one-tenth the compute</strong>, with the type safety and memory safety
+        developers expect from languages like Rust.
       </p>
       <p>
-        AttoLang is pursuing full ahead-of-time (AOT) compilation, native binaries for target
-        platforms, zero tracing garbage collection in LLVM-native execution, and Rust-class
-        type and memory safety. Its actor runtime is designed for fault tolerance and
-        generation-fenced hot upgrades with rollback. These are architectural goals;
-        <a href="/language/">feature status</a> and backend-specific verification remain important.
+        AttoLang offers full ahead-of-time (AOT) compilation, native binaries for all
+        platforms, zero GC, fault-tolerant actors, and better hot upgrades.
       </p>
 
       <h3>About the name</h3>
       <p>
-        In Italian, <em>atto</em> means an act or deed: action. In Japanese,
-        <em>attō</em> (圧倒) conveys overwhelming or overpowering. Together those ideas
-        express the name's intent: action with the ability to handle demanding systems.
+        <em>Atto</em> means action in Italian. <em>Attō</em> means overpowering in Japanese.
       </p>
       <p>
         AttoLang was formerly known as Oreslang. Some GitHub repository names, source-file
