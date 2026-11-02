@@ -64,6 +64,9 @@ jobs:
       - name: Audit all dependencies, including CI development tooling (high or critical)
         run: npm audit --audit-level=high
 
+      - name: Install pinned Chromium for SVG-to-PNG social preview
+        run: npx playwright install --with-deps chromium
+
       - name: Check and build static HTML
         run: npm run build
 
@@ -73,7 +76,7 @@ jobs:
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build
 
-      - name: Verify rendered metadata, internal links and all eight engineering logs
+      - name: Verify rendered metadata, internal links and all nine engineering logs
         run: npm run test:blogs:build
 
       - name: Parse and validate SVG architecture diagrams
