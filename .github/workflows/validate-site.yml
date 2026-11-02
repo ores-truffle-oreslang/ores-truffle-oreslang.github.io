@@ -178,7 +178,7 @@ jobs:
           grep -q 'Cooperative scheduling + scheduling un-cooperative code' dist/index.html
           grep -q 'rt cooperate' dist/how-it-works/index.html
           grep -q 'http-plaintext' dist/performance/index.html
-          grep -q 'No verified Oreslang run' dist/performance/index.html
+          grep -q 'No verified AttoLang run' dist/performance/index.html
           grep -q 'href="/how-it-works/"' dist/index.html
           grep -q 'href="/performance/"' dist/index.html
           test -s dist/theme.js
