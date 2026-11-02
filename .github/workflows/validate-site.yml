@@ -1,22 +1,8 @@
 name: Validate marketing site
 
 on:
+  # Required checks must run for every PR, including documentation-only PRs.
   pull_request:
-    paths:
-      - "src/**"
-      - "public/**"
-      - "tests/**"
-      - "scripts/**"
-      - "tools/**"
-      - "package.json"
-      - "package-lock.json"
-      - "README.md"
-      - "AGENTS.md"
-      - ".github/workflows/validate-site.yml"
-      - ".github/workflows/deploy.yml"
-      - ".github/workflows/blog-quality.yml"
-      - ".gitmodules"
-      - "docs/**"
 
 permissions:
   contents: read
@@ -27,6 +13,7 @@ concurrency:
 
 jobs:
   build:
+    name: AttoLang Site Validation
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
