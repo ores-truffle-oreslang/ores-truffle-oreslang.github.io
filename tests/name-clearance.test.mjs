@@ -8,7 +8,7 @@ const validEvidence = {url: "https://www.uspto.gov/trademarks/search/federal-tra
   checked_on: "2026-11-02", summary: "Sample structural evidence only; not an authenticated legal clearance decision."};
 const documentGate = (data, name, role) => {
   data.decision_gates[name] = {
-    status:"documented", evidence:[validEvidence], reviewed_at:"2026-11-02",
+    status:"documented", evidence:[structuredClone(validEvidence)], reviewed_at:"2026-11-02",
     reviewer_role:role, reviewer_id:"test-reviewer-1", scope:"Example scoped review only",
     conclusion:"risk_accepted_in_scope",
   };
@@ -119,4 +119,14 @@ test("formal US gate cannot be completed using generic guidance instead of both 
   const d = load();
   documentGate(d, "formal_us_search", "trademark_researcher");
   assert.throws(() => validateNameClearance(d), /human-reviewed official registration records/u);
+});
+
+test("negative evidence fixtures do not contaminate later test cases", () => {
+  const bad = load();
+  documentGate(bad, "counsel_confusion_review", "qualified_trademark_counsel");
+  bad.decision_gates.counsel_confusion_review.evidence[0].url = "https://example.com/invalid";
+  const good = load();
+  documentGate(good, "counsel_confusion_review", "qualified_trademark_counsel");
+  assert.equal(validateNameClearance(good), true);
+  assert.throws(() => validateNameClearance(bad), /supporting document/u);
 });
