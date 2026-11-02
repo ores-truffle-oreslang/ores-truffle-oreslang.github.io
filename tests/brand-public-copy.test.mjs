@@ -34,6 +34,9 @@ test("current public-facing source copy does not regress to the previous product
       if (protectedHistoricalText.get(path) && sourceLine.includes(protectedHistoricalText.get(path))) continue;
       // The single About-page migration sentence is explicitly historical, not an old product label.
       if (path === "src/pages/about.astro" && sourceLine.includes("AttoLang was formerly known as Oreslang.")) continue;
+      // A single explicit schema.org alternateName line preserves former-name SEO.
+      if (path === "src/layouts/BaseLayout.astro" &&
+          sourceLine.includes('alternateName: ["Oreslang", "OresLang"]')) continue;
       bad.push(path + ":" + line + " (" + match[0] + ")");
     }
   }
