@@ -45,7 +45,7 @@ test("comparison and performance openings share the direct stateful-first propos
   const performanceHero = performance.slice(0, performance.indexOf('<div class="page-body'));
   for (const copy of [comparisonHero, performanceHero]) {
     assert.match(copy, /performance ambition is to exceed Erlang's throughput/iu);
-    assert.match(copy, /10× speed and one-tenth compute figures are design targets, not measured results/iu);
+    assert.match(copy, /10× speed and one-tenth compute figures are design targets,\s+not measured results/iu);
     assert.match(copy, /no controlled, like-for-like Erlang comparison establishes them/iu);
     assert.match(copy, /type and memory safety goals/iu);
     assert.match(copy, /full AOT compilation/iu);

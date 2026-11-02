@@ -31,17 +31,17 @@ test("About page explains language influences, native goals, and both name meani
   assert.ok(about.includes("AttoLang was formerly known as Oreslang."));
 });
 
-test("marketing copy states the performance, safety, and runtime proposition directly", () => {
-  assert.match(home, /more than <strong>10× the speed of Erlang<\/strong>/u);
-  assert.match(home, /<strong>one-tenth the compute<\/strong>/u);
-  assert.match(home, /type safety and memory safety/u);
-  assert.match(about, /more than <strong>10× the speed of Erlang<\/strong>/u);
-  assert.match(about, /<strong>one-tenth the compute<\/strong>/u);
-  for (const feature of ["full ahead-of-time (AOT) compilation", "native binaries",
-    "zero GC", "fault-tolerant actors", "better hot upgrades"]) {
-    assert.ok(home.includes(feature), "homepage missing " + feature);
-    assert.ok(about.includes(feature), "About page missing " + feature);
+test("marketing copy qualifies performance ambitions and backend-specific runtime goals", () => {
+  for (const [label, page] of [["homepage", home], ["About", about]]) {
+    assert.match(page, /performance ambition is to exceed Erlang's throughput/iu, label);
+    assert.match(page, /10× speed and one-tenth compute figures are\s+design targets, not measured results/iu, label);
+    assert.match(page, /no controlled, like-for-like Erlang comparison\s+establishes them/iu, label);
+    assert.match(page, /type and memory safety goals/iu, label);
+    assert.match(page, /full ahead-of-time \(AOT\) compilation/iu, label);
+    assert.match(page, /native binaries/iu, label);
+    assert.match(page, /zero-GC execution/iu, label);
+    assert.match(page, /fault-tolerant actors/iu, label);
+    assert.match(page, /better hot upgrades/iu, label);
+    assert.doesNotMatch(page, /We can deliver/iu, label);
   }
-  assert.doesNotMatch(home, /unverified results|not measured|engineering targets/iu);
-  assert.doesNotMatch(about, /unverified results|not measured|aspiration|architectural goals/iu);
 });
