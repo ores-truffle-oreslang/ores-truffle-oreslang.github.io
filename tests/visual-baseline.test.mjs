@@ -17,7 +17,19 @@ test("visual baselines have exact-source provenance, including approved per-imag
   assert.equal(inventory.environment.playwright, "1.56.1");
   // The seed remains immutable for the other 17 screenshots. The only reviewed
   // exception is the changed WebKit 375px menu, adding licenses/comparisons.
-  assert.deepEqual(Object.keys(inventory.reviewedOverrides), ["webkit-375-archive.png"]);
+  assert.deepEqual(Object.keys(inventory.reviewedOverrides).sort(), [
+    "chromium-375-archive.png", "chromium-375-log-7.png",
+    "firefox-375-log-7.png", "webkit-375-archive.png", "webkit-375-log-7.png",
+  ].sort());
+  for (const key of ["chromium-375-archive.png", "chromium-375-log-7.png",
+    "firefox-375-log-7.png", "webkit-375-log-7.png"]) {
+    const reviewed = inventory.reviewedOverrides[key];
+    assert.equal(reviewed.workflowRun, 41371319485);
+    assert.equal(reviewed.artifactId, 13109317665);
+    assert.equal(reviewed.gitCommit, "42707dd63bd61adf581b541987340329ff5a6152");
+    assert.match(reviewed.reason, /AttoLang-wordmark/u);
+    assert.match(inventory.images[key].pngSha256, /^[a-f0-9]{64}$/u);
+  }
   const changed = inventory.reviewedOverrides["webkit-375-archive.png"];
   assert.equal(changed.workflowRun, 39840069637);
   assert.equal(changed.artifactId, 12452822497);
