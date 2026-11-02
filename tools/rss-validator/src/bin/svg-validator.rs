@@ -56,7 +56,7 @@ fn validate(bytes: &[u8], path: &str) -> Check<()> {
             while let Some(found)=lower[cursor..].find("url(") {
                 let start=cursor+found+4;
                 let end=lower[start..].find(')').map(|n| start+n).ok_or("unterminated url()")?;
-                let target=value[start..end].trim().trim_matches(|c| c=='"' || c=='\\'');
+                let target=value[start..end].trim().trim_matches('"');
                 if !target.starts_with('#') || target.len()<2 || !ids.contains(&target[1..]) {
                     return Err(format!("{path}: external, malformed, or unresolved URL reference"));
                 }
