@@ -51,7 +51,7 @@ npx playwright install --with-deps chromium firefox webkit
 npm run test:blogs:browser
 ```
 
-The rendered-output gate validates all seven published routes, their sitemap
+The rendered-output gate validates all nine published routes, their sitemap
 entries, article metadata/JSON-LD, local assets and table-of-contents anchors.
 The browser gate loads each log in Chromium, Firefox and WebKit at 375, 768, and 1440px,
 checks keyboard-operated disclosures and horizontal overflow, and runs axe-core
@@ -74,7 +74,7 @@ If an exact mirror cannot be established, report CI as unverified.
 ## Phase 3: compiler sample provenance and reproducible publishing
 
 All sixteen rendered `<pre>` / highlighted AttoLang sample blocks across the
-seven logs are enumerated in `src/data/engineering-log-examples.json`, with
+nine logs are enumerated in `src/data/engineering-log-examples.json`, with
 source file, ordinal, example type, and verification status. The inventory is a
 **truth-in-labeling mechanism**, not a substitute for compiling examples.
 

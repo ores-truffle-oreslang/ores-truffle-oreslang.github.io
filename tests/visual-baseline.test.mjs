@@ -15,28 +15,39 @@ test("visual baselines have exact-source provenance, including approved per-imag
   assert.match(inventory.source.gitCommit, /^[0-9a-f]{40}$/u);
   assert.deepEqual(inventory.environment.snapshot, { width: 32, height: 24, viewportHeight: 900 });
   assert.equal(inventory.environment.playwright, "1.56.1");
-  // The seed remains immutable for the other 17 screenshots. The only reviewed
-  // exception is the changed WebKit 375px menu, adding licenses/comparisons.
-  assert.deepEqual(Object.keys(inventory.reviewedOverrides).sort(), [
-    "chromium-375-archive.png", "chromium-375-log-7.png",
-    "firefox-375-log-7.png", "webkit-375-archive.png", "webkit-375-log-7.png",
-  ].sort());
-  for (const key of ["chromium-375-archive.png", "chromium-375-log-7.png",
-    "firefox-375-log-7.png", "webkit-375-log-7.png"]) {
+  // Original seed remains intact for unaffected captures. Existing wordmark
+  // review metadata applies to log-7; archive captures now have their own
+  // reviewed source/artifact provenance after publication of log 009.
+  const archiveKeys = ["chromium", "firefox", "webkit"].flatMap((engine) =>
+    [375, 1440].map((width) => engine + "-" + width + "-archive.png")
+  );
+  const wordmarkKeys = ["chromium-375-log-7.png", "firefox-375-log-7.png", "webkit-375-log-7.png"];
+  assert.deepEqual(Object.keys(inventory.reviewedOverrides).sort(),
+    [...archiveKeys, ...wordmarkKeys].sort());
+  for (const key of wordmarkKeys) {
     const reviewed = inventory.reviewedOverrides[key];
     assert.equal(reviewed.workflowRun, 41371319485);
     assert.equal(reviewed.artifactId, 13109317665);
     assert.equal(reviewed.gitCommit, "42707dd63bd61adf581b541987340329ff5a6152");
     assert.match(reviewed.reason, /AttoLang-wordmark/u);
-    assert.match(inventory.images[key].pngSha256, /^[a-f0-9]{64}$/u);
   }
-  const changed = inventory.reviewedOverrides["webkit-375-archive.png"];
-  assert.equal(changed.workflowRun, 39840069637);
-  assert.equal(changed.artifactId, 12452822497);
-  assert.equal(changed.gitCommit, "0144686e36ed867b113985895de79524b4e23df9");
-  assert.match(changed.reason, /licenses and comparisons links/u);
-  assert.equal(inventory.images["webkit-375-archive.png"].pngSha256,
-    "78f8e2f7aeb5cb731a43a23e87a402163a686bf0d3bf5c7ff8e5e8553bc20e47");
+  const expectedArchiveShas = {
+    "chromium-375-archive.png": "edf3c793b261bb0f4dc77a6d2a948e0f1ee69819b89c2f9948a30406db72317c",
+    "chromium-1440-archive.png": "e510cf261e76cf09e348169c4e139f671dfdf120828250d5fc91220deadc3407",
+    "firefox-375-archive.png": "db87d4b8ee6641edad79047815553c34f455fbfba170a52681d537af72bc6eb9",
+    "firefox-1440-archive.png": "7fb518d311b02bb94cf30255f72a071bd9f43396913b635ab174957946d19ff9",
+    "webkit-375-archive.png": "b078c99f2a0aadcc71dda35e5b78cb0a2e338045afd761127ab7ee62108a18bc",
+    "webkit-1440-archive.png": "aadcfe1dabe92cb0f830c7ba66ed4ef15be406de97c41fddc377d1b7518b9118",
+  };
+  for (const key of archiveKeys) {
+    const reviewed = inventory.reviewedOverrides[key];
+    assert.equal(reviewed.workflowRun, 41371991760);
+    assert.equal(reviewed.artifactId, 13109936045);
+    assert.equal(reviewed.gitCommit, "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d");
+    assert.match(reviewed.reason, /Reviewed all six full-size archive screenshots/u);
+    assert.equal(inventory.images[key].pngSha256, expectedArchiveShas[key],
+      "Archive screenshot hash must match the reviewed artifact");
+  }
   const files = Object.keys(inventory.images);
   assert.equal(files.length, 18);
   for (const engine of ["chromium", "firefox", "webkit"]) {
