@@ -16,7 +16,7 @@
   "duration_seconds_per_rate": 60,
   "independent_jvm_per_rate": true,
   "strict_wrong_body_negative_control_passed": true,
-  "environment": "GitHub-hosted Ubuntu 24.04 shared virtual runner; wrk2 client and Oreslang server on same 127.0.0.1 loopback host",
+  "environment": "GitHub-hosted Ubuntu 24.04 shared virtual runner; wrk2 client and AttoLang server on same 127.0.0.1 loopback host",
   "measurements": [
     {
       "offered_rps": 500,
