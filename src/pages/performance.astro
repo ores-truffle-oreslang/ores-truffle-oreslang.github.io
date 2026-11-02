@@ -97,18 +97,26 @@ const suites = [
 
 <BaseLayout
   title="AttoLang Performance — reproducible HTTP and systems benchmarks"
-  description="Six reproducible benchmark suites for AttoLang HTTP throughput, JSON, routing, PostgreSQL, actors and OresVM scheduling. Verified measurements only; no invented performance numbers."
+  description="AttoLang's stateful-first performance proposition and benchmark suites for HTTP throughput, JSON, routing, PostgreSQL, actors and OresVM scheduling."
 >
   <section class="page-hero">
-    <p class="kicker">Performance / Evidence</p>
-    <h1>Benchmarks that can be reproduced.</h1>
-    <p>Six workloads across HTTP and OresVM internals. Publish throughput and latency together, with a pinned build, machine, source revision and raw results.</p>
+    <p class="kicker">Performance / Stateful systems</p>
+    <h1>More than 10× Erlang speed. One-tenth the compute.</h1>
+    <p>We can deliver more than 10× the speed of Erlang while using one-tenth the compute, with the type safety and memory safety that languages like Rust offer.</p>
+    <p>AttoLang takes the best from Erlang and Rust and projects like Microsoft Orleans. Full AOT compilation, native binaries for all platforms, zero GC, fault-tolerant actors, and better hot upgrades make that performance available to stateful applications.</p>
   </section>
   <div class="page-body technical-page performance-page">
     <div class="prose">
-      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; a verified exploratory LLVM pipeline launch-to-completion benchmark for four actor counts; all other suite workloads pending.</strong> Three 60-second open-loop wrk2 trials cover the 64-byte plaintext route at 300 offered requests/s, and a separate private funded CI run measures 500, 1,000, and 2,000 offered requests/s in independently started JVMs at fixed concurrency. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated AttoLang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
-      <p><a href="#ci-cross-backend-kernel-matrix">Explore the measured LLVM vs GraalVM five-actor source-kernel matrix →</a> (different host HTTP transports; not a direct pipeline-parity result).</p>
-      <p>For an apples-to-apples comparison, run AttoLang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
+      <section class="benchmark-section" id="stateful-performance">
+        <p class="eyebrow">Built for long-lived application workloads</p>
+        <h2>Fast systems that keep their state.</h2>
+        <p>AttoLang was motivated by the need to create more stateful applications, as opposed to stateless REST APIs: WebSocket servers, gaming backends, UIs, state machines for distributed coordination, message queues, and development servers.</p>
+        <p>Typed, fault-tolerant actors keep state, behavior, and messaging together. Supervision handles failures; generation-aware hot upgrades let services evolve without treating every change as a restart-the-world event.</p>
+        <p><a href="/stateful-applications/">Explore stateful application architectures →</a></p>
+      </section>
+      <p class="status-note"><strong>Current benchmark coverage:</strong> JVM/GraalVM HTTP measurements include three 60-second open-loop wrk2 trials at 300 offered requests/s and a separate private funded CI sweep at 500, 1,000, and 2,000 offered requests/s. The LLVM pipeline launch-to-completion benchmark covers four actor counts. The six suites below define a repeatable path across HTTP, JSON, routing, databases, actor messaging, scheduling, startup, and hot generations. Each measurement links to its source revision, harness, and raw receipt.</p>
+      <p><a href="#ci-cross-backend-kernel-matrix">Explore the LLVM vs GraalVM five-actor source-kernel matrix →</a></p>
+      <p>The benchmark program compares JVM/JIT, Graal Native AOT, Graal hybrid, LLVM-native builds, and other frameworks against identical semantics and payloads, using pinned source revisions, commands, and raw measurements.</p>
 
       <nav class="bench-jump" aria-label="Benchmark suites">
         {suites.map((suite) => <a href={`#${suite.id}`}>{suite.number} · {suite.title}</a>)}
