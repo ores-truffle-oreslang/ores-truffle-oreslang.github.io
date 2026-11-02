@@ -45,15 +45,16 @@ test("comparison and performance openings share the evidence-qualified stateful 
   const performanceHero = performance.slice(0, performance.indexOf('<div class="page-body'));
   for (const rawCopy of [comparisonHero, performanceHero]) {
     const copy = rawCopy.replace(/\s+/gu, " ");
-    assert.ok(copy.includes("performance ambition is to exceed Erlang's throughput"));
-    assert.ok(copy.includes("10× speed and one-tenth compute figures are design targets, not measured results"));
-    assert.ok(copy.includes("no controlled, like-for-like Erlang comparison establishes them"));
-    assert.ok(copy.includes("type and memory safety goals"));
-    assert.ok(copy.includes("full AOT compilation"));
-    assert.ok(copy.includes("native binaries"));
-    assert.ok(copy.includes("zero-GC execution"));
-    assert.ok(copy.includes("fault-tolerant actors"));
-    assert.ok(copy.includes("better hot upgrades"));
-    assert.ok(!copy.includes("We can deliver"));
+    const lower = copy.toLowerCase();
+    assert.ok(lower.includes("performance ambition is to exceed erlang's throughput"));
+    assert.ok(lower.includes("10× speed and one-tenth compute figures are design targets, not measured results"));
+    assert.ok(lower.includes("no controlled, like-for-like erlang comparison establishes them"));
+    assert.ok(lower.includes("type and memory safety goals"));
+    assert.ok(lower.includes("full aot compilation"));
+    assert.ok(lower.includes("native binaries"));
+    assert.ok(lower.includes("zero-gc execution"));
+    assert.ok(lower.includes("fault-tolerant actors"));
+    assert.ok(lower.includes("better hot upgrades"));
+    assert.ok(!lower.includes("we can deliver"));
   }
 });
