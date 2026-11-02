@@ -75,6 +75,7 @@ jobs:
         run: |
           set -euo pipefail
           npm run test:blogs:build
+          test -s dist/deployment-manifest.json
           test -s dist/brand/attolang-social.png
           test -s dist/brand/attolang-icon-180.png
           test -s dist/brand/attolang-black.png
@@ -112,7 +113,7 @@ jobs:
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5 6; do
-            if node scripts/verify-live-pages.mjs; then
+            if node scripts/verify-live-pages.mjs "$GITHUB_SHA"; then
               exit 0
             fi
             echo "Pages verification attempt ${attempt} failed" >&2
