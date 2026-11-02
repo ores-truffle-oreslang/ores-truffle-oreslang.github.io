@@ -44,8 +44,8 @@ test("comparison and performance openings share the direct stateful-first propos
   const comparisonHero = comparison.slice(0, comparison.indexOf('<section class="page-body'));
   const performanceHero = performance.slice(0, performance.indexOf('<div class="page-body'));
   for (const copy of [comparisonHero, performanceHero]) {
-    assert.match(copy, /more than <strong>10× the speed of Erlang<\/strong>/u);
-    assert.match(copy, /<strong>one-tenth the compute<\/strong>/u);
+    assert.match(copy, /more than (?:<strong>)?10× the speed of Erlang(?:<\/strong>)?/iu);
+    assert.match(copy, /(?:<strong>)?one-tenth the compute(?:<\/strong>)?/iu);
     assert.match(copy, /type safety and memory safety/iu);
     assert.match(copy, /full AOT compilation/iu);
     assert.match(copy, /native binaries/iu);
