@@ -17,12 +17,12 @@ function astroFiles(dir) {
 }
 
 test("AttoLang is the visible site identity in navigation, hero, metadata and discovery", () => {
-  assert.match(nav, /aria-label="AttoLang home">AttoLang<\/a>/u);
+  assert.match(nav, /aria-label="AttoLang home"><img class="brand-logo" src="\/attolang-wordmark\.svg"/u);
   assert.match(home, /title="AttoLang — isolation-first systems programming"/u);
-  assert.match(home, /class="display-word">AttoLang<\/span>/u);
+  assert.match(home, /class="display-word"><img class="brand-logo" src="\/attolang-wordmark\.svg" alt="AttoLang"/u);
   assert.match(home, /class="hero-equation-name">AttoLang<\/span>/u);
   assert.match(layout, /property="og:site_name" content="AttoLang"/u);
-  assert.match(layout, /class="footer-brand" href="\/">AttoLang<\/a>/u);
+  assert.match(layout, /class="footer-brand" href="\/" aria-label="AttoLang home"><img class="brand-logo"/u);
   assert.match(layout, /title="AttoLang Engineering Logs"/u);
   assert.match(read("src/pages/rss.xml.ts"), /AttoLang engineering logs/u);
   assert.match(read("public/llms.txt"), /^# AttoLang\s*$/mu);

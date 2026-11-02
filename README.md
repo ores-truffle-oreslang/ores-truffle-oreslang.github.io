@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./public/attolang-wordmark-light.svg" />
+    <img src="./public/attolang-wordmark.svg" alt="AttoLang" width="560" />
+  </picture>
+</p>
+
 # AttoLang marketing site
 
 Marketing site for [AttoLang](https://github.com/ores-truffle-oreslang), built with **Astro**.

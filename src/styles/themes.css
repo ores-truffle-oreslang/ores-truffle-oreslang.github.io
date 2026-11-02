@@ -392,3 +392,12 @@ html[data-theme="light"] .log-prompt-glimmer { opacity: .45; }
 @media (prefers-reduced-motion: reduce) {
   .theme-switcher button, .mobile-navigation summary { transition: none; }
 }
+
+/* AttoLang wordmark: original monochrome lettering, without a raster backdrop.
+   A single shape scales cleanly; light/dark surfaces control contrast. */
+.brand, .footer-brand { display: inline-flex; align-items: center; }
+.brand { width: clamp(132px, 14vw, 174px); flex-shrink: 0; }
+.footer-brand { width: 170px; }
+.display-word { width: min(100%, 550px); vertical-align: middle; }
+.brand-logo { display: block; width: 100%; height: auto; filter: invert(1); }
+html[data-theme="light"] .brand-logo { filter: none; }

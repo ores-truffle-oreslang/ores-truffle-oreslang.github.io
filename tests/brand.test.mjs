@@ -7,9 +7,9 @@ const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "u
 test("AttoLang is the public site brand across primary discovery surfaces", () => {
   assert.match(source("src/pages/index.astro"), /title="AttoLang — isolation-first systems programming"/u);
   assert.match(source("src/pages/index.astro"), /class="hero-equation-name">AttoLang<\/span>/u);
-  assert.match(source("src/components/SiteNav.astro"), /aria-label="AttoLang home">AttoLang<\/a>/u);
+  assert.match(source("src/components/SiteNav.astro"), /aria-label="AttoLang home"><img class="brand-logo" src="\/attolang-wordmark\.svg"/u);
   assert.match(source("src/layouts/BaseLayout.astro"), /property="og:site_name" content="AttoLang"/u);
-  assert.match(source("src/layouts/BaseLayout.astro"), /class="footer-brand" href="\/">AttoLang<\/a>/u);
+  assert.match(source("src/layouts/BaseLayout.astro"), /class="footer-brand" href="\/" aria-label="AttoLang home"><img class="brand-logo"/u);
   assert.match(source("public/llms.txt"), /^# AttoLang$/mu);
   assert.match(source("src/pages/rss.xml.ts"), /<title>AttoLang engineering logs<\/title>/u);
   assert.match(source("src/pages/comparisons.astro"), /Compare AttoLang with/u);
