@@ -52,3 +52,13 @@ test("Rust validator dependency graph is committed, checksummed and immutable", 
   assert.match(script, /cargo test --locked/u);
   assert.match(script, /cargo run --locked/u);
 });
+
+test("Rust CI consumes the committed lockfile without generating or uploading a replacement", () => {
+  for (const workflow of [".github/workflows/deploy.yml", ".github/workflows/validate-site.yml"]) {
+    const src = read(workflow);
+    assert.match(src, /cargo metadata --locked --format-version 1 --manifest-path tools\/rss-validator\/Cargo\.toml/u);
+    assert.match(src, /git diff --exit-code -- tools\/rss-validator\/Cargo\.lock/u);
+    assert.doesNotMatch(src, /cargo generate-lockfile|rss-cargo-lockfile-bootstrap/u,
+      "CI must not regenerate or publish a replacement dependency graph");
+  }
+});
