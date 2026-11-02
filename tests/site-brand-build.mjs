@@ -5,7 +5,7 @@ import { join, relative, sep } from "node:path";
 
 const dist = join(process.cwd(), "dist");
 const siteOrigin = "https://ores-truffle-oreslang.github.io";
-const social = siteOrigin + "/social-preview.svg";
+const social = siteOrigin + "/brand/attolang-social.png";
 
 const files = (directory) => readdirSync(directory, { withFileTypes: true })
   .flatMap((entry) => {
@@ -37,7 +37,7 @@ test("every deployed route has AttoLang discovery metadata and a matching canoni
       ["property", "og:site_name", "AttoLang"],
       ["property", "og:url", canonical],
       ["property", "og:image", social],
-      ["property", "og:image:type", "image/svg+xml"],
+      ["property", "og:image:type", "image/png"],
       ["name", "twitter:image", social],
       ["name", "twitter:card", "summary_large_image"],
     ]) {
@@ -57,9 +57,18 @@ test("every deployed route has AttoLang discovery metadata and a matching canoni
 });
 
 test("the shared social preview is a first-party static asset, not an off-site image", () => {
-  assert.ok(existsSync(join(dist, "social-preview.svg")));
+  const png = join(dist, "brand", "attolang-social.png");
+  const svgFile = join(dist, "brand", "attolang-social.svg");
+  assert.ok(existsSync(png), "PNG social preview must be emitted by the checked-in builder");
+  assert.ok(existsSync(svgFile), "Canonical social preview SVG must remain available");
   assert.ok(existsSync(join(dist, "attolang-wordmark.svg")));
-  const svg = readFileSync(join(dist, "social-preview.svg"), "utf8");
+  const bytes = readFileSync(png);
+  assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a",
+    "published social preview must contain PNG bytes");
+  assert.equal(bytes.readUInt32BE(16), 1200);
+  assert.equal(bytes.readUInt32BE(20), 630);
+  assert.ok(bytes.length > 1000 && bytes.length < 2_000_000);
+  const svg = readFileSync(svgFile, "utf8");
   assert.match(svg, /viewBox="0 0 1200 630"/u);
   assert.match(svg, /AttoLang/u);
   assert.doesNotMatch(svg, /<script\b|<foreignObject\b|<image\b|\bhref\s*=/iu);
