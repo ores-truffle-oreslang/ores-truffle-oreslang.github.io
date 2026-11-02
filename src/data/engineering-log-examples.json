@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedFor": "2026-10-14 marketing source snapshot",
+  "generatedFor": "2026-11-01 marketing source snapshot",
   "policy": "Every rendered code/diagram block is inventoried. Only standalone AttoLang source can become compiler-verified; attach exact source digest and backend-specific execution evidence first.",
   "examples": [
     {
@@ -270,6 +270,36 @@
       "verificationRun": null,
       "note": "conceptual retained application state and actor lifetime; not executable source",
       "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
+    },
+    {
+      "id": "log-009-sample-01",
+      "log": 9,
+      "source": "src/pages/logs/9.astro",
+      "ordinal": 1,
+      "kind": "architecture-diagram",
+      "status": "illustrative",
+      "compilerVerified": false,
+      "compilerCommit": null,
+      "verificationRun": null,
+      "note": "virtual actor activation lifecycle sketch, not executable code",
+      "validationClass": "non-compiler-artifact",
+      "publishedSourceSha256": null,
+      "verifiedBackends": []
+    },
+    {
+      "id": "log-009-sample-02",
+      "log": 9,
+      "source": "src/pages/logs/9.astro",
+      "ordinal": 2,
+      "kind": "oreslang",
+      "status": "illustrative",
+      "compilerVerified": false,
+      "compilerCommit": null,
+      "verificationRun": null,
+      "note": "proposed virtual actor syntax, no compiler or backend execution evidence",
+      "validationClass": "proposed-source",
       "publishedSourceSha256": null,
       "verifiedBackends": []
     }
