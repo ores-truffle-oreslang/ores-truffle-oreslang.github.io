@@ -73,3 +73,12 @@ test("submodule status guard rejects changed, uninitialized and conflict gitlink
   const denied = statuses.filter(s => /^[+U-]/u.test(s));
   assert.deepEqual(denied, statuses.slice(0, 3));
 });
+
+test("pull-request site validation checks out and verifies the exact PR head, not a synthetic merge", () => {
+  const validation = read(".github/workflows/validate-site.yml");
+  assert.ok(validation.includes("ref: ${{ github.event.pull_request.head.sha }}"),
+    "PR checkout must pin actual source head");
+  assert.ok(validation.includes("EXPECTED_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}"));
+  assert.match(validation, /name: Verify exact PR head checkout/u);
+  assert.match(validation, /test "\$actual" = "\$EXPECTED_PR_HEAD_SHA"/u);
+});

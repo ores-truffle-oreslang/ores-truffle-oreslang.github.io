@@ -9,9 +9,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "node --test tests/*.test.mjs",
-    "test:blogs:build": "node --test tests/blog-build.mjs",
+    "test:blogs:build": "node --test tests/blog-build.mjs tests/catalog-build.mjs",
     "test:blogs:browser": "node tests/blog-browser.mjs",
-    "test:site:build": "node --test tests/site-build.mjs",
+    "test:site:build": "node --test tests/site-build.mjs tests/site-brand-build.mjs",
     "test:rss:build": "python3 tests/rss_xml_test.py",
     "test:lighthouse": "node tests/lighthouse-baseline.mjs"
   },
