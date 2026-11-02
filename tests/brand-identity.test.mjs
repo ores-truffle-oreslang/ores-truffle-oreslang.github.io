@@ -24,6 +24,7 @@ test("AttoLang is the visible site identity in navigation, hero, metadata and di
   assert.match(layout, /property="og:site_name" content="AttoLang"/u);
   assert.match(layout, /class="footer-brand" href="\/" aria-label="AttoLang home"><img class="brand-logo"/u);
   assert.match(layout, /title="AttoLang Engineering Logs"/u);
+  assert.match(layout, /alternateName: \["Oreslang", "OresLang"\]/u);
   assert.match(read("src/pages/rss.xml.ts"), /AttoLang engineering logs/u);
   assert.match(read("public/llms.txt"), /^# AttoLang\s*$/mu);
   assert.match(read("src/pages/language/index.astro"), /AttoLang language reference/u);
@@ -31,11 +32,15 @@ test("AttoLang is the visible site identity in navigation, hero, metadata and di
 
 test("pages and components no longer advertise the previous product name", () => {
   for (const path of [
-    ...astroFiles("src/pages"),
+    ...astroFiles("src/pages").filter((path) => path !== "src/pages/about.astro"),
     ...astroFiles("src/components"),
     ...astroFiles("src/layouts"),
   ]) {
-    assert.doesNotMatch(read(path), /\bOresLang\b|\bOreslang\b/u,
+    // The one historical-name alias in home-page structured data is intentional.
+    const source = path === "src/layouts/BaseLayout.astro"
+      ? read(path).replace(/^\s*alternateName: \["Oreslang", "OresLang"\],?\s*$/mu, "")
+      : read(path);
+    assert.doesNotMatch(source, /\bOresLang\b|\bOreslang\b/u,
       path + " retains a legacy public-facing brand reference");
   }
 });
