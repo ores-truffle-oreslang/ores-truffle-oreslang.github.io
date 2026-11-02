@@ -12,7 +12,7 @@
     "test:blogs:build": "node --test tests/blog-build.mjs tests/catalog-build.mjs",
     "test:blogs:browser": "node tests/blog-browser.mjs",
     "test:site:build": "node --test tests/site-build.mjs tests/site-brand-build.mjs",
-    "test:rss:build": "cargo test --locked --manifest-path tools/rss-validator/Cargo.toml --quiet && cargo run --locked --manifest-path tools/rss-validator/Cargo.toml --quiet -- dist/rss.xml dist/sitemap.xml",
+    "test:rss:build": "git diff --exit-code -- tools/rss-validator/Cargo.lock && cargo test --locked --manifest-path tools/rss-validator/Cargo.toml --quiet && cargo run --locked --manifest-path tools/rss-validator/Cargo.toml --quiet -- dist/rss.xml dist/sitemap.xml",
     "test:lighthouse": "node tests/lighthouse-baseline.mjs"
   },
   "dependencies": {
