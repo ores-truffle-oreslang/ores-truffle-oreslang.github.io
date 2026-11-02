@@ -119,8 +119,6 @@ test("every public page has canonical social sharing imagery", () => {
 });
 
 test("deployment manifest binds the generated site to the exact Git revision and seven local assets", () => {
-  const { createHash } = requireCrypto();
-  const { execFileSync } = requireGit();
   const receipt = JSON.parse(readFileSync(join(root, "deployment-manifest.json"), "utf8"));
   assert.equal(receipt.schema_version, 1);
   const sha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
