@@ -20,13 +20,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       continuous messaging, and fault-tolerant actors.
     </p>
     <p>
-      We can deliver more than <strong>10× the speed of Erlang</strong> while using
-      <strong>one-tenth the compute</strong>, with the type safety and memory safety that languages
-      like Rust offer.
+      AttoLang's performance ambition is to exceed Erlang's throughput while using substantially
+      fewer compute resources, while pursuing type and memory safety goals associated with Rust.
+      The often-quoted 10× speed and one-tenth compute figures are design targets, not measured
+      results; no controlled, like-for-like Erlang comparison establishes them.
     </p>
     <p>
-      AttoLang offers full AOT compilation, native binaries for all platforms, zero GC,
-      fault-tolerant actors, and better hot upgrades.
+      Design goals include full AOT compilation, native binaries, zero-GC execution,
+      fault-tolerant actors, and better hot upgrades. These are backend-specific goals, not
+      blanket shipping guarantees; current implementation and verification status varies by
+      backend.
     </p>
   </section>
 
@@ -202,10 +205,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <p class="eyebrow">AOT / native binaries / zero GC</p>
         <h2>One language for development and native deployment.</h2>
         <p>
-          AttoLang brings full ahead-of-time compilation, native binaries for all platforms,
-          zero GC, Rust-like type and memory safety, fault-tolerant actors, and hot upgrades
-          into one language and runtime. Stateful services can keep their actor architecture
-          from local development through native deployment.
+          AttoLang's design targets full ahead-of-time compilation, native binaries,
+          zero-GC execution, Rust-like type and memory safety, fault-tolerant actors, and hot
+          upgrades in one language and runtime. These capabilities are still backend-specific:
+          the public verification matrix, not the overall design, determines what is implemented
+          and tested today. Stateful services are the intended deployment model.
         </p>
         <p>
           <a href="/performance/">Explore AttoLang performance and benchmark coverage →</a>

@@ -177,6 +177,9 @@ try {
               await archive.locator(".mobile-navigation summary").click();
               assert.equal(await archive.locator(".mobile-navigation").evaluate((el) => el.open), true);
               assert.equal(await archive.locator(".mobile-navigation a[href='/logs/']").count(), 1);
+              // Return to the default closed state before capturing the archive baseline.
+              await archive.locator(".mobile-navigation summary").click();
+              assert.equal(await archive.locator(".mobile-navigation").evaluate((el) => el.open), false);
             }
             await archive.locator('[data-theme-choice="light"]').click();
             assert.equal(await archive.locator("html").getAttribute("data-theme"), "light");

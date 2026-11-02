@@ -26,10 +26,13 @@ const oresExample = "# CONCEPTUAL FLOW — NOT ATTOLANG SOURCE SYNTAX\nSuperviso
       message queues, and development servers.
     </p>
     <p class="synthesis-promise">
-      We can deliver <strong>more than 10× the speed of Erlang</strong> while using
-      <strong>one-tenth the compute</strong>, with the type safety and memory safety that languages
-      like Rust offer. AttoLang offers full AOT compilation, native binaries for all platforms,
-      zero GC, fault-tolerant actors, and better hot upgrades.
+      AttoLang's performance ambition is to exceed Erlang's throughput while using substantially
+      fewer compute resources, alongside the type and memory safety goals associated with Rust.
+      The often-quoted 10× speed and one-tenth compute figures are design targets, not measured
+      results; no controlled, like-for-like Erlang comparison establishes them. The design goals
+      include full AOT compilation, native binaries, zero-GC execution, fault-tolerant actors,
+      and better hot upgrades. These are backend-specific goals, not blanket shipping guarantees;
+      use the verification matrix below for current evidence.
     </p>
     <p>
       <a href="/stateful-applications/">Explore stateful application architectures →</a>
