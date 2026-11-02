@@ -7,6 +7,7 @@ on:
       - "public/**"
       - "tests/**"
       - "scripts/**"
+      - "tools/**"
       - "package.json"
       - "package-lock.json"
       - "README.md"
@@ -81,6 +82,11 @@ jobs:
 
       - name: Crawl all generated pages and verify internal links and fragments
         run: npm run test:site:build
+
+      - name: Setup pinned Rust for RSS XML validation
+        uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249
+        with:
+          toolchain: "1.91.0"
 
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build

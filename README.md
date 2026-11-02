@@ -132,3 +132,7 @@ and [example evidence inventory](src/data/engineering-log-examples.json), and
 ## Engineering policy: no Python
 
 Python is prohibited in the `ores-truffle-oreslang` GitHub organization, including scripts, build tools, tests, CI, automation and documentation examples that execute Python. Existing Python implementations must be replaced with equivalent **Rust** implementations while preserving behavior, security properties and test coverage. Do not add `.py`, `.pyi`, `.ipynb`, Python dependency manifests, `python`/`python3` commands, `pip`, `pytest`, `poetry`, `uv` or `actions/setup-python` to project workflows. Rust replacements should pass `cargo fmt`, `cargo clippy` and `cargo test`. Explanatory references to this prohibition are acceptable. The language-specific AttoLang compiler backends are not required to be rewritten in Rust solely because they are implemented in Java, C/C++ or other non-Python languages.
+
+## RSS validation
+
+Use `npm run test:rss:build` after a site build. The primary RSS/sitemap validator is now a Rust XML parser at `tools/rss-validator/`, with namespace, RFC 2822 date, canonical-link, size and malformed-feed checks. CI uses a pinned Rust 1.91.0 compiler. The earlier Python validator remains temporarily as a compatibility reference while tests establish parity; it is no longer part of the normal RSS script.
