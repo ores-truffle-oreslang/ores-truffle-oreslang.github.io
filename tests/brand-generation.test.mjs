@@ -8,7 +8,7 @@ test("brand raster builder uses pinned SVG geometry without external resources",
   const p = JSON.parse(read("package.json"));
   const lock = JSON.parse(read("package-lock.json"));
   const generator = read("scripts/build-brand-assets.mjs");
-  assert.equal(p.scripts.build, "node scripts/build-brand-assets.mjs && astro check && astro build");
+  assert.equal(p.scripts.build, "node scripts/build-brand-assets.mjs && astro check && astro build && node scripts/write-deployment-manifest.mjs");
   assert.equal(lock.packages["node_modules/sharp"].version, "0.35.5");
   assert.match(generator, /sharp\(Buffer\.from\(black\)\)/u);
   assert.match(generator, /sharp\(Buffer\.from\(white\)\)/u);
