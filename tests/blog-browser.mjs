@@ -7,7 +7,7 @@ import { resolve, join } from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { engineeringLogs } from "../src/data/engineering-logs.mjs";
-import { normalizedPixels, compareVisual, checkScreenshotPng } from "./visual-signatures.mjs";
+import { normalizedPixels, compareVisual, checkScreenshotPng, makeBaseline } from "./visual-signatures.mjs";
 
 // Never silently attach to a stale preview process already listening on 4321.
 async function unusedLoopbackPort() {
@@ -41,6 +41,7 @@ async function checkVisual(name, screenshot) {
     console.log("VISUAL_PASS " + name + " " + JSON.stringify(result));
   } catch (error) {
     // Collect all screenshots for review, but fail the run after every comparison.
+    console.log("VISUAL_REVIEW_SIGNATURE " + name + " " + JSON.stringify(makeBaseline(screenshot, signature)));
     visualFailures.push({ name, error: error.message });
     console.error("VISUAL_REVIEW_REQUIRED " + name + " " + error.message);
   }
