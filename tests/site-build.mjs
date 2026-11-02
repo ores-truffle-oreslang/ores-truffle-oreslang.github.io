@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, extname, relative, sep } from "node:path";
+import { htmlAttribute, validatedSiteUrl } from "./site-url-policy.mjs";
 
 const root = join(process.cwd(), "dist");
 const origin = "https://ores-truffle-oreslang.github.io";
@@ -21,8 +22,7 @@ const ids = new Map([...markup.entries()].map(([pathname, html]) => [
   pathname,
   new Set([...html.matchAll(/\bid="([^"]+)"/gu)].map((m) => m[1])),
 ]));
-const attr = (tag, name) => tag.match(new RegExp("(?:^|\\s)" + name + '="([^"]*)"', "u"))?.[1] ?? null;
-const decodeHtml = (s) => s.replace(/&amp;/gu, "&").replace(/&quot;/gu, '"');
+const attr = htmlAttribute;
 function asDistFile(pathname) {
   const segments = decodeURIComponent(pathname).split("/");
   if (segments.includes("..") || segments.includes("\0")) throw new Error("Unexpected path " + pathname);
@@ -50,10 +50,10 @@ test("all local site links and assets resolve, including cross-page fragments", 
       const tag = match[0];
       for (const field of ["href", "src"]) {
         const raw = attr(tag, field);
-        if (!raw || /^(?:mailto:|tel:|data:|javascript:)/iu.test(raw)) continue;
+        if (!raw) continue;
         let target;
-        try { target = new URL(decodeHtml(raw), origin + route); }
-        catch { throw new Error(route + " invalid " + field + "=" + raw); }
+        try { target = validatedSiteUrl(raw, origin + route, field); }
+        catch (error) { throw new Error(route + " invalid " + field + "=" + raw + ": " + error.message); }
         if (target.origin !== origin) continue;
         const local = asDistFile(target.pathname);
         assert.ok(existsSync(local), route + " broken " + field + "=" + raw);
