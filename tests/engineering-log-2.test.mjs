@@ -25,7 +25,7 @@ test("engineering log 2 is indexed, canonical, and navigable from log 1", () => 
 });
 
 test("log 2 follows article structure, metadata, original-prompt disclosure, and TOC", () => {
-  assert.ok(log2.includes('title="Beyond GraalVM and LLVM: Oreslang everywhere'));
+  assert.ok(log2.includes('title="Beyond GraalVM and LLVM: AttoLang everywhere'));
   assert.ok(log2.includes('datetime="2026-10-10"'));
   assert.ok(log2.includes("Alex Mills"));
   assert.ok(log2.includes("<LogPrompt prompt={prompt}"));
@@ -45,14 +45,14 @@ test("log 2 covers portable execution routes and source admission contract", () 
   for (const term of ["WebAssembly", "WASI", "Android DEX", "iOS", "Cranelift",
     "MLIR", "JavaScript", "C source", "embedded", "browser",
     "actors", "suspends", "capabilities", "targets(A) ⊆ targets(B)",
-    "requires(B) ⊆ requires(A)", "import graph", "Typed Oreslang IR"]) {
+    "requires(B) ⊆ requires(A)", "import graph", "Typed AttoLang IR"]) {
     assert.ok(body.toLowerCase().includes(term.toLowerCase()), "missing " + term);
   }
   assert.ok(body.includes('import OresCode from "./OresCode.astro"'));
   assert.equal((body.match(/<OresCode /g) || []).length, 2);
   assert.ok(body.includes("// ores:targets=browser,edge-js,android,ios,server"));
   assert.ok(body.includes("// ores:requires=net.client,clock"));
-  assert.ok(body.includes("Target architecture, not a depiction of completed Oreslang backend support."));
+  assert.ok(body.includes("Target architecture, not a depiction of completed AttoLang backend support."));
 });
 
 test("log 2 does not misrepresent proposed work as shipping capability", () => {
@@ -61,7 +61,7 @@ test("log 2 does not misrepresent proposed work as shipping capability", () => {
   assert.ok(body.includes("PR #586"));
   assert.ok(body.includes("PR #74"));
   assert.ok(body.includes("require exact-head test validation before merge"));
-  assert.ok(body.includes("not an announcement of full browser, iOS, Android, edge or embedded Oreslang support"));
+  assert.ok(body.includes("not an announcement of full browser, iOS, Android, edge or embedded AttoLang support"));
   assert.ok(body.includes("The runtime still has to enforce actual authority"));
   assert.ok(!body.includes("production-ready mobile backend"));
 });

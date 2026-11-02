@@ -37,7 +37,7 @@ test("log 5 follows the article layout and its table of contents resolves", () =
 test("log 5 covers open-source marketing, AI tooling, verifiability and ethics", () => {
   for (const term of ["open-source", "README", "license", "CONTRIBUTING",
     "SEO", "llms.txt", "AGENTS.md", "MCP", "compiler", "CI", "community",
-    "activation", "retention", "90-day", "Oreslang", "purchased stars"]) {
+    "activation", "retention", "90-day", "AttoLang", "purchased stars"]) {
     assert.ok(body.toLowerCase().includes(term.toLowerCase()), "missing " + term);
   }
   assert.ok(body.includes('class="log-table-scroll" role="region" tabindex="0"'));
@@ -67,7 +67,7 @@ test("log 5 includes grounding, crawl, and tooling references with no fake deplo
   }
   assert.ok(body.includes("design proposal"));
   assert.ok(body.includes("not an assertion that the services are already available"));
-  assert.ok(engineeringLogs.find((entry) => entry.number === 5)?.summary.includes("versioned Oreslang references"));
+  assert.ok(engineeringLogs.find((entry) => entry.number === 5)?.summary.includes("versioned AttoLang references"));
   assert.ok(log5.includes("before code generation"));
 });
 
@@ -78,7 +78,7 @@ test("log 5 security, provenance and generated semantics are auditable", () => {
   const layout = read("../src/layouts/BaseLayout.astro");
   assert.ok(robots.includes("Sitemap: https://ores-truffle-oreslang.github.io/sitemap.xml"));
   assert.ok(robots.includes("User-agent: *"));
-  assert.ok(llms.startsWith("# Oreslang"));
+  assert.ok(llms.startsWith("# AttoLang"));
   assert.ok(llms.includes("not a complete or versioned language specification"));
   assert.ok(llms.includes("https://ores-truffle-oreslang.github.io/logs/5/"));
   assert.ok(llms.includes("does not imply that AI services crawl"));
@@ -97,7 +97,7 @@ test("log 5 security, provenance and generated semantics are auditable", () => {
     "provenance ledger", "compiler build identity", "prompt injection",
     "restricted filesystem", "nonprivileged identity", "read-only",
     "data-handling", "do not publish confidential", "held-out prompts",
-    "formal proof", "selected settings", "complete released Oreslang language specification"
+    "formal proof", "selected settings", "complete released AttoLang language specification"
   ]) {
     assert.ok((body + llms).toLowerCase().includes(term.toLowerCase()), "missing audit protection: " + term);
   }
