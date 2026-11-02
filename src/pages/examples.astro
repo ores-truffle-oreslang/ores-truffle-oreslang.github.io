@@ -31,13 +31,13 @@ fnc findName(): Option<String> {
 ---
 
 <BaseLayout
-  title="Oreslang Examples"
-  description="Illustrative Oreslang actor pipelines, AI/ML backpropagation, typed HTTP handlers, select statements, and structural matching."
+  title="AttoLang Examples"
+  description="Illustrative AttoLang actor pipelines, AI/ML backpropagation, typed HTTP handlers, select statements, and structural matching."
 >
   <section class="page-hero">
     <p class="kicker">Examples</p>
     <h1>Syntax that exposes the runtime model.</h1>
-    <p>These design examples illustrate typed actor pipelines, machine-learning training, HTTP handling, and selection. They are highlighted with the site’s Oreslang tokenizer.</p><p>Design sketches only: these snippets have not been compiler-verified. Empty pipeline actors show topology only; the ML and HTTP APIs are proposed; see <a href="/language/">language verification status</a>.</p>
+    <p>These design examples illustrate typed actor pipelines, machine-learning training, HTTP handling, and selection. They are highlighted with the site’s AttoLang tokenizer.</p><p>Design sketches only: these snippets have not been compiler-verified. Empty pipeline actors show topology only; the ML and HTTP APIs are proposed; see <a href="/language/">language verification status</a>.</p>
   </section>
 
   <section class="page-body">
@@ -46,7 +46,7 @@ fnc findName(): Option<String> {
       <OresCode caption="Actor-based AI/ML training with backpropagation (design sketch)" code={mlCode} />
       <OresCode caption="Unary HTTP actor: Fetch-style response (proposed)" code={httpCode} />
       <OresCode caption="HTTP body streaming and trailers (proposed)" code={httpStreamingCode} />
-      <p>The proposed <code>HttpResponse</code> has Fetch-style status, headers, and a readable body stream. The HTTP runtime sends the stream with backpressure after <code>run</code> returns; trailers are an Oreslang server-side extension, not part of the WHATWG <code>Response</code> API. Neither example is compiler-verified.</p>
+      <p>The proposed <code>HttpResponse</code> has Fetch-style status, headers, and a readable body stream. The HTTP runtime sends the stream with backpressure after <code>run</code> returns; trailers are an AttoLang server-side extension, not part of the WHATWG <code>Response</code> API. Neither example is compiler-verified.</p>
       <OresCode caption="Select one ready channel operation" code={selectCode} />
       <p>The three intended forms are <code>select {}</code> (suspending result expression), <code>do select {}</code> (suspending statement), and <code>nb select {}</code> (asynchronous expression returning a Future). Nonblocking select is not a synchronous poll. Legacy combined prefixes are not canonical. Result-mode support remains a design target across backends.</p>
       <OresCode caption="Closed structural values and option-safe returns" code={dataCode} />

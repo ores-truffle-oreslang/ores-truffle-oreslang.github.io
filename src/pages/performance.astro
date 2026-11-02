@@ -27,8 +27,8 @@ const suites = [
     description: "Minimal response, no application serialization or database work. Measures the listener, routing and response path.",
     rows: [
       ["GET /plaintext, keep-alive, 64-byte body", "sustained requests/s", "p50 / p95 / p99 response time", `Measured CI at R${httpWrk2.offered_requests_per_second}: ${httpWrk2.trial_median_achieved_rps.toFixed(2)} requests/s; p50 ${httpWrk2.trial_median_p50_ms.toFixed(3)} ms; p99 ${httpWrk2.trial_median_p99_ms.toFixed(3)} ms; ${httpWrk2.total_errors} errors. Shared runner; not max throughput.`],
-      ["GET /plaintext, 100 → 1,000 concurrent connections", "requests/s at each concurrency", "p99 and errors/timeouts", "No verified Oreslang run"],
-      ["GET /plaintext, forced 1% slow requests", "achieved vs offered rate", "corrected p99.9", "No verified Oreslang run"],
+      ["GET /plaintext, 100 → 1,000 concurrent connections", "requests/s at each concurrency", "p99 and errors/timeouts", "No verified AttoLang run"],
+      ["GET /plaintext, forced 1% slow requests", "achieved vs offered rate", "corrected p99.9", "No verified AttoLang run"],
     ],
     recipe: "wrk2 -t4 -c128 -d60s -R20000 --latency http://HOST:PORT/plaintext",
   },
@@ -38,9 +38,9 @@ const suites = [
     title: "HTTP JSON and serialization",
     description: "Serialize a deterministic object with real JSON encoding; no hard-coded serialized payload when claiming serializer performance.",
     rows: [
-      ["GET /json, dynamic {message: 'Hello, World!'}", "successful JSON responses/s", "p50 / p99", "No verified Oreslang run"],
-      ["POST /echo, validated 1 KiB JSON payload", "successful round-trips/s", "p99 + allocation bytes/request", "No verified Oreslang run"],
-      ["POST /echo, validated 16 KiB JSON payload", "MiB/s and responses/s", "p99 + error count", "No verified Oreslang run"],
+      ["GET /json, dynamic {message: 'Hello, World!'}", "successful JSON responses/s", "p50 / p99", "No verified AttoLang run"],
+      ["POST /echo, validated 1 KiB JSON payload", "successful round-trips/s", "p99 + allocation bytes/request", "No verified AttoLang run"],
+      ["POST /echo, validated 16 KiB JSON payload", "MiB/s and responses/s", "p99 + error count", "No verified AttoLang run"],
     ],
     recipe: "wrk2 -t4 -c128 -d60s -R10000 --latency http://HOST:PORT/json",
   },
@@ -50,9 +50,9 @@ const suites = [
     title: "Routing, middleware and fan-out",
     description: "Exercise an actual application stack with equivalent auth/header checks and middleware, not a bare endpoint presented as a framework result.",
     rows: [
-      ["Three middleware stages + static route", "requests/s and CPU utilization", "p50 / p99", "No verified Oreslang run"],
-      ["Parameterized route + 404/405 handling", "correct responses/s", "p99 and status correctness", "No verified Oreslang run"],
-      ["Fan-out to 4 bounded simulated RPC calls", "completed requests/s", "p99, cancellations, timeout %", "No verified Oreslang run"],
+      ["Three middleware stages + static route", "requests/s and CPU utilization", "p50 / p99", "No verified AttoLang run"],
+      ["Parameterized route + 404/405 handling", "correct responses/s", "p99 and status correctness", "No verified AttoLang run"],
+      ["Fan-out to 4 bounded simulated RPC calls", "completed requests/s", "p99, cancellations, timeout %", "No verified AttoLang run"],
     ],
     recipe: "wrk2 -t4 -c128 -d60s -R5000 --latency http://HOST:PORT/routed",
   },
@@ -62,9 +62,9 @@ const suites = [
     title: "HTTP + PostgreSQL",
     description: "A real external PostgreSQL instance with prepared queries, fixed connection pool, seeded rows and documented network placement.",
     rows: [
-      ["One random-row query + JSON response", "fully completed requests/s", "p99 server + client latency", "No verified Oreslang run"],
-      ["Twenty random-row queries/request", "fully completed requests/s", "p99 + DB pool wait", "No verified Oreslang run"],
-      ["One update transaction/request", "committed transactions/s", "p99 + rollback/error %", "No verified Oreslang run"],
+      ["One random-row query + JSON response", "fully completed requests/s", "p99 server + client latency", "No verified AttoLang run"],
+      ["Twenty random-row queries/request", "fully completed requests/s", "p99 + DB pool wait", "No verified AttoLang run"],
+      ["One update transaction/request", "committed transactions/s", "p99 + rollback/error %", "No verified AttoLang run"],
     ],
     recipe: "Run the TechEmpower DB/queries/updates workload with pinned PostgreSQL, same dataset and pool size.",
   },
@@ -87,8 +87,8 @@ const suites = [
     description: "Measure tail latency and correctness under adversarial or CPU-heavy neighbors as well as build/runtime lifecycle costs.",
     rows: [
       ["CPU-bound loop beside latency-sensitive actor", "heartbeat completions/s", "heartbeat p99/p99.9 + starvation", "No verified OresVM run"],
-      ["Cold start to first successful HTTP response", "starts/s and time-to-ready", "p50 / p95 / p99 by build profile", "No verified Oreslang run"],
-      ["Hot generation load, switch, rollback", "successful cutovers/s", "switch p99, errors, lost requests", "No verified Oreslang run"],
+      ["Cold start to first successful HTTP response", "starts/s and time-to-ready", "p50 / p95 / p99 by build profile", "No verified AttoLang run"],
+      ["Hot generation load, switch, rollback", "successful cutovers/s", "switch p99, errors, lost requests", "No verified AttoLang run"],
     ],
     recipe: "Instrument OresVM/launcher monotonic timestamps; distinguish JVM cold/JIT warm, Native AOT and Native hybrid.",
   },
@@ -96,8 +96,8 @@ const suites = [
 ---
 
 <BaseLayout
-  title="Oreslang Performance — reproducible HTTP and systems benchmarks"
-  description="Six reproducible benchmark suites for Oreslang HTTP throughput, JSON, routing, PostgreSQL, actors and OresVM scheduling. Verified measurements only; no invented performance numbers."
+  title="AttoLang Performance — reproducible HTTP and systems benchmarks"
+  description="Six reproducible benchmark suites for AttoLang HTTP throughput, JSON, routing, PostgreSQL, actors and OresVM scheduling. Verified measurements only; no invented performance numbers."
 >
   <section class="page-hero">
     <p class="kicker">Performance / Evidence</p>
@@ -106,9 +106,9 @@ const suites = [
   </section>
   <div class="page-body technical-page performance-page">
     <div class="prose">
-      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; a verified exploratory LLVM pipeline launch-to-completion benchmark for four actor counts; all other suite workloads pending.</strong> Three 60-second open-loop wrk2 trials cover the 64-byte plaintext route at 300 offered requests/s, and a separate private funded CI run measures 500, 1,000, and 2,000 offered requests/s in independently started JVMs at fixed concurrency. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated Oreslang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
+      <p class="status-note"><strong>Measurement status: one fixed-rate JVM/GraalVM HTTP workload measured in CI; a verified exploratory LLVM pipeline launch-to-completion benchmark for four actor counts; all other suite workloads pending.</strong> Three 60-second open-loop wrk2 trials cover the 64-byte plaintext route at 300 offered requests/s, and a separate private funded CI run measures 500, 1,000, and 2,000 offered requests/s in independently started JVMs at fixed concurrency. This is not a maximum-throughput or cross-runtime comparison on dedicated hardware. The remaining rows contain benchmark definitions, not fabricated AttoLang scores. The LLVM backend cannot currently run the full HTTP or actor suites.</p>
       <p><a href="#ci-cross-backend-kernel-matrix">Explore the measured LLVM vs GraalVM five-actor source-kernel matrix →</a> (different host HTTP transports; not a direct pipeline-parity result).</p>
-      <p>For an apples-to-apples comparison, run Oreslang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
+      <p>For an apples-to-apples comparison, run AttoLang JVM/JIT, Graal Native AOT, Graal hybrid and other frameworks against identical semantics and payloads on the same dedicated hardware. Only show measurements here when source revisions, commands and raw outputs can be inspected.</p>
 
       <nav class="bench-jump" aria-label="Benchmark suites">
         {suites.map((suite) => <a href={`#${suite.id}`}>{suite.number} · {suite.title}</a>)}
@@ -116,7 +116,7 @@ const suites = [
       <section class="benchmark-section" id="ci-plaintext-wrk2">
         <p class="eyebrow">Measured observation / 60-second open-loop wrk2 on hosted CI</p>
         <h2>Plaintext HTTP at 300 offered requests/second</h2>
-        <p>A real Oreslang guest actor handler served exact 64-byte HTTP/1.1 plaintext responses, verified by the load generator. GitHub-hosted Ubuntu 24.04; 4 wrk2 threads, 128 persistent-capable connections, 60 seconds per trial, three trials. Source integrity verified across all 403 mirrored Java source blobs before compilation.</p>
+        <p>A real AttoLang guest actor handler served exact 64-byte HTTP/1.1 plaintext responses, verified by the load generator. GitHub-hosted Ubuntu 24.04; 4 wrk2 threads, 128 persistent-capable connections, 60 seconds per trial, three trials. Source integrity verified across all 403 mirrored Java source blobs before compilation.</p>
         <div class="bench-table-scroll" role="region" tabindex="0" aria-label="60-second real wrk2 plaintext benchmark results">
           <table class="tech-table">
             <thead><tr><th scope="col">Trial</th><th scope="col">Achieved requests/s</th><th scope="col">p50</th><th scope="col">p99</th><th scope="col">p99.9</th><th scope="col">Errors</th></tr></thead>
@@ -134,8 +134,8 @@ const suites = [
       <section class="benchmark-section" id="ci-plaintext-private-rate-sweep">
         <p class="eyebrow">Measured observation / independent JVM processes / private funded CI</p>
         <h2>HTTP plaintext: offered-load sweep to 2,000 requests/second</h2>
-        <p>Real Oreslang guest actor + NativeHttp, HTTP/1.1 GET /plaintext, exact 64-byte body. Each rate uses a separately launched JVM and a 60-second wrk2 run, 4 generator threads and 128 connections, with client and server on the same GitHub-hosted Ubuntu 24.04 runner. The pinned source manifest passed all 403 blob checks; the pinned wrk2 binary also passed an intentionally wrong-HTTP-response negative control.</p>
-        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Private CI Oreslang HTTP offered-load sweep measurements">
+        <p>Real AttoLang guest actor + NativeHttp, HTTP/1.1 GET /plaintext, exact 64-byte body. Each rate uses a separately launched JVM and a 60-second wrk2 run, 4 generator threads and 128 connections, with client and server on the same GitHub-hosted Ubuntu 24.04 runner. The pinned source manifest passed all 403 blob checks; the pinned wrk2 binary also passed an intentionally wrong-HTTP-response negative control.</p>
+        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Private CI AttoLang HTTP offered-load sweep measurements">
           <table class="tech-table">
             <thead><tr><th scope="col">Offered RPS</th><th scope="col">Achieved RPS</th><th scope="col">Completed</th><th scope="col">p50</th><th scope="col">p99</th><th scope="col">p99.9</th><th scope="col">Errors</th></tr></thead>
             <tbody>
@@ -169,7 +169,7 @@ const suites = [
       <section class="benchmark-section" id="ci-cross-backend-kernel-matrix">
         <p class="eyebrow">Measured observations / two separate funded CI runs / limited source-kernel parity</p>
         <h2>LLVM vs GraalVM: five-actor HTTP counter workload</h2>
-        <p><strong>64,000 real measured HTTP requests, no observed request errors</strong> across two successful runs. Both test harnesses compiled/executed the <em>same exact Oreslang counter kernel</em> (Git blob <code>{crossBackendMatrix.guest_source_kernel_git_blob_sha}</code>) and validated five actor counters, but the <strong>HTTP implementation is different</strong>: LLVM uses a native C server and GraalVM uses Java/JDK HTTP. These are separate shared GitHub-hosted runner executions, <strong>not a controlled direct winner/loser comparison</strong>.</p>
+        <p><strong>64,000 real measured HTTP requests, no observed request errors</strong> across two successful runs. Both test harnesses compiled/executed the <em>same exact AttoLang counter kernel</em> (Git blob <code>{crossBackendMatrix.guest_source_kernel_git_blob_sha}</code>) and validated five actor counters, but the <strong>HTTP implementation is different</strong>: LLVM uses a native C server and GraalVM uses Java/JDK HTTP. These are separate shared GitHub-hosted runner executions, <strong>not a controlled direct winner/loser comparison</strong>.</p>
         <p>Each backend: 4 balanced mode-order rounds, 5 actors, 25 warmups per actor, 1,000 measured HTTP requests per scenario at 1, 10, 100 and 1,000 concurrent clients. Each number below is the <strong>median of four run-level figures</strong>, not a pooled per-request percentile. Throughput is completed requests/s; p99 is client-observed response time.</p>
         <h3>SHARED placement: observed throughput and p99</h3>
         <div class="bench-table-scroll" role="region" tabindex="0" aria-label="LLVM versus Graal shared placement five actor HTTP observation">
@@ -202,9 +202,9 @@ const suites = [
       <section class="benchmark-section" id="ci-llvm-pipeline-launch">
         <p class="eyebrow">Measured observation / compiled LLVM guest / exploratory process latency</p>
         <h2>LLVM typed actor pipelines: launch to validated result</h2>
-        <p>Real source-compiled Oreslang actors exchange typed downstream data with <code>self.forward()</code> and return typed results upstream with <code>self.backward()</code>. Each executable runs exactly one round trip, then stops its actors. Timings include <strong>process startup, actor creation, message scheduling, completion and teardown</strong>, so they are <strong>not</strong> pure mailbox latency or steady-state message throughput.</p>
+        <p>Real source-compiled AttoLang actors exchange typed downstream data with <code>self.forward()</code> and return typed results upstream with <code>self.backward()</code>. Each executable runs exactly one round trip, then stops its actors. Timings include <strong>process startup, actor creation, message scheduling, completion and teardown</strong>, so they are <strong>not</strong> pure mailbox latency or steady-state message throughput.</p>
         <p>GitHub-hosted Ubuntu 24.04, 4 logical CPUs; 10 warmup invocations per actor configuration, then three trials of 50 validated executions. Every execution's exit code, typed result and all directional hop counters were checked. Percentiles use nearest-rank within each trial, with the median of the three trial values reported below.</p>
-        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Compiled LLVM Oreslang actor pipeline process latency measurements">
+        <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Compiled LLVM AttoLang actor pipeline process latency measurements">
           <table class="tech-table">
             <thead><tr><th scope="col">Actors</th><th scope="col">Forward / backward hops</th><th scope="col">Median</th><th scope="col">p95</th><th scope="col">p99</th><th scope="col">Validated runs</th><th scope="col">Errors</th></tr></thead>
             <tbody>
@@ -219,8 +219,8 @@ const suites = [
       </section>
       <section class="benchmark-section" id="ci-plaintext-probe">
         <p class="eyebrow">Measured observation / exploratory CI, not an official suite score</p>
-        <h2>Real Oreslang HTTP plaintext: first funded-runner measurements</h2>
-        <p>Three executions of a genuine Oreslang actor-owned NativeHttp handler on one GitHub-hosted Ubuntu 24.04 runner. Each trial warmed up with 100 requests, then verified 600 successful HTTP/1.1 responses with a 64-byte body over the same host's loopback interface. A fresh guest context was used for each trial, but all trials ran inside one JVM.</p>
+        <h2>Real AttoLang HTTP plaintext: first funded-runner measurements</h2>
+        <p>Three executions of a genuine AttoLang actor-owned NativeHttp handler on one GitHub-hosted Ubuntu 24.04 runner. Each trial warmed up with 100 requests, then verified 600 successful HTTP/1.1 responses with a 64-byte body over the same host's loopback interface. A fresh guest context was used for each trial, but all trials ran inside one JVM.</p>
         <div class="bench-table-scroll" role="region" tabindex="0" aria-label="Experimental CI HTTP benchmark measured results">
           <table class="tech-table">
             <thead><tr><th scope="col">Trial</th><th scope="col">Successful requests/s</th><th scope="col">p50 latency</th><th scope="col">p95 latency</th><th scope="col">p99 latency</th><th scope="col">Errors</th></tr></thead>
