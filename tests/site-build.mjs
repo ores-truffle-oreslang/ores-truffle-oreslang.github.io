@@ -81,3 +81,37 @@ test("every generated HTML route has exactly one canonical sitemap entry", () =>
     assert.ok(canonicalPaths.has(route), "Missing route in sitemap: " + route);
   }
 });
+
+
+test("brand raster assets are real local PNGs with expected dimensions", () => {
+  for (const [name, width, height] of [
+    ["attolang-black.png", 1100, 283],
+    ["attolang-white.png", 1100, 283],
+    ["attolang-social.png", 1200, 630],
+    ["attolang-icon-180.png", 180, 180],
+  ]) {
+    const path = join(root, "brand", name);
+    assert.ok(existsSync(path), "Missing rendered brand asset " + path);
+    const bytes = readFileSync(path);
+    assert.ok(bytes.length > 1000 && bytes.length < 2_000_000, name + " invalid size");
+    assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", name + " PNG signature");
+    assert.equal(bytes.readUInt32BE(16), width, name + " width");
+    assert.equal(bytes.readUInt32BE(20), height, name + " height");
+  }
+  assert.ok(existsSync(join(root, "favicon.svg")));
+  assert.ok(existsSync(join(root, "brand", "attolang-social.svg")));
+});
+
+test("every public page has canonical social sharing imagery", () => {
+  for (const [route, html] of markup) {
+    assert.match(html, /<meta property="og:image" content="https:\/\/ores-truffle-oreslang\.github\.io\/brand\/attolang-social\.png"/u,
+      route + " missing OG preview");
+    assert.match(html, /<meta name="twitter:card" content="summary_large_image"/u,
+      route + " missing large Twitter card");
+    assert.match(html, /<meta name="twitter:image" content="https:\/\/ores-truffle-oreslang\.github\.io\/brand\/attolang-social\.png"/u,
+      route + " missing Twitter preview");
+  }
+  assert.ok(markup.has("/brand/"), "Brand downloads page missing");
+  assert.match(markup.get("/"), /"alternateName":\["Oreslang","OresLang"\]/u,
+    "Historical name structured data must be limited to the official homepage");
+});
