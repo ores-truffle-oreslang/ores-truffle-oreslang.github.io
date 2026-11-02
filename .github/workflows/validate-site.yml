@@ -31,8 +31,20 @@ jobs:
       - name: Checkout site and pinned submodules
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
+          # Pull-request default checkout uses an ephemeral synthetic merge SHA.
+          # Use the actual head for attributable exact-head test receipts.
+          ref: ${{ github.event.pull_request.head.sha }}
           submodules: recursive
           persist-credentials: false
+
+      - name: Verify exact PR head checkout
+        env:
+          EXPECTED_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test -n "$EXPECTED_PR_HEAD_SHA"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_PR_HEAD_SHA"
 
       - name: Setup Node
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
