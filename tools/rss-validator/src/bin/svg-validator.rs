@@ -33,8 +33,9 @@ fn validate(bytes: &[u8], path: &str) -> Check<()> {
         return Err(format!("{path}: exactly one non-empty description required"));
     }
     let forbidden = ["script","foreignObject","image","iframe","animate","set"];
+    let nodes: Vec<_> = root.descendants().filter(|n| n.is_element()).collect();
     let mut ids = HashSet::new();
-    for node in root.descendants().filter(|n| n.is_element()) {
+    for node in &nodes {
         let local=node.tag_name().name();
         if forbidden.iter().any(|x| local.eq_ignore_ascii_case(x)) {
             return Err(format!("{path}: forbidden element {local}"));
@@ -42,6 +43,8 @@ fn validate(bytes: &[u8], path: &str) -> Check<()> {
         if let Some(id)=node.attribute("id") {
             if !ids.insert(id.to_string()) { return Err(format!("{path}: duplicate id {id}")); }
         }
+    }
+    for node in &nodes {
         for attr in node.attributes() {
             let name=attr.name().to_ascii_lowercase();
             if name.starts_with("on") || name=="href" || name=="src" {
@@ -53,7 +56,7 @@ fn validate(bytes: &[u8], path: &str) -> Check<()> {
             while let Some(found)=lower[cursor..].find("url(") {
                 let start=cursor+found+4;
                 let end=lower[start..].find(')').map(|n| start+n).ok_or("unterminated url()")?;
-                let target=value[start..end].trim().trim_matches(|c| c=='"' || c=='\'');
+                let target=value[start..end].trim().trim_matches(|c| c=='"' || c=='\\'');
                 if !target.starts_with('#') || target.len()<2 || !ids.contains(&target[1..]) {
                     return Err(format!("{path}: external, malformed, or unresolved URL reference"));
                 }
