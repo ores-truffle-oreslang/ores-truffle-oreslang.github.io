@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedFor": "2026-10-14 marketing source snapshot",
-  "policy": "Every rendered code/diagram block is inventoried. Only standalone Oreslang source can become compiler-verified; attach exact source digest and backend-specific execution evidence first.",
+  "policy": "Every rendered code/diagram block is inventoried. Only standalone AttoLang source can become compiler-verified; attach exact source digest and backend-specific execution evidence first.",
   "examples": [
     {
       "id": "log-001-sample-01",
@@ -103,7 +103,7 @@
       "compilerVerified": false,
       "compilerCommit": null,
       "verificationRun": null,
-      "note": "formatter command usage; not compiled Oreslang code",
+      "note": "formatter command usage; not compiled AttoLang code",
       "validationClass": "non-compiler-artifact",
       "publishedSourceSha256": null,
       "verifiedBackends": []

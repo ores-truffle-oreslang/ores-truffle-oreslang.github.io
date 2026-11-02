@@ -3,7 +3,7 @@
   "measured_at_utc": "2026-10-12",
   "workload": "real-oreslang-http-plaintext-loopback-closed-loop",
   "execution_mode": "jvm-jit",
-  "guest_server": "Oreslang NativeHttp through actor-owned handler",
+  "guest_server": "AttoLang NativeHttp through actor-owned handler",
   "generator": "Java HttpClient HTTP/1.1, one client and one outstanding request",
   "hardware": "GitHub-hosted ubuntu-24.04 VM, same runner loopback, detailed machine receipt in raw artifact",
   "measurement": "100 warmup requests per trial, then 600 validated 200 responses with exact 64-byte body; new guest context per trial, same JVM process",

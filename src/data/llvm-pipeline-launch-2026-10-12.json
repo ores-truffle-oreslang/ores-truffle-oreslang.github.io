@@ -2,7 +2,7 @@
   "schema": "oreslang-llvm-guest-pipeline-process-summary-v1",
   "recorded_at_utc": "2026-10-12T03:30:16.342310+00:00",
   "execution_profile": "native-llvm-guest-compiled-one-shot",
-  "description": "Each invocation starts a fresh process, spawns compiled Oreslang actors, sends a typed message downstream with self.forward(), receives a typed upstream result with self.backward(), validates result, and stops actors.",
+  "description": "Each invocation starts a fresh process, spawns compiled AttoLang actors, sends a typed message downstream with self.forward(), receives a typed upstream result with self.backward(), validates result, and stops actors.",
   "latency_definition": "Python time.perf_counter_ns process launch to exit; includes process start, actor spawn, all hops, verification, teardown",
   "percentile_method": "nearest rank within each trial; report median of three trial percentiles",
   "warmup_invocations_per_configuration": 10,
