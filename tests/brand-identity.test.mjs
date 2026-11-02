@@ -24,7 +24,7 @@ test("AttoLang is the visible site identity in navigation, hero, metadata and di
   assert.match(layout, /property="og:site_name" content="AttoLang"/u);
   assert.match(layout, /class="footer-brand" href="\/">AttoLang<\/a>/u);
   assert.match(layout, /title="AttoLang Engineering Logs"/u);
-  assert.match(read("src/pages/rss.xml.ts"), /AttoLang Engineering Logs/u);
+  assert.match(read("src/pages/rss.xml.ts"), /AttoLang engineering logs/u);
   assert.match(read("public/llms.txt"), /^# AttoLang\s*$/mu);
   assert.match(read("src/pages/language/index.astro"), /AttoLang language reference/u);
 });

@@ -29,7 +29,7 @@ test("grant, restrictions and license classification are not contradictory", () 
     "For a corporate organization named above",
     "does not meet the Open Source Initiative's Open Source Definition",
     "does not, by itself, change the license of another project",
-    "independent use of the AttoLang language syntax",
+    "independent use of the Oreslang language syntax",
     "AS IS",
   ]) {
     assert.ok(lima27LicenseText.includes(clause), "Missing license qualification " + clause);
