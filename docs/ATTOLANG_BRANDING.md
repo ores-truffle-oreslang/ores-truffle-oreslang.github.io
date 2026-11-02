@@ -11,3 +11,7 @@ The current public language name is **AttoLang** (capital A and L). The existing
 - `social-preview.svg` is vector source for a 1200×630 social graphic. Some social crawlers reject SVG; publish and independently validate a PNG/JPEG equivalent before claiming universal social-card compatibility.
 
 Run `npm test`, `npm run build`, site/RSS checks, and real browser accessibility/visual checks against the exact PR head. A zero-step or skipped CI run is **not** evidence of passing tests.
+
+## Naming clearance boundary
+
+**AttoLang is a provisional public display name, not a globally cleared trademark.** Do not assert exclusive ownership, international trademark availability, language-by-language slang safety, domain availability, or readiness to launch without completed review gates. See [the naming-clearance evidence ledger](./ATTOLANG_NAME_CLEARANCE.md); its CI tests check evidence structure and policy only, not legal rights.
