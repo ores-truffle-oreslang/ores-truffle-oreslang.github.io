@@ -71,12 +71,14 @@ jobs:
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build
 
-      - name: Verify every published engineering log and image asset
+      - name: Verify all published engineering logs and generated brand assets
         run: |
           set -euo pipefail
-          # Source-catalog coverage catches new logs automatically, including
-          # entries after log 007; fail if the published artifact omits one.
           npm run test:blogs:build
+          test -s dist/brand/attolang-social.png
+          test -s dist/brand/attolang-icon-180.png
+          test -s dist/brand/attolang-black.png
+          test -s dist/brand/attolang-white.png
           test -s dist/logs/7/compiler-architecture.svg
           test -s dist/logs/7/incremental-invalidation.svg
           test -s dist/logs/7/wasm-profiles.svg
@@ -100,3 +102,20 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+
+      - name: Checkout verified live-site smoke checker
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Confirm public GitHub Pages deployment
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            if node scripts/verify-live-pages.mjs; then
+              exit 0
+            fi
+            echo "Pages verification attempt ${attempt} failed" >&2
+            sleep 10
+          done
+          exit 1

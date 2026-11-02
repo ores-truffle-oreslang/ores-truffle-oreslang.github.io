@@ -6,6 +6,7 @@ on:
       - "src/**"
       - "public/**"
       - "tests/**"
+      - "scripts/**"
       - "package.json"
       - "package-lock.json"
       - "README.md"
@@ -31,8 +32,7 @@ jobs:
       - name: Checkout site and pinned submodules
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          # Pull-request default checkout uses an ephemeral synthetic merge SHA.
-          # Use the actual head for attributable exact-head test receipts.
+          # Exact-head tests must never silently validate a synthetic merge.
           ref: ${{ github.event.pull_request.head.sha }}
           submodules: recursive
           persist-credentials: false

@@ -8,6 +8,10 @@ The current public language name is **AttoLang** (capital A and L). The existing
 - Do not rewrite quoted historical prompts, immutable benchmark receipts, legal terms, or external citations merely to eliminate the old text.
 - Public sample code remains illustrative unless exact compiler and backend evidence is linked. Branding must not imply unsupported runtime parity.
 - New public assets should use the checked-in `attolang-wordmark.svg`; the favicon is a simple monochrome o-with-caret companion.
-- `social-preview.svg` is vector source for a 1200×630 social graphic. Some social crawlers reject SVG; publish and independently validate a PNG/JPEG equivalent before claiming universal social-card compatibility.
+- `social-preview.svg` is the vector master. `scripts/build-brand-assets.mjs` generates `public/brand/attolang-social.png` from that checked-in source, along with monochrome PNG wordmarks and the 180px icon. The site publishes that raster as its Open Graph/Twitter image. Every production build must prove PNG integrity and dimensions; the post-deploy live check independently verifies its HTTP response, not merely the source file.
 
 Run `npm test`, `npm run build`, site/RSS checks, and real browser accessibility/visual checks against the exact PR head. A zero-step or skipped CI run is **not** evidence of passing tests.
+
+## Naming clearance boundary
+
+**AttoLang is a provisional public display name, not a globally cleared trademark.** Do not assert exclusive ownership, international trademark availability, language-by-language slang safety, domain availability, or readiness to launch without completed review gates. See [the naming-clearance evidence ledger](./ATTOLANG_NAME_CLEARANCE.md); its CI tests check evidence structure and policy only, not legal rights. A gate can be marked documented only with a scoped evidence receipt and reviewer role; CI may never declare global trademark clearance.
