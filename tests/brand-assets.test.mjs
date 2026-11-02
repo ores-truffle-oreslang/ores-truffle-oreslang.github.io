@@ -23,9 +23,11 @@ test("social artwork uses the canonical wordmark path and exposes discoverable a
   assert.match(social, /viewBox="0 0 1200 630"/u);
   assert.doesNotMatch(social, /<script|<image|<foreignObject|\bhref\s*=/iu);
   const layout = read("src/layouts/BaseLayout.astro");
-  assert.match(layout, /new URL\("\/social-preview\.svg", Astro\.site\)\.href/u);
+  assert.match(layout, /new URL\("\/social-preview\.png", Astro\.site\)\.href/u);
   for (const name of ["og:image", "og:image:type", "og:image:alt", "twitter:image", "twitter:image:alt"]) {
     assert.ok(layout.includes(name), name + " must appear in layout");
   }
   assert.match(layout, /summary_large_image/u);
+  assert.match(layout, /content="image\/png"/u);
+  assert.match(read("package.json"), /node scripts\/render-social-preview\.mjs/u);
 });
