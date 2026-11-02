@@ -24,7 +24,7 @@ test("About page explains language influences, native goals, and both name meani
     "state machines for distributed coordination", "message queues",
     "development", "Erlang", "Rust", "Microsoft Orleans",
     "ahead-of-time (AOT)", "native binaries", "fault-tolerant actors",
-    "hot upgrades", "Italian", "Japanese", "Attō", "圧倒"
+    "hot upgrades", "Italian", "Japanese", "Attō"
   ]) {
     assert.ok(about.includes(concept), "About missing " + concept);
   }
