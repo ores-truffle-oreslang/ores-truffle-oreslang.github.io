@@ -3,14 +3,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="Oreslang Paradigms — actors, functional data flow, hot loading, AOT + JIT"
-  description="Oreslang combines actor isolation, functional programming, data-oriented programming, hot-loaded actor generations, AOT/JIT/hybrid compilation, and contracts for static architecture."
+  title="AttoLang Paradigms — actors, functional data flow, hot loading, AOT + JIT"
+  description="AttoLang combines actor isolation, functional programming, data-oriented programming, hot-loaded actor generations, AOT/JIT/hybrid compilation, and contracts for static architecture."
 >
   <section class="page-hero">
     <p class="kicker">Paradigms</p>
     <h1>Use the model that fits the work.</h1>
     <p>
-      Oreslang is multi-paradigm by design. Concurrency does not need to look like data processing;
+      AttoLang is multi-paradigm by design. Concurrency does not need to look like data processing;
       hot deployment does not need to look like mutation; and static architecture does not need to
       erase the distinction between modules, classes, and actors.
     </p>
@@ -34,7 +34,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <h3>Functional programming</h3>
       <p>
-        Oreslang treats functions as first-class values and supports functional data flow directly
+        AttoLang treats functions as first-class values and supports functional data flow directly
         rather than making it a library-only convention. Native <code>map</code>, <code>filter</code>,
         and <code>reduce</code> pair naturally with rx-ores style pipelines, futures, channels, and
         immutable values.
@@ -69,7 +69,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         be organized to minimize unnecessary transfers and reshaping between CPU and GPU work.
       </p>
       <p>
-        Oreslang's static shapes, tuples, structs, actor boundaries, GPU routines, and typed execution
+        AttoLang's static shapes, tuples, structs, actor boundaries, GPU routines, and typed execution
         model can give the compiler and JIT more information, but that is a secondary advantage. The
         primary goal is to let developers and the runtime choose data representations that execute well
         on real CPUs and GPUs while preserving the language's safety guarantees.
@@ -122,7 +122,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <h3>Contracts for static architecture</h3>
       <p>
-        Oreslang keeps modules and classes distinct, so their contracts should remain distinct too.
+        AttoLang keeps modules and classes distinct, so their contracts should remain distinct too.
         Module contracts describe the required static shape of a module. Static-member contracts for
         classes describe the required class-level API without pretending instance interfaces cover
         static members.

@@ -3,14 +3,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="Oreslang Application Areas"
-  description="The domains Oreslang targets: actor runtimes, FaaS, mobile isolation, high-performance computing, data science, web systems, and data-oriented execution."
+  title="AttoLang Application Areas"
+  description="The domains AttoLang targets: actor runtimes, FaaS, mobile isolation, high-performance computing, data science, web systems, and data-oriented execution."
 >
   <section class="page-hero">
     <p class="kicker">Application areas</p>
     <h1>Application Areas</h1>
     <p>
-      Oreslang targets workloads where safety, isolation, concurrency, runtime performance,
+      AttoLang targets workloads where safety, isolation, concurrency, runtime performance,
       and code mobility all matter at once—from dense numerical kernels to multi-tenant FaaS runtimes.
     </p>
   </section>
@@ -20,14 +20,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <p class="status-note">
         Some of these are current implementation domains and some are explicit competitive ambitions.
         “Replacement” targets describe where the project intends to compete; they are not benchmark claims
-        that Oreslang has already surpassed mature ecosystems.
+        that AttoLang has already surpassed mature ecosystems.
       </p>
 
       <div class="problem-list">
         <article class="problem">
           <h3>High-performance computing + data-oriented programming</h3>
           <p>
-            Dense numerical work should be organized around the hardware that executes it. Oreslang is
+            Dense numerical work should be organized around the hardware that executes it. AttoLang is
             exploring columnar and struct-of-arrays layouts, cache-friendly traversal, allocation-conscious
             kernels, SIMD/vectorization targets, bounded regions, and CPU/GPU placement. Actors own and
             orchestrate state; dense kernels do the compute without turning every element into an object.
@@ -39,7 +39,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <p>
             The ambition is Python-class data-science ergonomics with a stronger static and runtime model:
             typed columnar data, numerical reductions, matrices, pipelines, first-class functions, actors,
-            ownership, AOT/JIT execution, and future GPU acceleration in one language. Oreslang should be
+            ownership, AOT/JIT execution, and future GPU acceleration in one language. AttoLang should be
             able to serve both exploratory data work and production systems without forcing a rewrite at
             the Python/native boundary.
           </p>
@@ -48,7 +48,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <article class="problem">
           <h3>Erlang / Elixir successor — and a Phoenix-class web target</h3>
           <p>
-            Oreslang takes the actor model seriously while adding static typing, ownership and borrowing,
+            AttoLang takes the actor model seriously while adding static typing, ownership and borrowing,
             option types, isolated/untrusted actors, Graal-backed execution, and data-oriented compute.
             The goal is to preserve the strengths that make Erlang and Elixir compelling for supervision,
             concurrency, messaging, and hot code while pushing toward a faster, more statically analyzable
@@ -59,7 +59,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <article class="problem">
           <h3>Building FaaS platforms — a workerd alternative target</h3>
           <p>
-            Oreslang is also a language/runtime substrate for people building serverless platforms, not only
+            AttoLang is also a language/runtime substrate for people building serverless platforms, not only
             code that runs on them. Shared actors, isolated actors, untrusted actors, capability gates,
             non-cooperative scheduling, hot-loaded generations, AOT/JIT/hybrid execution, cancellation,
             quotas, and confined memory are all relevant to building dense multi-tenant FaaS systems.
@@ -73,7 +73,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <p>
             Mobile apps increasingly host extensions, automation, downloaded behavior, and concurrent
             background work. Spawning a full operating-system process for every unit is often impractical.
-            Oreslang’s actor model is intended to create stronger in-process isolation boundaries, while
+            AttoLang’s actor model is intended to create stronger in-process isolation boundaries, while
             still allowing selected immutable code to be shared instead of duplicated.
           </p>
         </article>
@@ -82,7 +82,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <h3>Isolation in FaaS and multi-tenant runtimes</h3>
           <p>
             Serverless hosts need rapid startup, dense packing, cancellation, quotas, and clear tenant
-            boundaries. Oreslang actors are intended to map cleanly onto shared, isolated, and untrusted
+            boundaries. AttoLang actors are intended to map cleanly onto shared, isolated, and untrusted
             execution pools so the runtime can choose the cost of a boundary without changing the application model.
           </p>
         </article>
@@ -90,7 +90,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <article class="problem">
           <h3>True data safety</h3>
           <p>
-            Memory safety is necessary but insufficient. Oreslang combines ownership/borrowing checks,
+            Memory safety is necessary but insufficient. AttoLang combines ownership/borrowing checks,
             closed structural values, explicit option/result types, immutable-by-default data, and actor
             mailbox sendability rules so data cannot casually retain unsafe pointers or cross trust boundaries.
           </p>
@@ -128,7 +128,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           <h3>Non-cooperative scheduling</h3>
           <p>
             FaaS and mobile runtimes cannot assume every third-party workload will yield politely.
-            Oreslang is designed to support dedicated or isolated execution pools for CPU-hungry actors,
+            AttoLang is designed to support dedicated or isolated execution pools for CPU-hungry actors,
             with cancellation, quotas, and scheduling boundaries enforced by the runtime instead of by convention.
           </p>
         </article>

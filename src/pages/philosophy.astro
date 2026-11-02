@@ -6,14 +6,14 @@ import { languageProgress } from "../data/language-progress.mjs";
 ---
 
 <BaseLayout
-  title="Oreslang Philosophy — explicit syntax, safer runtimes"
-  description="Oreslang philosophy: ownership and borrowing, proof-gated zero GC on LLVM, minimal GC on JVM/GraalVM, safe actors, and portable AOT/JIT semantics."
+  title="AttoLang Philosophy — explicit syntax, safer runtimes"
+  description="AttoLang philosophy: ownership and borrowing, proof-gated zero GC on LLVM, minimal GC on JVM/GraalVM, safe actors, and portable AOT/JIT semantics."
 >
   <section class="page-hero philosophy-hero">
     <p class="kicker">Philosophy</p>
     <h1>Spend syntax to buy certainty.</h1>
     <p>
-      In the age of AI-assisted programming, terseness is less sacred. Oreslang is more explicit
+      In the age of AI-assisted programming, terseness is less sacred. AttoLang is more explicit
       when those extra tokens reduce ambiguity and make static analysis, AOT compilation, and
       JIT specialization faster.
     </p>
@@ -21,7 +21,7 @@ import { languageProgress } from "../data/language-progress.mjs";
 
   <section class="page-body">
     <div class="prose">
-      <div class="terminal-trace code-editor" data-code-editor="true" data-code-key="philosophy-runtime-trace" data-editor-theme="vscode" aria-label="Illustrative Oreslang runtime stack trace">
+      <div class="terminal-trace code-editor" data-code-editor="true" data-code-key="philosophy-runtime-trace" data-editor-theme="vscode" aria-label="Illustrative AttoLang runtime stack trace">
         <div class="terminal-bar">
           <span class="terminal-dot"></span>
           <span class="terminal-dot"></span>
@@ -56,11 +56,11 @@ runtime frames:
         <p>
           These advances did not all begin in 2010–2022: CUDA, formal methods, asynchronous
           programming and functional programming are older. What changed was their reach
-          into everyday infrastructure and application development. Oreslang's ambition is
+          into everyday infrastructure and application development. AttoLang's ambition is
           to combine the lessons rather than force teams to choose between them.
         </p>
         <p>
-          We separate the historical shift, Oreslang's design response, and the evidence
+          We separate the historical shift, AttoLang's design response, and the evidence
           still required. A direction is not a shipped feature, formal proof, compiled
           accelerator kernel, portable Wasm component or benchmark result.
         </p>
@@ -72,7 +72,7 @@ runtime frames:
                 <h3>{theme.label}</h3>
               </header>
               <p><strong>What changed.</strong> {theme.shift}</p>
-              <p><strong>Oreslang's response.</strong> {theme.response}</p>
+              <p><strong>AttoLang's response.</strong> {theme.response}</p>
               <p class="progress-next"><strong>What pushes it forward.</strong> {theme.forward}</p>
             </article>
           ))}
@@ -88,7 +88,7 @@ runtime frames:
 
       <h3>AOT + JIT are complementary</h3>
       <p>
-        Oreslang is designed so one static language surface can support two compilation strategies
+        AttoLang is designed so one static language surface can support two compilation strategies
         without forcing applications into two different programming models. Ahead-of-time compilation
         can turn verified code and runtime metadata into deployable images with predictable startup,
         while JIT compilation can specialize the hot functions, actor routes, and data shapes that only
@@ -121,7 +121,7 @@ runtime frames:
       <h3>Memory safety should be layered</h3>
       <p>
         The target is Rust-class memory safety without requiring every workload to live at Rust's
-        level of manual lifetime ceremony. Oreslang combines static types, a borrow checker,
+        level of manual lifetime ceremony. AttoLang combines static types, a borrow checker,
         immutable-by-default values, option types instead of null, actor isolation, and runtime GC.
         The compiler should prevent invalid ownership and lifetime states before GC ever sees them;
         the runtime collector remains available for managed graphs and cycles.
@@ -135,7 +135,7 @@ runtime frames:
 
       <h3 id="memory-management">Backend-specific memory strategies</h3>
       <p>
-        Oreslang should preserve <strong>actor-owned allocation domains on both LLVM and JVM/GraalVM</strong>.
+        AttoLang should preserve <strong>actor-owned allocation domains on both LLVM and JVM/GraalVM</strong>.
         Both backends can use native arenas with deterministic lifetime control;
         Java/GraalVM additionally has managed Java objects and an enclosing GC heap.
         <strong>Zero GC</strong> means verified LLVM native paths require no tracing
@@ -159,7 +159,7 @@ runtime frames:
 
       <h3>Actors are a memory-safety primitive</h3>
       <p>
-        Oreslang actors are intended to make the safest concurrency model the easiest one. Shared
+        AttoLang actors are intended to make the safest concurrency model the easiest one. Shared
         actors can cooperate inside one process where sharing is allowed. Isolated and untrusted
         actors get confined memory regions for mutable state, restricted capabilities, serialized mailbox boundaries where
         required, and stronger rules about what code and memory can cross the boundary.
@@ -167,7 +167,7 @@ runtime frames:
       <p>
         That matters on FaaS hosts and on Android/iOS, where the runtime may need dense in-process
         isolation but cannot assume that every workload cooperates with a single event loop.
-        Oreslang therefore treats non-cooperative scheduling, cancellation, quotas, and actor
+        AttoLang therefore treats non-cooperative scheduling, cancellation, quotas, and actor
         confinement as runtime concerns rather than application conventions.
       </p>
 
@@ -216,7 +216,7 @@ runtime frames:
         <p class="kicker">Future runtime direction</p>
         <h3>One actor model, more than one machine.</h3>
         <p>
-          Actor isolation already gives Oreslang a natural seam for distribution. The long-term
+          Actor isolation already gives AttoLang a natural seam for distribution. The long-term
           abstraction should preserve the same typed actor reference while the runtime chooses
           transport and placement: local shared memory, isolated memory, IPC, TCP, or an external
           host. Placement affinity can prefer the same machine, require a different machine, or
@@ -226,7 +226,7 @@ runtime frames:
           This is intentionally a runtime direction, not finalized surface syntax. The goal is to
           avoid creating a separate language that suddenly appears when an actor moves across a
           process or network boundary. Remote mailboxes would become serialized transport, making
-          the model start to resemble systems such as Vert.x while preserving Oreslang's actor
+          the model start to resemble systems such as Vert.x while preserving AttoLang's actor
           safety rules.
         </p>
       </div>
