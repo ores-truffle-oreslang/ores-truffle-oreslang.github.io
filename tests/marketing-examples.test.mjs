@@ -52,7 +52,7 @@ test("HTTP design returns one Fetch-style response object with status and header
   const code = motion.httpCode;
   assert.match(code, /define unary http actor HelloHttp as/);
   assert.match(code, /run\(HttpMessage request\): HttpResponse\s*\{/);
-  assert.match(code, /return new HttpResponse\("hello from Oreslang", \{/);
+  assert.match(code, /return new HttpResponse\("hello from AttoLang", \{/);
   assert.match(code, /status: 200/);
   assert.match(code, /"Content-Type": "text\/plain; charset=utf-8"/);
   assert.doesNotMatch(code, /extends HttpActor|on_request\(|spawn HelloHttp\(|\.get_response\(|\.write\(|\.pipe\(/);
@@ -92,7 +92,7 @@ test("select demo is a suspending statement, not a synchronous poll", () => {
   assert.match(detail, /design target across backends/);
 });
 
-test("Oreslang code remains HTML escaped and highlighted", () => {
+test("AttoLang code remains HTML escaped and highlighted", () => {
   const raw = "pub fnc connect(): ActorStream<int> { return spawn Source() pipe spawn Sink(); }";
   const html = highlight(raw, "oreslang");
   assert.ok(html.includes("&lt;"));

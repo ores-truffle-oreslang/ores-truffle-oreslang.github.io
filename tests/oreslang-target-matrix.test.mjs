@@ -99,7 +99,7 @@ test("reader sees evidence levels, sources and a keyboard-scrollable 50-cell mat
     'id="backend-targets"', 'id="synthesis-target-title"',
     "targetSupportRows.map", "targetGates.map",
     'class="synthesis-target-scroller" role="region"',
-    'aria-label="Oreslang target architecture and verification status matrix"',
+    'aria-label="AttoLang target architecture and verification status matrix"',
     "{proofCount} of {targetSupportRows.length * targetGates.length}", "executedProofCount", "gate.proofLabel",
     'class="synthesis-target-stages"', "proofStages.map",
     "candidate evaluation profiles, not a supported-platform list",
