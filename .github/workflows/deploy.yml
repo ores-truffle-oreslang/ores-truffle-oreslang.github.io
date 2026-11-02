@@ -62,6 +62,9 @@ jobs:
       - name: Parse log 007 SVGs and reject external references
         run: python3 tests/log7_svg_test.py
 
+      - name: Install pinned Chromium for SVG-to-PNG social preview
+        run: npx playwright install --with-deps chromium
+
       - name: Build Astro site
         run: npm run build
 
@@ -71,19 +74,11 @@ jobs:
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build
 
-      - name: Verify every generated engineering log and image asset
+      - name: Verify every published engineering log, social image and architecture assets
         run: |
           set -euo pipefail
-          test -s dist/logs/index.html
-          for n in 1 2 3 4 5 6 7; do
-            test -s "dist/logs/$n/index.html"
-            grep -qi "<h1" "dist/logs/$n/index.html"
-            grep -q 'application/ld+json' "dist/logs/$n/index.html"
-          done
-          test -s dist/sitemap.xml
-          for n in 1 2 3 4 5 6 7; do
-            grep -q "https://ores-truffle-oreslang.github.io/logs/$n/" dist/sitemap.xml
-          done
+          npm run test:blogs:build
+          test -s dist/social-preview.png
           test -s dist/logs/7/compiler-architecture.svg
           test -s dist/logs/7/incremental-invalidation.svg
           test -s dist/logs/7/wasm-profiles.svg
@@ -107,3 +102,20 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+
+      - name: Checkout audited deployment verification script
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Verify live public Pages content after deployment
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            if node scripts/verify-live-pages.mjs; then
+              exit 0
+            fi
+            echo "Live Pages verification attempt ${attempt} failed" >&2
+            sleep 10
+          done
+          exit 1
