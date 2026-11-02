@@ -24,6 +24,7 @@ function publicEvidenceURL(raw) {
     if (url.protocol !== "https:" || url.username || url.password ||
         url.port || !PUBLIC_HOST.test(host) || !host.includes(".") ||
         host === "localhost" || /(?:^|\.)(?:localhost|local|internal|invalid|example|test)$/u.test(host) ||
+        /(?:^|\.)example\.(?:com|org|net)$/u.test(host) ||
         /^(?:\d{1,3}\.){3}\d{1,3}$/u.test(host) || host.startsWith("xn--")) return null;
     const keys = [...url.searchParams.keys()].map(k => k.toLowerCase());
     if (keys.some(k => /(?:^|_)(?:token|secret|password|api_key|apikey|authorization|access_key)(?:$|_)/u.test(k)))
