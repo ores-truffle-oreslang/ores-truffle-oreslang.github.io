@@ -53,3 +53,17 @@ Use the existing source-repository Actions first. A job with `steps=[]`/`null` i
 Each gate starts as `pending`. A reviewer may mark a **specific gate** `documented` only with HTTPS evidence, observation date, defined scope, a reviewer identifier/role and a scoped conclusion. Legal-confusion conclusions require a qualified trademark-counsel role. Individual languages require separate native-speaker evidence; domain and registry results require per-identifier verification. No combination of machine-readable statuses makes the name **globally cleared**.
 
 `ready_for_owner_decision` is only an administrative routing status after documentary prerequisite gates, **not** a legal conclusion. The owner must review the underlying originals and receive counsel's opinion separately. CI validates shape and fail-closed conditions, not the authenticity, ownership, freshness, accuracy or legal sufficiency of a supplied URL. Changing the ledger to claim global clearance is deliberately rejected.
+
+## November 2, 2026 — Official-record retrieval and hardening follow-up
+
+Attempted official USPTO TSDR status views for **76312586 / 2680135** and **76312590 / 2680136** via the public interface. Only the general page shell was retrievable through the available browsing method; the two case-specific current status, ownership and surviving goods/services were **not returned**. The USPTO [explains how to inspect a registration in TSDR](https://www.uspto.gov/trademarks/apply/check-status-view-documents), and [requires a registered key for programmatic TSDR API access](https://www.uspto.gov/trademarks/apply/check-status-view-documents/trademark-bulk-data). Do not imply the current legal status or official goods identification was confirmed.
+
+The new `official_us_record_checks` field records both attempts with `verification_status: "not_verified"`. It cannot be promoted to `verified_by_human` without scoped official-record evidence, a reviewer and an observed status. The `formal_us_search` gate cannot complete before both statuses have been reviewed.
+
+Evidence URLs are syntax-screened to reject HTTP, URL credentials, literal IP addresses, test/internal domains and credential-like query parameters; evidence dates must not be in the future or more than 90 days older than the ledger's audit date. **These checks do not prove URL authenticity or underlying assertions**, so legal opinions, ownership, and native-speaker signoffs still require independent review. A stated `not_cleared` conclusion cannot be promoted to the owner-decision-ready workflow.
+
+### Operational governance
+
+The public repository's `main` branch was observed with `protected: false` and no active rulesets during this review. The connected GitHub integration supports ruleset reads but **not branch protection or ruleset writes**. An organization administrator must configure required PR reviews, stale-review dismissal, code-owner review if applicable, required exact-head check `Validate marketing site / build`, restricted bypass permissions, and a guarded merge process. CI validation is independent of this branch-protection configuration.
+
+This marketing repository is **public** and its Actions have successfully executed stepful builds; do not copy code to a separate organization merely because a cross-org mirroring strategy exists. If a future workflow genuinely fails runner admission, assess Actions minutes and destination authorization first; no private source may be mirrored without explicit separate authorization.

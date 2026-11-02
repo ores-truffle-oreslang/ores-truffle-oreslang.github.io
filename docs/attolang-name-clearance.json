@@ -128,6 +128,12 @@
       "kind": "third_party_registry",
       "finding": "Third-party copy of an official USPTO notice records 2022 Section 8 acceptance and renewal context for registration 2680136; counsel must verify surviving scope in official TSDR.",
       "url": "https://uspto.report/TM/76312590/ACC20220712235146/"
+    },
+    {
+      "id": "uspto-record-status-official-method",
+      "kind": "regulator_guidance",
+      "finding": "The official USPTO TSDR user interface supports manual record status review by serial or registration number; API case-status retrieval requires registration for a key.",
+      "url": "https://www.uspto.gov/trademarks/apply/check-status-view-documents"
     }
   ],
   "languages": [
@@ -336,5 +342,29 @@
       "nuget": "unverified"
     }
   },
-  "legal_note": "Desk research only. Named ATTO registrations do not create a blanket prohibition on language compilers. Class 009/037/042 descriptions concern specific goods/services, 2680136 has a partial Section 8 history, and any live legal status, common-law rights and likelihood of confusion must be verified by qualified counsel. This CI validator cannot authenticate legal or registrar evidence."
+  "legal_note": "Desk research only. Named ATTO registrations do not create a blanket prohibition on language compilers. Class 009/037/042 descriptions concern specific goods/services, 2680136 has a partial Section 8 history, and any live legal status, common-law rights and likelihood of confusion must be verified by qualified counsel. This CI validator cannot authenticate legal or registrar evidence.",
+  "official_us_record_checks": [
+    {
+      "serial_number": "76312586",
+      "registration_number": "2680135",
+      "attempted_on": "2026-11-02",
+      "official_url": "https://tsdr.uspto.gov/#caseNumber=76312586&caseSearchType=US_APPLICATION&caseType=DEFAULT&searchType=statusSearch",
+      "verification_status": "not_verified",
+      "reported_status": null,
+      "evidence": null,
+      "reviewer_id": null,
+      "note": "TSDR public UI rendered without a case-specific status record in text retrieval; the official API requires a USPTO key. Manual official verification remains pending."
+    },
+    {
+      "serial_number": "76312590",
+      "registration_number": "2680136",
+      "attempted_on": "2026-11-02",
+      "official_url": "https://tsdr.uspto.gov/#caseNumber=76312590&caseSearchType=US_APPLICATION&caseType=DEFAULT&searchType=statusSearch",
+      "verification_status": "not_verified",
+      "reported_status": null,
+      "evidence": null,
+      "reviewer_id": null,
+      "note": "TSDR public UI rendered without a case-specific status record in text retrieval; the official API requires a USPTO key. Manual official verification remains pending."
+    }
+  ]
 }
