@@ -1,8 +1,7 @@
 name: Validate marketing site
 
 on:
-  # A required PR check must run for *every* PR, including config-only changes.
-  # Do not add paths/paths-ignore or branch filters here without revising protection.
+  # Required checks must run for every PR, including documentation-only PRs.
   pull_request:
 
 permissions:
@@ -70,6 +69,11 @@ jobs:
 
       - name: Crawl all generated pages and verify internal links and fragments
         run: npm run test:site:build
+
+      - name: Setup pinned Rust for RSS XML validation
+        uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249
+        with:
+          toolchain: "1.91.0"
 
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build

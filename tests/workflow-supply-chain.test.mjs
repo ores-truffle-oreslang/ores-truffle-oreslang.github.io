@@ -100,3 +100,13 @@ test("required AttoLang PR check is uniquely named and never skipped by path fil
   assert.match(validate, /permissions:\s*\n\s*contents: read/u);
   assert.match(validate, /ref: \$\{\{ github\.event\.pull_request\.head\.sha \}\}/u);
 });
+
+test("required check cannot change to privileged pull_request_target or synthetic merge checkout", () => {
+  const validation = read(".github/workflows/validate-site.yml");
+  assert.doesNotMatch(validation, /^\s*pull_request_target:\s*$/mu);
+  assert.equal((validation.match(/^\s*name: AttoLang Site Validation\s*$/gmu) ?? []).length, 1,
+    "Required job name must appear exactly once");
+  assert.match(validation, /^on:\s*\n(?:\s*#.*\n)*\s*pull_request:\s*$/mu);
+  assert.match(validation, /EXPECTED_PR_HEAD_SHA: \$\{\{ github\.event\.pull_request\.head\.sha \}\}/u);
+  assert.doesNotMatch(validation, /\b(pull_request_target|workflow_run):\s*$/mu);
+});
