@@ -32,16 +32,17 @@ test("About page explains language influences, native goals, and both name meani
 });
 
 test("marketing copy qualifies performance ambitions and backend-specific runtime goals", () => {
-  for (const [label, page] of [["homepage", home], ["About", about]]) {
-    assert.match(page, /performance ambition is to exceed Erlang's throughput/iu, label);
-    assert.match(page, /10× speed and one-tenth compute figures are\s+design targets, not measured results/iu, label);
-    assert.match(page, /no controlled, like-for-like Erlang comparison\s+establishes them/iu, label);
-    assert.match(page, /type and memory safety goals/iu, label);
-    assert.match(page, /full ahead-of-time \(AOT\) compilation/iu, label);
-    assert.match(page, /native binaries/iu, label);
-    assert.match(page, /zero-GC execution/iu, label);
-    assert.match(page, /fault-tolerant actors/iu, label);
-    assert.match(page, /better hot upgrades/iu, label);
-    assert.doesNotMatch(page, /We can deliver/iu, label);
+  for (const [label, rawPage] of [["homepage", home], ["About", about]]) {
+    const page = rawPage.replace(/\s+/gu, " ");
+    assert.ok(page.includes("performance ambition is to exceed Erlang's throughput"), label);
+    assert.ok(page.includes("10× speed and one-tenth compute figures are design targets, not measured results"), label);
+    assert.ok(page.includes("no controlled, like-for-like Erlang comparison establishes them"), label);
+    assert.ok(page.includes("type and memory safety goals"), label);
+    assert.ok(page.includes("full ahead-of-time (AOT) compilation"), label);
+    assert.ok(page.includes("native binaries"), label);
+    assert.ok(page.includes("zero-GC execution"), label);
+    assert.ok(page.includes("fault-tolerant actors"), label);
+    assert.ok(page.includes("better hot upgrades"), label);
+    assert.ok(!page.includes("We can deliver"), label);
   }
 });

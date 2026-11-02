@@ -40,19 +40,20 @@ test("showcase explains persistent actors, typed messaging, supervision, and hot
   assert.match(showcase, /aria-label="Hot upgrade lifecycle"/u);
 });
 
-test("comparison and performance openings share the direct stateful-first proposition", () => {
+test("comparison and performance openings share the evidence-qualified stateful proposition", () => {
   const comparisonHero = comparison.slice(0, comparison.indexOf('<section class="page-body'));
   const performanceHero = performance.slice(0, performance.indexOf('<div class="page-body'));
-  for (const copy of [comparisonHero, performanceHero]) {
-    assert.match(copy, /performance ambition is to exceed Erlang's throughput/iu);
-    assert.match(copy, /10× speed and one-tenth compute figures are design targets,\s+not measured results/iu);
-    assert.match(copy, /no controlled, like-for-like Erlang comparison establishes them/iu);
-    assert.match(copy, /type and memory safety goals/iu);
-    assert.match(copy, /full AOT compilation/iu);
-    assert.match(copy, /native binaries/iu);
-    assert.match(copy, /zero-GC execution/iu);
-    assert.match(copy, /fault-tolerant actors/iu);
-    assert.match(copy, /better hot upgrades/iu);
-    assert.doesNotMatch(copy, /We can deliver/iu);
+  for (const rawCopy of [comparisonHero, performanceHero]) {
+    const copy = rawCopy.replace(/\s+/gu, " ");
+    assert.ok(copy.includes("performance ambition is to exceed Erlang's throughput"));
+    assert.ok(copy.includes("10× speed and one-tenth compute figures are design targets, not measured results"));
+    assert.ok(copy.includes("no controlled, like-for-like Erlang comparison establishes them"));
+    assert.ok(copy.includes("type and memory safety goals"));
+    assert.ok(copy.includes("full AOT compilation"));
+    assert.ok(copy.includes("native binaries"));
+    assert.ok(copy.includes("zero-GC execution"));
+    assert.ok(copy.includes("fault-tolerant actors"));
+    assert.ok(copy.includes("better hot upgrades"));
+    assert.ok(!copy.includes("We can deliver"));
   }
 });

@@ -48,20 +48,21 @@ test("top five use cases are exactly five per column and clearly qualify AttoLan
 });
 
 test("comparisons are transparent about hard real-time and unverified AttoLang support", () => {
-  assert.match(page, /AttoLang takes the best from/u);
-  assert.match(page, /10× speed and one-tenth compute figures are design targets,\s+not measured results/u);
-  assert.match(page, /no controlled, like-for-like Erlang comparison establishes them/u);
-  assert.match(page, /public draft does not separately evaluate that topic/u);
-  assert.match(page, /Soft real time is not hard real time/u);
-  assert.match(page, /no head-to-head throughput, memory or CPU win is established|High-load performance needs a reproducible workload/u);
-  assert.match(page, /not verified/u);
+  const normalizedPage = page.replace(/\s+/gu, " ");
+  assert.match(normalizedPage, /AttoLang takes the best from/u);
+  assert.ok(normalizedPage.includes("10× speed and one-tenth compute figures are design targets, not measured results"));
+  assert.ok(normalizedPage.includes("no controlled, like-for-like Erlang comparison establishes them"));
+  assert.match(normalizedPage, /public draft does not separately evaluate that topic/u);
+  assert.match(normalizedPage, /Soft real time is not hard real time/u);
+  assert.match(normalizedPage, /no head-to-head throughput, memory or CPU win is established|High-load performance needs a reproducible workload/u);
+  assert.match(normalizedPage, /not verified/u);
   assert.match(matrixRows.find(({ id }) => id === "garbage-collection").oreslang, /GraalVM.*managed GC/u);
   assert.match(matrixRows.find(({ id }) => id === "carrier-grade-linux").oreslang, /No independent CGL compliance/u);
   assert.match(matrixRows.find(({ id }) => id === "hard-real-time").oreslang, /Not certified/u);
   assert.match(matrixRows.find(({ id }) => id === "aot-jit").oreslang, /per backend/u);
   assert.match(matrixRows.find(({ id }) => id === "borrow-checking").oreslang, /rt mut borrow/u);
   assert.doesNotMatch(matrixRows.find(({ id }) => id === "borrow-checking").oreslang, /rt borrow mut/u);
-  assert.match(page, /Research \/ not verified/u);
+  assert.match(normalizedPage, /Research \/ not verified/u);
 });
 
 test("matrix accessible on narrow viewports and discoverable from existing comparison route", () => {
