@@ -8,7 +8,7 @@ const about = readFileSync(new URL("../src/pages/about.astro", import.meta.url),
 test("homepage leads with the stateful-applications motivation and core influences", () => {
   for (const concept of [
     "stateless REST APIs", "WebSocket servers", "gaming backends",
-    "UIs", "distributed state machines", "message queues",
+    "UIs", "state machines for distributed coordination", "message queues",
     "development servers", "Erlang", "Rust", "Microsoft Orleans",
     "fault-tolerant actors", "hot upgrades"
   ]) {
