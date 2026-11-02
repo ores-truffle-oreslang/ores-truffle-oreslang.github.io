@@ -5,7 +5,8 @@ const read = p => readFileSync(new URL("../" + p, import.meta.url), "utf8");
 test("RSS validation uses Rust XML and RFC-2822 parsers instead of Python", () => {
   const scripts = JSON.parse(read("package.json")).scripts;
   assert.match(scripts["test:rss:build"], /cargo test --locked --manifest-path tools\/rss-validator\/Cargo\.toml/u);
-  assert.match(scripts["test:rss:build"], /cargo run --locked --manifest-path tools\/rss-validator\/Cargo\.toml/u);
+  assert.match(scripts["test:rss:build"], /cargo run --locked --bin attolang-rss-validator --manifest-path tools\/rss-validator\/Cargo\.toml/u);
+  assert.match(scripts["test:rss:build"], /--bin svg-validator/u);
   assert.doesNotMatch(scripts["test:rss:build"], /python/u);
   assert.match(read("tools/rss-validator/Cargo.toml"), /roxmltree = "=0\.21\.1"/u);
   const code = read("tools/rss-validator/src/main.rs");
