@@ -7,8 +7,8 @@ const about = readFileSync(new URL("../src/pages/about.astro", import.meta.url),
 
 test("homepage leads with the stateful-applications motivation and core influences", () => {
   for (const concept of [
-    "Stateless REST APIs", "WebSocket servers", "gaming backends",
-    "interactive UIs", "distributed state machines", "message queues",
+    "stateless REST APIs", "WebSocket servers", "gaming backends",
+    "UIs", "distributed state machines", "message queues",
     "development servers", "Erlang", "Rust", "Microsoft Orleans",
     "fault-tolerant actors", "hot upgrades"
   ]) {
@@ -21,7 +21,7 @@ test("homepage leads with the stateful-applications motivation and core influenc
 
 test("About page explains language influences, native goals, and both name meanings", () => {
   for (const concept of [
-    "WebSocket servers", "gaming backends", "interactive UIs",
+    "WebSocket servers", "gaming backends", "UIs",
     "state machines for distributed coordination", "message queues",
     "development", "Erlang", "Rust", "Microsoft Orleans",
     "ahead-of-time (AOT)", "native binaries", "fault tolerance",
