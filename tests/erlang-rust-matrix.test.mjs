@@ -48,8 +48,10 @@ test("top five use cases are exactly five per column and clearly qualify AttoLan
 });
 
 test("comparisons are transparent about hard real-time and unverified AttoLang support", () => {
-  assert.match(page, /not a claim that AttoLang already matches Erlang\/OTP or Rust in production/u);
-  assert.match(page, /public.*feature snapshot/u);
+  assert.match(page, /AttoLang takes the best from/u);
+  assert.match(page, /more than <strong>10× the speed of Erlang<\/strong>/u);
+  assert.match(page, /<strong>one-tenth the compute<\/strong>/u);
+  assert.match(page, /public draft does not separately evaluate that topic/u);
   assert.match(page, /Soft real time is not hard real time/u);
   assert.match(page, /no head-to-head throughput, memory or CPU win is established|High-load performance needs a reproducible workload/u);
   assert.match(page, /not verified/u);
