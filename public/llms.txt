@@ -4,6 +4,7 @@
 
 ## Official website
 - [AttoLang](https://ores-truffle-oreslang.github.io/): Project overview and starting point
+- [Official AttoLang brand assets](https://ores-truffle-oreslang.github.io/brand/): Canonical SVG wordmarks, PNG previews, and favicon
 - [How it works](https://ores-truffle-oreslang.github.io/how-it-works/): Architectural goals and runtime design
 - [Examples](https://ores-truffle-oreslang.github.io/examples/): Illustrative code; verify every sample against a specific compiler version
 - [Engineering logs](https://ores-truffle-oreslang.github.io/logs/): Design discussion, including unshipped proposals

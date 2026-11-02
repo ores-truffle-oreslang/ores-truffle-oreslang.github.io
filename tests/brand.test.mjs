@@ -18,7 +18,6 @@ test("AttoLang is the public site brand across primary discovery surfaces", () =
 test("editorial pages do not expose the former display name", () => {
   for (const path of [
     "src/pages/index.astro",
-    "src/pages/about.astro",
     "src/pages/how-it-works.astro",
     "src/pages/examples.astro",
     "src/pages/language/index.astro",
@@ -35,6 +34,12 @@ test("editorial pages do not expose the former display name", () => {
   ]) {
     assert.doesNotMatch(source(path), /\b(?:Oreslang|OresLang)\b/u, path);
   }
+});
+
+test("historical product name appears only in an explicit migration note", () => {
+  const about = source("src/pages/about.astro");
+  assert.match(about, /AttoLang was formerly known as Oreslang/u);
+  assert.equal((about.match(/\bOreslang\b/gu) ?? []).length, 1);
 });
 
 test("existing GitHub URLs, internal routes, and compatibility identifiers stay intact", () => {
