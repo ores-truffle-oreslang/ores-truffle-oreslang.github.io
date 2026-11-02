@@ -14,6 +14,15 @@ interface Props {
 
 const { title, description, home = false, article } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL("/brand/attolang-social.png", Astro.site).href;
+const websiteJsonLd = home ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "AttoLang",
+  alternateName: ["Oreslang", "OresLang"],
+  url: new URL("/", Astro.site).href,
+  description: "AttoLang is an evolving isolation-first, actor-oriented systems programming language.",
+}).replace(/</g, "\\u003c") : null;
 const articleJsonLd = article ? JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
@@ -36,6 +45,7 @@ const articleJsonLd = article ? JSON.stringify({
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title="AttoLang Engineering Logs" href="/rss.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/attolang-icon-180.png" />
     <meta name="theme-color" content="#080b0e" />
     <script is:inline>
       // Set the saved theme before first paint to avoid an incorrect palette flash.
@@ -58,9 +68,11 @@ const articleJsonLd = article ? JSON.stringify({
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <meta property="og:site_name" content="AttoLang" />
     <meta property="og:locale" content="en_US" />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content="AttoLang wordmark: isolation-first systems programming" />
     {article && <meta name="author" content={article.author} />}
     <meta property="og:type" content={article ? "article" : "website"} />
     <meta property="og:url" content={canonical.href} />
@@ -69,6 +81,12 @@ const articleJsonLd = article ? JSON.stringify({
     {articleJsonLd && <script type="application/ld+json" set:html={articleJsonLd} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="AttoLang wordmark: isolation-first systems programming" />
+    {websiteJsonLd && <script type="application/ld+json" set:html={websiteJsonLd} />}
     <title>{title}</title>
   </head>
   <body>
