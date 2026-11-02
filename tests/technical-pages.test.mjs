@@ -16,7 +16,7 @@ const applicationAreas = read("../src/pages/problem-spaces.astro");
 const css = read("../src/styles/technical.css");
 
 test("home copy names both compilation backends and fixes cooperative scheduling title", () => {
-  const intro = home.indexOf("Stateless REST APIs are only part of the story.");
+  const intro = home.indexOf("AttoLang was motivated by the need to create more stateful applications");
   const platforms = home.indexOf('class="hero-platforms"');
   const identity = home.indexOf('class="hero-tldr"');
   assert.ok(intro !== -1 && platforms > intro && identity > platforms);
