@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 475" role="img" aria-labelledby="title desc">
-<title id="title">Oreslang incremental rebuild decision graph</title>
+<title id="title">AttoLang incremental rebuild decision graph</title>
 <desc id="desc">A change to a function body invalidates its own code generation and possibly inlined callers, while a change to a public signature or inferred contract triggers semantic rechecking of dependent functions.</desc>
 <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#95aebe"/></marker></defs>
 <rect width="1100" height="475" rx="20" fill="#0b141e"/><g font-family="IBM Plex Sans,Arial,sans-serif">
