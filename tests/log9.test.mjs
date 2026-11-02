@@ -10,10 +10,10 @@ const previous = read("src/pages/logs/8.astro");
 const inventory = JSON.parse(read("src/data/engineering-log-examples.json"));
 
 test("Orleans article is registered with honest date and metadata", () => {
-  assert.equal(engineeringLogs[0].number, 9);
-  assert.equal(engineeringLogs[0].title, "What AttoLang learns from Microsoft Orleans");
+  assert.ok(engineeringLogs.some((entry) => entry.number === 9));
+  assert.equal(engineeringLogs.find((entry) => entry.number === 9).title, "What AttoLang learns from Microsoft Orleans");
   assert.match(article, /<h1>What AttoLang learns from Microsoft Orleans<\/h1>/u);
-  assert.match(article, /published: "2026-11-01", modified: "2026-11-01", author: "Alex Mills"/u);
+  assert.match(article, /published: "2026-11-01", modified: "2026-11-02", author: "Alex Mills"/u);
   assert.match(article, /href="\/logs\/8\/"/u);
   assert.match(article, /href="\/logs\/"/u);
   assert.match(previous, /href="\/logs\/9\/"/u);
@@ -55,4 +55,15 @@ test("Orleans attribution and nuanced delivery semantics are prominent", () => {
   assert.match(article, /at-most-once message delivery without retries by default/u);
   assert.match(article, /A stable key is not itself durable storage/u);
   assert.match(article, /Microsoft Orleans is a Microsoft project, not an AttoLang component/u);
+});
+
+test("Orleans persistence and distribution risks are accurately called out", () => {
+  assert.ok(article.includes("application code must explicitly trigger writes after changes"));
+  assert.ok(article.includes("default eventually consistent directory can permit duplicate activations"));
+  assert.ok(article.includes("Orleans 10 introduces a strongly consistent in-cluster directory as a preview feature"));
+  assert.ok(article.includes("A key is an address, not a bearer credential"));
+  assert.ok(article.includes("every remote dispatch must validate authorization independently"));
+  assert.ok(article.includes("cycles of awaited requests between grains can deadlock"));
+  assert.ok(article.includes("cleanup callbacks cannot be assumed to run"));
+  assert.ok(article.includes("canonical-key collision attempts"));
 });
