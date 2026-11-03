@@ -93,10 +93,10 @@
   },
   "reviewedOverrides": {
     "webkit-375-archive.png": {
-      "gitCommit": "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d",
-      "workflowRun": 41371991760,
-      "artifactId": 13109936045,
-      "reason": "Reviewed all six full-size archive screenshots from CI artifact 13109936045 (Chromium, Firefox, WebKit at 375px and 1440px). The new AttoLang/Microsoft Orleans log 009 appears first with intact card typography, navigation, and responsive layout. PNG hashes match the artifact bytes; functional and accessibility checks passed. Unaffected log 6/7 signatures retained."
+      "workflowRun": 41527679311,
+      "artifactId": 13179614316,
+      "gitCommit": "1ad6da0da775d66eabdb92a38a0be53753d850bb",
+      "reason": "Reviewed the 375px closed-navigation archive screenshot after correcting the browser test to restore the default closed menu state. Verified the rendered archive layout and navigation in the exact CI artifact; the former baseline captured the menu open. This is a per-image intentional UI-state correction, not a blanket visual refresh."
     },
     "chromium-375-log-7.png": {
       "gitCommit": "42707dd63bd61adf581b541987340329ff5a6152",
@@ -105,10 +105,10 @@
       "reason": "Reviewed original and AttoLang-wordmark full-size browser screenshots. The intended new monochrome logo changes mobile header pixels; no other layout or accessibility changes observed. Existing baseline retained for unaffected captures."
     },
     "chromium-375-archive.png": {
-      "gitCommit": "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d",
-      "workflowRun": 41371991760,
-      "artifactId": 13109936045,
-      "reason": "Reviewed all six full-size archive screenshots from CI artifact 13109936045 (Chromium, Firefox, WebKit at 375px and 1440px). The new AttoLang/Microsoft Orleans log 009 appears first with intact card typography, navigation, and responsive layout. PNG hashes match the artifact bytes; functional and accessibility checks passed. Unaffected log 6/7 signatures retained."
+      "workflowRun": 41527679311,
+      "artifactId": 13179614316,
+      "gitCommit": "1ad6da0da775d66eabdb92a38a0be53753d850bb",
+      "reason": "Reviewed the 375px closed-navigation archive screenshot after correcting the browser test to restore the default closed menu state. Verified the rendered archive layout and navigation in the exact CI artifact; the former baseline captured the menu open. This is a per-image intentional UI-state correction, not a blanket visual refresh."
     },
     "firefox-375-log-7.png": {
       "gitCommit": "42707dd63bd61adf581b541987340329ff5a6152",
@@ -129,10 +129,10 @@
       "reason": "Reviewed all six full-size archive screenshots from CI artifact 13109936045 (Chromium, Firefox, WebKit at 375px and 1440px). The new AttoLang/Microsoft Orleans log 009 appears first with intact card typography, navigation, and responsive layout. PNG hashes match the artifact bytes; functional and accessibility checks passed. Unaffected log 6/7 signatures retained."
     },
     "firefox-375-archive.png": {
-      "gitCommit": "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d",
-      "workflowRun": 41371991760,
-      "artifactId": 13109936045,
-      "reason": "Reviewed all six full-size archive screenshots from CI artifact 13109936045 (Chromium, Firefox, WebKit at 375px and 1440px). The new AttoLang/Microsoft Orleans log 009 appears first with intact card typography, navigation, and responsive layout. PNG hashes match the artifact bytes; functional and accessibility checks passed. Unaffected log 6/7 signatures retained."
+      "workflowRun": 41527679311,
+      "artifactId": 13179614316,
+      "gitCommit": "1ad6da0da775d66eabdb92a38a0be53753d850bb",
+      "reason": "Reviewed the 375px closed-navigation archive screenshot after correcting the browser test to restore the default closed menu state. Verified the rendered archive layout and navigation in the exact CI artifact; the former baseline captured the menu open. This is a per-image intentional UI-state correction, not a blanket visual refresh."
     },
     "firefox-1440-archive.png": {
       "gitCommit": "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d",

@@ -41,10 +41,17 @@ test("visual baselines have exact-source provenance, including approved per-imag
   };
   for (const key of archiveKeys) {
     const reviewed = inventory.reviewedOverrides[key];
-    assert.equal(reviewed.workflowRun, 41371991760);
-    assert.equal(reviewed.artifactId, 13109936045);
-    assert.equal(reviewed.gitCommit, "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d");
-    assert.match(reviewed.reason, /Reviewed all six full-size archive screenshots/u);
+    if (key.endsWith("-375-archive.png")) {
+      assert.equal(reviewed.workflowRun, 41527679311);
+      assert.equal(reviewed.artifactId, 13179614316);
+      assert.equal(reviewed.gitCommit, "1ad6da0da775d66eabdb92a38a0be53753d850bb");
+      assert.match(reviewed.reason, /correcting the browser test to restore the default closed menu state/u);
+    } else {
+      assert.equal(reviewed.workflowRun, 41371991760);
+      assert.equal(reviewed.artifactId, 13109936045);
+      assert.equal(reviewed.gitCommit, "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d");
+      assert.match(reviewed.reason, /Reviewed all six full-size archive screenshots/u);
+    }
     assert.equal(inventory.images[key].pngSha256, expectedArchiveShas[key],
       "Archive screenshot hash must match the reviewed artifact");
   }
