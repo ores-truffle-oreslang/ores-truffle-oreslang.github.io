@@ -8,26 +8,51 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 >
   <section class="page-hero">
     <p class="kicker">About</p>
-    <h1>Isolation is a language feature.</h1>
-    <p>AttoLang is being built around the idea that concurrency, code loading, ownership, and trust boundaries should reinforce one another instead of being separate subsystems.</p>
+    <h1>Stateful applications deserve a better language.</h1>
+    <p>AttoLang is designed for long-lived, actor-based software where state, concurrency, ownership, hot upgrades, and isolation work together—not just stateless REST endpoints.</p>
   </section>
 
   <section class="page-body">
     <div class="prose">
-      <h3>Motivations</h3>
+      <h3>Why we started AttoLang</h3>
       <p>
-        Modern runtimes routinely need to host many independent jobs inside one machine: app plugins,
-        serverless functions, actors, background tasks, user-authored code, and hot-reloaded modules.
-        Process isolation is strong but can be expensive; shared memory is cheap but easy to misuse.
-        AttoLang is exploring a middle ground where the compiler and VM cooperate on isolation.
+        AttoLang was motivated by the need to create more <strong>stateful applications</strong>,
+        as opposed to stateless REST APIs: WebSocket servers, gaming backends, UIs, state machines for distributed coordination, message queues, and development servers.
       </p>
       <p>
-        The goal is not merely memory safety. The language model should make it difficult to create
-        accidental ambient authority, dangling references, unsafe actor messages, or mutable data
-        races—and it should make the safe path ergonomic enough to use by default.
+        Modern runtimes also host many independent jobs inside one machine: application plugins,
+        serverless functions, actors, background tasks, and user-authored code. Process isolation can
+        be expensive; unrestricted shared memory can be dangerous. AttoLang explores a compiler-and-VM
+        approach to explicit isolation, actor ownership, and controlled capabilities.
+      </p>
+
+      <h3>Erlang's resilience, Rust's safety, Orleans-style state</h3>
+      <p>
+        AttoLang takes the best from <strong>Erlang</strong> and <strong>Rust</strong>, and
+        projects like <strong>Microsoft Orleans</strong>, and offers a next-generation language
+        and runtime.
+      </p>
+      <p>
+        The goal is not merely memory safety. The language model should reject accidental ambient
+        authority, dangling references, unsafe actor messages, and mutable data races before
+        they become production failures—and keep the safe path ergonomic.
+      </p>
+
+      <h3>Performance, safety, and deployment</h3>
+      <p>
+        We can deliver more than <strong>10× the speed of Erlang</strong> while using
+        <strong>one-tenth the compute</strong>, with the type safety and memory safety
+        developers expect from languages like Rust.
+      </p>
+      <p>
+        AttoLang offers full ahead-of-time (AOT) compilation, native binaries for all
+        platforms, zero GC, fault-tolerant actors, and better hot upgrades.
       </p>
 
       <h3>About the name</h3>
+      <p>
+        <em>Atto</em> means action in Italian. <em>Attō</em> means overpowering in Japanese.
+      </p>
       <p>
         AttoLang was formerly known as Oreslang. Some GitHub repository names, source-file
         extensions and compatibility identifiers still use the original name while the
