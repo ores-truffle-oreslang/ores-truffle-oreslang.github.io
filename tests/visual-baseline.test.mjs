@@ -17,7 +17,7 @@ test("visual baselines have exact-source provenance, including approved per-imag
   assert.equal(inventory.environment.playwright, "1.56.1");
   // Original seed remains intact for unaffected captures. Existing wordmark
   // review metadata applies to log-7; archive captures now have their own
-  // reviewed source/artifact provenance after publication of log 009.
+  // reviewed source/artifact provenance after publication of log 010.
   const archiveKeys = ["chromium", "firefox", "webkit"].flatMap((engine) =>
     [375, 1440].map((width) => engine + "-" + width + "-archive.png")
   );
@@ -32,18 +32,18 @@ test("visual baselines have exact-source provenance, including approved per-imag
     assert.match(reviewed.reason, /AttoLang-wordmark/u);
   }
   const expectedArchiveShas = {
-    "chromium-375-archive.png": "edf3c793b261bb0f4dc77a6d2a948e0f1ee69819b89c2f9948a30406db72317c",
-    "chromium-1440-archive.png": "e510cf261e76cf09e348169c4e139f671dfdf120828250d5fc91220deadc3407",
-    "firefox-375-archive.png": "db87d4b8ee6641edad79047815553c34f455fbfba170a52681d537af72bc6eb9",
-    "firefox-1440-archive.png": "7fb518d311b02bb94cf30255f72a071bd9f43396913b635ab174957946d19ff9",
-    "webkit-375-archive.png": "b078c99f2a0aadcc71dda35e5b78cb0a2e338045afd761127ab7ee62108a18bc",
-    "webkit-1440-archive.png": "aadcfe1dabe92cb0f830c7ba66ed4ef15be406de97c41fddc377d1b7518b9118",
+    "chromium-375-archive.png": "d949f50c72b45d147173ca5ce39fb38d9ad31ec0fa8f1e5a1178e352066958b1",
+    "chromium-1440-archive.png": "08356f3b1890d93a60ff7a21b855f003d5057d574a9f404d321db570b1d8b61c",
+    "firefox-375-archive.png": "da3691ccd62fdadb131d878f13d0e4c285a8b41835950a52b286830d4215e8fc",
+    "firefox-1440-archive.png": "0ba3f5bf8b58f3033e984a554fa4e33fe36f8b669faaccd4313e35aebb0eb16c",
+    "webkit-375-archive.png": "37f727555a71197d82d68ad91bb1f9368dbd3808fcae4bf77de7cf2f79092c15",
+    "webkit-1440-archive.png": "450b6a15108c54ed21628e1ae25743b1f666ed00b01723e4c5d757adcbf61059",
   };
   for (const key of archiveKeys) {
     const reviewed = inventory.reviewedOverrides[key];
-    assert.equal(reviewed.workflowRun, 41371991760);
-    assert.equal(reviewed.artifactId, 13109936045);
-    assert.equal(reviewed.gitCommit, "6b0f6490eb362472ea9105ccdbc8da8270a6bb8d");
+    assert.equal(reviewed.workflowRun, 41705051657);
+    assert.equal(reviewed.artifactId, 13265103401);
+    assert.equal(reviewed.gitCommit, "8ee59ebd30c40951a298f5b3369705b9f47598f3");
     assert.match(reviewed.reason, /Reviewed all six full-size archive screenshots/u);
     assert.equal(inventory.images[key].pngSha256, expectedArchiveShas[key],
       "Archive screenshot hash must match the reviewed artifact");
