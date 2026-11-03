@@ -32,11 +32,11 @@ test("visual baselines have exact-source provenance, including approved per-imag
     assert.match(reviewed.reason, /AttoLang-wordmark/u);
   }
   const expectedArchiveShas = {
-    "chromium-375-archive.png": "edf3c793b261bb0f4dc77a6d2a948e0f1ee69819b89c2f9948a30406db72317c",
+    "chromium-375-archive.png": "65950a085acb2941e4fe41b3dd66a2ee2a91e9ad3a5e8a5cabedbdfed5445f9d",
     "chromium-1440-archive.png": "e510cf261e76cf09e348169c4e139f671dfdf120828250d5fc91220deadc3407",
-    "firefox-375-archive.png": "db87d4b8ee6641edad79047815553c34f455fbfba170a52681d537af72bc6eb9",
+    "firefox-375-archive.png": "46019a9c72914e0a65656ae3592c7fa6cff8b6f6151f70ac997449874c903480",
     "firefox-1440-archive.png": "7fb518d311b02bb94cf30255f72a071bd9f43396913b635ab174957946d19ff9",
-    "webkit-375-archive.png": "b078c99f2a0aadcc71dda35e5b78cb0a2e338045afd761127ab7ee62108a18bc",
+    "webkit-375-archive.png": "9b90265fc640a0cf6fdb6371163175dc25d939411a2eb3574e383786b95a1a31",
     "webkit-1440-archive.png": "aadcfe1dabe92cb0f830c7ba66ed4ef15be406de97c41fddc377d1b7518b9118",
   };
   for (const key of archiveKeys) {
