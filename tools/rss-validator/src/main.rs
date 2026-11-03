@@ -41,10 +41,10 @@ fn validate(feed: &str, sitemap: &str) -> Check<()> {
         return Err("RSS channel metadata differs".into());
     }
     let items: Vec<_> = channel.children().filter(|n| named(*n,"item",None)).collect();
-    if items.len() != 9 { return Err("Expected nine RSS items".into()); }
+    if items.len() != 10 { return Err("Expected ten RSS items".into()); }
     let mut seen = HashSet::new();
     for (index, item) in items.iter().enumerate() {
-        let url = format!("{ORIGIN}/logs/{}/",9-index);
+        let url = format!("{ORIGIN}/logs/{}/",10-index);
         if value(*item,"link",None)? != url || value(*item,"guid",None)? != url {
             return Err(format!("RSS link/GUID/order mismatch at item {}",index+1));
         }
@@ -87,7 +87,7 @@ fn main() {
         eprintln!("RSS validation failed: {e}");
         std::process::exit(1);
     }
-    println!("PASS RSS (Rust): nine XML-valid entries and correct sitemap");
+    println!("PASS RSS (Rust): ten XML-valid entries and correct sitemap");
 }
 fn fail(err: String) -> ! {
     eprintln!("RSS input invalid: {err}");
