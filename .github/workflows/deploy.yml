@@ -73,6 +73,13 @@ jobs:
         with:
           toolchain: "1.91.0"
 
+      - name: Verify committed Rust dependency lock without mutation
+        run: |
+          set -euo pipefail
+          test -s tools/rss-validator/Cargo.lock
+          cargo metadata --locked --format-version 1 --manifest-path tools/rss-validator/Cargo.toml > /dev/null
+          git diff --exit-code -- tools/rss-validator/Cargo.lock
+
       - name: Validate RSS feed and sitemap as XML
         run: npm run test:rss:build
 
