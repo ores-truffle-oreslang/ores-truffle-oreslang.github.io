@@ -166,7 +166,7 @@ try {
             const response = await archive.goto(base + "/logs/", { waitUntil: "load" });
             assert.equal(response.status(), 200, engine + " archive status");
             assert.equal(await archive.locator(".log-list-entry").count(), 10);
-            assert.equal(await archive.locator(".log-list-entry a").first().getAttribute("href"), "/logs/9/");
+            assert.equal(await archive.locator(".log-list-entry a").first().getAttribute("href"), "/logs/10/");
             assert.equal(await archive.locator(".log-list-entry a").last().getAttribute("href"), "/logs/1/");
             assert.equal(await archive.locator(".log-feed-link a").getAttribute("href"), "/rss.xml");
             const overflow = await archive.evaluate(() =>
