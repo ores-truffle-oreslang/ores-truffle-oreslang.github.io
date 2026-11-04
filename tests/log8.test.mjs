@@ -9,8 +9,7 @@ const article = read("src/pages/logs/8.astro");
 const inventory = JSON.parse(read("src/data/engineering-log-examples.json"));
 
 test("Log 008 has the correct title and is indexed in the canonical registry", () => {
-  assert.equal(engineeringLogs[1].number, 8);
-  assert.equal(engineeringLogs[1].title, "Actors are not lambdas");
+  assert.equal(engineeringLogs.find((entry) => entry.number === 8)?.title, "Actors are not lambdas");
   assert.match(article, /<h1>Actors are not lambdas<\/h1>/u);
   assert.match(article, /article=\{\{ published: "2026-10-16", modified: "2026-10-16", author: "Alex Mills" \}\}/u);
   assert.match(article, /href="\/logs\/7\/"/u);

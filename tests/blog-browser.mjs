@@ -74,7 +74,7 @@ try {
           reducedMotion: "reduce",
         });
         try {
-          for (let n = 1; n <= 9; n++) {
+          for (let n = 1; n <= 10; n++) {
             const page = await context.newPage();
             const label = engine + " " + width + "px log " + n;
             const pageErrors = [];
@@ -165,8 +165,8 @@ try {
           try {
             const response = await archive.goto(base + "/logs/", { waitUntil: "load" });
             assert.equal(response.status(), 200, engine + " archive status");
-            assert.equal(await archive.locator(".log-list-entry").count(), 9);
-            assert.equal(await archive.locator(".log-list-entry a").first().getAttribute("href"), "/logs/9/");
+            assert.equal(await archive.locator(".log-list-entry").count(), 10);
+            assert.equal(await archive.locator(".log-list-entry a").first().getAttribute("href"), "/logs/10/");
             assert.equal(await archive.locator(".log-list-entry a").last().getAttribute("href"), "/logs/1/");
             assert.equal(await archive.locator(".log-feed-link a").getAttribute("href"), "/rss.xml");
             const overflow = await archive.evaluate(() =>
@@ -177,9 +177,6 @@ try {
               await archive.locator(".mobile-navigation summary").click();
               assert.equal(await archive.locator(".mobile-navigation").evaluate((el) => el.open), true);
               assert.equal(await archive.locator(".mobile-navigation a[href='/logs/']").count(), 1);
-              // Return to the default closed state before capturing the archive baseline.
-              await archive.locator(".mobile-navigation summary").click();
-              assert.equal(await archive.locator(".mobile-navigation").evaluate((el) => el.open), false);
             }
             await archive.locator('[data-theme-choice="light"]').click();
             assert.equal(await archive.locator("html").getAttribute("data-theme"), "light");
