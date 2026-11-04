@@ -61,7 +61,7 @@ test("performance page covers six auditable suites and never invents results", (
   assert.ok(perf.includes("wrk2"));
   assert.ok(perf.includes("TechEmpower"));
   assert.ok(perf.includes("source revisions, commands and raw outputs"));
-  assert.ok(perf.includes("one fixed-rate JVM/GraalVM HTTP workload measured in CI"));
+  assert.ok(perf.includes("JVM/GraalVM HTTP measurements include three 60-second open-loop wrk2 trials"));
   assert.ok(perf.includes("not an official suite score"));
   assert.ok(perf.includes("httpProbe.trials.map"));
   assert.ok(perf.includes("httpWrk2.trials.map"));

@@ -31,17 +31,18 @@ test("About page explains language influences, native goals, and both name meani
   assert.ok(about.includes("AttoLang was formerly known as Oreslang."));
 });
 
-test("marketing copy states the performance, safety, and runtime proposition directly", () => {
-  assert.match(home, /more than <strong>10× the speed of Erlang<\/strong>/u);
-  assert.match(home, /<strong>one-tenth the compute<\/strong>/u);
-  assert.match(home, /type safety and memory safety/u);
-  assert.match(about, /more than <strong>10× the speed of Erlang<\/strong>/u);
-  assert.match(about, /<strong>one-tenth the compute<\/strong>/u);
-  for (const feature of ["full ahead-of-time (AOT) compilation", "native binaries",
-    "zero GC", "fault-tolerant actors", "better hot upgrades"]) {
-    assert.ok(home.includes(feature), "homepage missing " + feature);
-    assert.ok(about.includes(feature), "About page missing " + feature);
+test("marketing copy qualifies performance ambitions and backend-specific runtime goals", () => {
+  for (const [label, rawPage] of [["homepage", home], ["About", about]]) {
+    const page = rawPage.replace(/\s+/gu, " ");
+    assert.ok(page.includes("performance ambition is to exceed Erlang's throughput"), label);
+    assert.ok(page.includes("10× speed and one-tenth compute figures are design targets, not measured results"), label);
+    assert.ok(page.includes("no controlled, like-for-like Erlang comparison establishes them"), label);
+    assert.ok(page.includes("type and memory safety goals"), label);
+    assert.ok(page.includes("full ahead-of-time (AOT) compilation"), label);
+    assert.ok(page.includes("native binaries"), label);
+    assert.ok(page.includes("zero-GC execution"), label);
+    assert.ok(page.includes("fault-tolerant actors"), label);
+    assert.ok(page.includes("better hot upgrades"), label);
+    assert.ok(!page.includes("We can deliver"), label);
   }
-  assert.doesNotMatch(home, /unverified results|not measured|engineering targets/iu);
-  assert.doesNotMatch(about, /unverified results|not measured|aspiration|architectural goals/iu);
 });

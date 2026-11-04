@@ -67,14 +67,19 @@ end
           next-generation language and runtime.
         </p>
         <p>
-          We can deliver more than <strong>10× the speed of Erlang</strong> while using
-          <strong>one-tenth the compute</strong>, with the type safety and memory safety
-          developers expect from languages like Rust.
+          AttoLang's performance ambition is to exceed Erlang's throughput while using
+          substantially fewer compute resources, while pursuing the type and memory safety
+          goals associated with Rust. The often-quoted 10× speed and one-tenth compute figures
+          are design targets, not measured results; no controlled, like-for-like Erlang
+          comparison establishes them.
         </p>
         <p>
-          AttoLang offers full ahead-of-time (AOT) compilation, native binaries for all
-          platforms, zero GC, fault-tolerant actors, and better hot upgrades.
+          Design goals include full ahead-of-time (AOT) compilation, native binaries,
+          zero-GC execution, fault-tolerant actors, and better hot upgrades. These are
+          backend-specific goals, not blanket shipping guarantees; the verification matrix
+          records what is implemented and tested today.
         </p>
+        <p><a href="/stateful-applications/">See how AttoLang brings persistent actors, messaging, fault tolerance, and hot upgrades together →</a></p>
       </div>
     </div>
   </section>
