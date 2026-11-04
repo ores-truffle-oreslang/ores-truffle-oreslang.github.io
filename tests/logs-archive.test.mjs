@@ -8,22 +8,22 @@ import { engineeringLogs } from "../src/data/engineering-logs.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFileSync(join(root, path), "utf8");
 const index = read("src/pages/logs/index.astro");
-const pages = Array.from({ length: 9 }, (_, i) => read(`src/pages/logs/${i + 1}.astro`));
-const contents = Array.from({ length: 9 }, (_, i) =>
+const pages = Array.from({ length: 10 }, (_, i) => read(`src/pages/logs/${i + 1}.astro`));
+const contents = Array.from({ length: 10 }, (_, i) =>
   i < 5 ? read(`src/components/Log${i + 1}Content.astro`) : ""
 );
 const prompts = read("src/components/LogPrompt.astro");
 const archiveEntries = engineeringLogs.map((entry) => [null, String(entry.number), entry.title]);
 const normalize = (value) => value.replace(/\s+/gu, " ").trim().toLowerCase();
 
-test("archive lists each of the nine log articles once, newest first", () => {
-  assert.deepEqual(archiveEntries.map((m) => Number(m[1])), [9, 8, 7, 6, 5, 4, 3, 2, 1]);
-  assert.equal(new Set(archiveEntries.map((m) => m[1])).size, 9);
+test("archive lists each of the ten log articles once, newest first", () => {
+  assert.deepEqual(archiveEntries.map((m) => Number(m[1])), [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+  assert.equal(new Set(archiveEntries.map((m) => m[1])).size, 10);
   assert.match(index, /engineeringLogs\.map\(/u);
   assert.match(index, /src\/data\/engineering-logs|\.\.\/\.\.\/data\/engineering-logs/u);
 });
 
-for (let n = 1; n <= 9; n++) {
+for (let n = 1; n <= 10; n++) {
   test(`Log ${String(n).padStart(3, "0")} has one meaningful h1, metadata and an accessible prompt`, () => {
     const source = pages[n - 1];
     const headings = [...source.matchAll(/<h1\b[^>]*>([^<]+)<\/h1>/gu)];
@@ -73,7 +73,7 @@ test("canonical domain, robots and sitemap remain consistent", () => {
 
 test("catalog dates, titles and author never drift from article metadata", () => {
   assert.equal(engineeringLogs.length, pages.length);
-  assert.deepEqual(engineeringLogs.map((entry) => entry.number), [9, 8, 7, 6, 5, 4, 3, 2, 1]);
+  assert.deepEqual(engineeringLogs.map((entry) => entry.number), [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
   for (const entry of engineeringLogs) {
     const source = pages[entry.number - 1];
     const match = source.match(/article=\{\{\s*published: "([^"]+)",\s*modified: "([^"]+)",\s*author: "([^"]+)"/u);

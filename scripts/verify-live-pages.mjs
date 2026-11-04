@@ -47,7 +47,7 @@ const log9 = read(verified.get("/logs/9/"));
 assert.match(log9, /What AttoLang learns from Microsoft Orleans/u);
 const rss = read(verified.get("/rss.xml"));
 assert.match(rss, /AttoLang engineering logs/u);
-assert.equal([...rss.matchAll(/<item>/gu)].length, 9, "Live RSS must list nine articles");
+assert.equal([...rss.matchAll(/<item>/gu)].length, 10, "Live RSS must list ten articles");
 const png = verified.get("/brand/attolang-social.png");
 assert.ok(png.length > 1000 && png.length < 2_000_000, "Social card size");
 assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);

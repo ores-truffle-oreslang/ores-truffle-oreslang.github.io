@@ -2,7 +2,7 @@ use super::*;
 fn fixtures() -> (String, String) {
   let mut articles = String::new();
   let mut locations = format!("<url><loc>{ORIGIN}/logs/</loc></url>");
-  for number in (1..=9).rev() {
+  for number in (1..=10).rev() {
     let url = format!("{ORIGIN}/logs/{number}/");
     articles.push_str(&format!(
       r#"<item><title>AttoLang engineering update {number}</title><link>{url}</link><guid>{url}</guid><description>Architecture, actors and systems compiler engineering.</description><pubDate>Thu, 08 Oct 2026 12:00:00 GMT</pubDate><dc:creator>Alex Mills</dc:creator></item>"#
