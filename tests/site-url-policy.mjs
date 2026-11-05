@@ -41,6 +41,15 @@ export function validatedSiteUrl(raw, base, attribute = "href") {
   if (!allowed.includes(target.protocol)) {
     throw new Error("Unsafe or unsupported URL scheme in " + attribute + ": " + raw);
   }
+  // Public production pages must not link to insecure HTTP origins.
+  // Retain same-origin loopback HTTP for local Astro preview builds.
+  if (target.protocol === "http:") {
+    const baseUrl = new URL(base);
+    const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(baseUrl.hostname.toLowerCase());
+    if (!loopback || baseUrl.protocol !== "http:" || target.origin !== baseUrl.origin) {
+      throw new Error("Insecure external HTTP URL forbidden in " + attribute + ": " + raw);
+    }
+  }
   if (target.protocol === "http:" || target.protocol === "https:") {
     if (target.username || target.password) {
       throw new Error("Credential-bearing URL forbidden in " + attribute + ": " + raw);
