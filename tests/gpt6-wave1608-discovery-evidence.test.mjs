@@ -6,8 +6,17 @@ const index = readFileSync(new URL("../public/llms.txt", import.meta.url), "utf8
 
 // This is a static publication-contract test, never a compiler test.
 function safeDiscovery(text) {
+  const lines = text.split("\n");
+  const privateSources = [
+    "Java/GraalVM implementation",
+    "LLVM implementation",
+    "AttoLang formatter",
+  ];
   return /^# AttoLang$/mu.test(text)
-    && text.includes("**Private repository**")
+    && privateSources.every(label => {
+      const sourceLine = lines.find(line => line.includes(label));
+      return sourceLine?.includes("**Private repository**") === true;
+    })
     && text.includes("All backend support explicitly not-verified")
     && text.includes("Do not infer stable syntax or cross-backend parity")
     && text.includes("Select a compiler release/commit");
