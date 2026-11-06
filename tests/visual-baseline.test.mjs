@@ -32,19 +32,31 @@ test("visual baselines have exact-source provenance, including approved per-imag
     assert.match(reviewed.reason, /AttoLang-wordmark/u);
   }
   const expectedArchiveShas = {
-    "chromium-375-archive.png": "d949f50c72b45d147173ca5ce39fb38d9ad31ec0fa8f1e5a1178e352066958b1",
+    "chromium-375-archive.png": "6481db059df5d4480143b8b85be45327c524d0854e1b3859d32c7bb6d1f26d08",
     "chromium-1440-archive.png": "08356f3b1890d93a60ff7a21b855f003d5057d574a9f404d321db570b1d8b61c",
-    "firefox-375-archive.png": "da3691ccd62fdadb131d878f13d0e4c285a8b41835950a52b286830d4215e8fc",
+    "firefox-375-archive.png": "80ed3fad18d29ba6aeadae2ff7f79f192ca8ab91fa95005ba56710c2931c8c9b",
     "firefox-1440-archive.png": "0ba3f5bf8b58f3033e984a554fa4e33fe36f8b669faaccd4313e35aebb0eb16c",
-    "webkit-375-archive.png": "37f727555a71197d82d68ad91bb1f9368dbd3808fcae4bf77de7cf2f79092c15",
+    "webkit-375-archive.png": "f03d8d0b0624c48de72b487f375e2be043c765bd7194e7d94488bf1ff8fcd28c",
     "webkit-1440-archive.png": "450b6a15108c54ed21628e1ae25743b1f666ed00b01723e4c5d757adcbf61059",
   };
   for (const key of archiveKeys) {
     const reviewed = inventory.reviewedOverrides[key];
-    assert.equal(reviewed.workflowRun, 41705051657);
-    assert.equal(reviewed.artifactId, 13265103401);
-    assert.equal(reviewed.gitCommit, "8ee59ebd30c40951a298f5b3369705b9f47598f3");
-    assert.match(reviewed.reason, /Reviewed all six full-size archive screenshots/u);
+    if (key.includes("-375-")) {
+      // These three specific archive snapshots were inspected at full size,
+      // and their PNG hashes pinned to an actual, immutable Actions artifact.
+      // This is not permission to refresh any other baseline or relax thresholds.
+      assert.equal(reviewed.workflowRun, 42078761971);
+      assert.equal(reviewed.artifactId, 13452567455);
+      assert.equal(reviewed.gitCommit, "b6689bc0097462b6c3c89c1fcd40cb57adde2fbf");
+      assert.match(reviewed.reason, /Reviewed full 375×900 CI screenshot/u);
+      assert.match(reviewed.reason, /Independent external review requested/u);
+    } else {
+      // Preserve previous independently reviewed provenance for desktop.
+      assert.equal(reviewed.workflowRun, 41705051657);
+      assert.equal(reviewed.artifactId, 13265103401);
+      assert.equal(reviewed.gitCommit, "8ee59ebd30c40951a298f5b3369705b9f47598f3");
+      assert.match(reviewed.reason, /Reviewed all six full-size archive screenshots/u);
+    }
     assert.equal(inventory.images[key].pngSha256, expectedArchiveShas[key],
       "Archive screenshot hash must match the reviewed artifact");
   }
