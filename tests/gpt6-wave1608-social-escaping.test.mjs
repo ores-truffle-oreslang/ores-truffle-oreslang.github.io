@@ -17,8 +17,11 @@ test("home and article JSON-LD always escape literal script terminators", () => 
 
 
 test("JSON-LD has precisely two script sinks, each bound to its escaped serialization", () => {
-  const scripts = [...layout.matchAll(/<script\\b[^>]*type="application\\/ld\\+json"[^>]*set:html=\\{([^}]+)\\}[^>]*\\/>/gu)]
-    .map(match => match[1]).sort();
+  const scripts = layout.split("\n")
+    .filter(line => line.includes('type="application/ld+json"'))
+    .map(line => line.includes("set:html={articleJsonLd}") ? "articleJsonLd"
+      : line.includes("set:html={websiteJsonLd}") ? "websiteJsonLd" : null)
+    .sort();
   assert.deepEqual(scripts, ["articleJsonLd", "websiteJsonLd"]);
   assert.equal(layout.split(homepageEscape).length - 1, 1,
     "home JSON-LD must have one explicit escape");
@@ -35,7 +38,7 @@ test("mixed-case end tags, HTML comments and SVG payloads cannot break JSON-LD s
     "<\\u2028\\u2029&",
   ];
   for (const hostile of payloads) {
-    const serialized = JSON.stringify({ headline: hostile }).replace(/</g, "\\\\u003c");
+    const serialized = JSON.stringify({ headline: hostile }).replace(/</g, String.fromCharCode(92) + "u003c");
     assert.equal(serialized.includes("<"), false, "unescaped < in JSON-LD");
     assert.deepEqual(JSON.parse(serialized), { headline: hostile });
   }
