@@ -15,6 +15,32 @@ test("home and article JSON-LD always escape literal script terminators", () => 
   assert.ok(layout.includes('set:html={articleJsonLd}'));
 });
 
+
+test("JSON-LD has precisely two script sinks, each bound to its escaped serialization", () => {
+  const scripts = [...layout.matchAll(/<script\\b[^>]*type="application\\/ld\\+json"[^>]*set:html=\\{([^}]+)\\}[^>]*\\/>/gu)]
+    .map(match => match[1]).sort();
+  assert.deepEqual(scripts, ["articleJsonLd", "websiteJsonLd"]);
+  assert.equal(layout.split(homepageEscape).length - 1, 1,
+    "home JSON-LD must have one explicit escape");
+  assert.equal(layout.split(articleEscape).length - 1, 1,
+    "article JSON-LD must have one explicit escape");
+});
+
+test("mixed-case end tags, HTML comments and SVG payloads cannot break JSON-LD script context", () => {
+  const payloads = [
+    "</ScRiPt><script>alert('x')</script>",
+    "<!--<script>bad()</script>-->",
+    "<svg onload=alert(1)>",
+    "<script\\u2028type='text/javascript'>alert(1)</script>",
+    "<\\u2028\\u2029&",
+  ];
+  for (const hostile of payloads) {
+    const serialized = JSON.stringify({ headline: hostile }).replace(/</g, "\\\\u003c");
+    assert.equal(serialized.includes("<"), false, "unescaped < in JSON-LD");
+    assert.deepEqual(JSON.parse(serialized), { headline: hostile });
+  }
+});
+
 test("escaping preserves JSON meaning while blocking script-tag breakouts", () => {
   const hostile = '</script><script>alert("owned")</script>\u2028';
   const serialized = JSON.stringify({ headline: hostile }).replace(/</g, "\\u003c");
