@@ -14,8 +14,10 @@ function safeDiscovery(text) {
   ];
   return /^# AttoLang$/mu.test(text)
     && privateSources.every(label => {
-      const sourceLine = lines.find(line => line.includes(label));
-      return sourceLine?.includes("**Private repository**") === true;
+      const sourceLines = lines.filter(line => line.includes(label));
+      return sourceLines.length === 1
+        && sourceLines[0].startsWith("- [")
+        && sourceLines[0].includes("**Private repository**");
     })
     && text.includes("All backend support explicitly not-verified")
     && text.includes("Do not infer stable syntax or cross-backend parity")
@@ -32,6 +34,23 @@ test("public AI discovery does not promote private or speculative compiler suppo
   ]) {
     assert.ok(index.includes(before), before);
     assert.equal(safeDiscovery(index.replace(before, after)), false, "mutation: " + before);
+  }
+});
+
+
+test("duplicate public-source promotions cannot hide behind the original private entry", () => {
+  for (const sourceLabel of [
+    "Java/GraalVM implementation",
+    "LLVM implementation",
+    "AttoLang formatter",
+  ]) {
+    assert.equal(safeDiscovery(index + "\n- " + sourceLabel +
+      ": **Public repository**; all backends verified\n"), false,
+      "duplicate public claim: " + sourceLabel);
+    const original = index.split("\n").find(line => line.includes(sourceLabel));
+    assert.ok(original, "source entry exists");
+    assert.equal(safeDiscovery(index + "\n" + original + "\n"), false,
+      "duplicate private entry: " + sourceLabel);
   }
 });
 
