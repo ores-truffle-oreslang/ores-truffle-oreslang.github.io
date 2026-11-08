@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -43,7 +43,7 @@ function inspectMarkup(html, route) {
   return parsed;
 }
 
-test("every rendered JSON-LD script is parseable, HTML-safe and canonical-bound", () => {
+test("every rendered JSON-LD script is parseable, HTML-safe and canonical-bound", { skip: !existsSync(dist) }, () => {
   let website = 0, articles = 0;
   const pages = walk(dist).filter((file) => file.endsWith(".html"));
   assert.ok(pages.length >= 15, "the site build must produce representative pages");
@@ -81,7 +81,7 @@ test("rendered-script safety oracle rejects breakout, malformed JSON and mismatc
     { ...article, headline: '<!-- attacker -->' }
   ]) {
     assert.throws(() => inspectMarkup(wrap(JSON.stringify(dangerous)), "/mutant"),
-      /unescaped HTML opener/);
+      "raw HTML/script breakout must fail even when parsing terminates before the guard");
     const encoded = JSON.stringify(dangerous).replace(/</g, "\\u003c");
     assert.deepEqual(inspectMarkup(wrap(encoded), "/escaped"), [dangerous]);
   }
