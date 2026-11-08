@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, extname, relative, sep } from "node:path";
-import { htmlAttribute, validatedSiteUrl } from "./site-url-policy.mjs";
+import { htmlAttribute, siteTags, validatedSiteUrl } from "./site-url-policy.mjs";
 
 const root = join(process.cwd(), "dist");
 const origin = "https://ores-truffle-oreslang.github.io";
@@ -48,8 +48,7 @@ test("all static HTML pages exist and contain no duplicate IDs", () => {
 test("all local site links and assets resolve, including cross-page fragments", () => {
   let checked = 0;
   for (const [route, html] of markup) {
-    for (const match of html.matchAll(/<(?:a|link|script|img|source)\b[^>]*>/giu)) {
-      const tag = match[0];
+    for (const tag of siteTags(html)) {
       for (const field of ["href", "src"]) {
         const raw = attr(tag, field);
         if (!raw) continue;
