@@ -75,11 +75,17 @@ test("rendered JSON-LD is parseable, script-safe and bound to the canonical rout
 
 function safePublishedClaims(index, matrix) {
   if (typeof index !== "string" || !matrix || typeof matrix !== "object") return false;
-  const sourceLabels = ["Java/GraalVM implementation", "LLVM implementation", "AttoLang formatter"];
+  // A private-source label on a malicious redirect URL is still a disclosure.
+  const privateSourceLinks = [
+    ["Java/GraalVM implementation", "https://github.com/ores-truffle-oreslang/oreslang-source.java"],
+    ["LLVM implementation", "https://github.com/ores-truffle-oreslang/oreslang-source.llvm"],
+    ["AttoLang formatter", "https://github.com/ores-truffle-oreslang/oreslang-format"],
+  ];
   const lines = index.split("\n");
-  const sourcesPrivate = sourceLabels.every((label) => {
+  const sourcesPrivate = privateSourceLinks.every(([label, expectedUrl]) => {
     const entries = lines.filter((line) => line.startsWith("- [" + label + "]("));
-    return entries.length === 1 && entries[0].includes("**Private repository**")
+    return entries.length === 1
+      && entries[0].startsWith("- [" + label + "](" + expectedUrl + "): **Private repository**")
       && !/\bpublic repository\b/iu.test(entries[0]);
   });
   const backends = matrix.backend_keys;
@@ -129,6 +135,13 @@ test("published AI discovery and backend matrix fail closed under claim-promotio
   }
   assert.equal(safePublishedClaims(index.replace("**Private repository**", "**Private repository**; **Public repository**"), matrix), false,
     "conflicting private/public source entry");
+  assert.equal(safePublishedClaims(index.replace(
+    "https://github.com/ores-truffle-oreslang/oreslang-source.llvm",
+    "https://attacker.invalid/repo"), matrix), false, "private repository link was substituted");
+  assert.equal(safePublishedClaims(index.replace(
+    "https://github.com/ores-truffle-oreslang/oreslang-format",
+    "https://github.com/ores-truffle-oreslang/oreslang-format?redirect=https://attacker.invalid"), matrix),
+    false, "private repository link received an unreviewed redirect suffix");
   const duplicate = index.split("\n").find((line) => line.startsWith("- [LLVM implementation]("));
   assert.ok(duplicate);
   assert.equal(safePublishedClaims(index + "\n" + duplicate, matrix), false, "duplicate source listing");
