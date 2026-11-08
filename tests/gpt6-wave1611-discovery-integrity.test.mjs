@@ -16,6 +16,9 @@ const forbiddenPromotion =
 
 // The release-discovery index is public prose, not a compiler/guest attestation.
 function safelyDescribesPrivateSources(content) {
+  // Publication can be compromised by a contradictory claim anywhere in the
+  // index, even when all reviewed source rows remain byte-for-byte intact.
+  if (forbiddenPromotion.test(content)) return false;
   if (!content.startsWith("# AttoLang\n") ||
       !content.includes("All backend support explicitly not-verified") ||
       !content.includes("Do not infer stable syntax or cross-backend parity")) return false;
@@ -82,4 +85,26 @@ test("removing any of the published evidence limitations is rejected", () => {
     assert.equal(safelyDescribesPrivateSources(index.replace(original, "")), false,
       label + " missing");
   }
+});
+
+test("unrelated sections cannot smuggle public release or backend parity promotions", () => {
+  for (const claim of [
+    "All backends verified",
+    "Native guest parity proven",
+    "Fully open source",
+    "UNRESTRICTED SOURCE ACCESS",
+    "Public repository",
+    "fully supported",
+  ]) {
+    const mutated = index + "\n## Release qualification\n" + claim + "\n";
+    assert.equal(safelyDescribesPrivateSources(mutated), false,
+      "appended contradictory release claim: " + claim);
+  }
+});
+
+test("a positive caution cannot cancel a contradictory claim in the same paragraph", () => {
+  const notice = "All backend support explicitly not-verified";
+  const mutated = index.replace(notice, notice + "; ALL BACKENDS VERIFIED");
+  assert.notEqual(mutated, index);
+  assert.equal(safelyDescribesPrivateSources(mutated), false);
 });
