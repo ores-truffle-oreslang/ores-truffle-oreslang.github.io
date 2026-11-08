@@ -49,7 +49,7 @@ function validatePublication(index, matrix) {
   assert.match(index, /zero compiler-verified/);
   // A contradictory promotion elsewhere in the discovery text must not
   // override the correctly scoped private-source rows.
-  assert.doesNotMatch(index, /\\*\\*Public repository\\*\\*|(?:all|five) backends? (?:are )?(?:fully )?(?:verified|supported)|(?:native )?compiler (?:executed|certified)/iu);
+  assert.doesNotMatch(index, /\*\*Public repository\*\*|(?:all|five) backends? (?:are )?(?:fully )?(?:verified|supported)|(?:native )?compiler (?:executed|certified)/iu);
   assert.match(index, /does not imply that AI services crawl, index, train on/);
 
   assert.equal(matrix.schema_version, 1);
