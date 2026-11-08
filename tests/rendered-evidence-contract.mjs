@@ -80,26 +80,36 @@ function safePublishedClaims(index, matrix) {
   const sourcesPrivate = sourceLabels.every((label) => {
     const entries = lines.filter((line) => line.startsWith("- [" + label + "]("));
     return entries.length === 1 && entries[0].includes("**Private repository**")
-      && !entries[0].includes("**Public repository**");
+      && !/\\bpublic repository\\b/iu.test(entries[0]);
   });
   const backends = matrix.backend_keys;
   const features = matrix.features;
+  const canonicalBackends = ["java-graalvm", "llvm", "dotnet", "wasm"];
+  const exactDraftEvidencePolicy = "No entry may be marked supported solely because of design prose, a source-file hash, or unit tests of the documentation harness.";
   return sourcesPrivate
     && index.includes("All backend support explicitly not-verified")
     && index.includes("Do not infer stable syntax or cross-backend parity")
+    && !/^\\s*All backend support verified\\b/imu.test(index)
+    && !/^\\s*All backends? (?:verified|certified|supported)\\b/imu.test(index)
+    && matrix.schema_version === 1
+    && matrix.reference_id === "draft-2026-10-14"
+    && matrix.evidence_policy === exactDraftEvidencePolicy
     && matrix.status === "documentation-draft"
     && matrix.normative === false
     && matrix.release_tag === null
-    && Array.isArray(backends) && backends.length === 4
-    && new Set(backends).size === backends.length
+    && Array.isArray(backends) && backends.length === canonicalBackends.length
+    && canonicalBackends.every((backend, index) => backends[index] === backend)
     && Array.isArray(features) && features.length >= 10
     && new Set(features.map((feature) => feature.id)).size === features.length
     && features.every((feature) => feature && typeof feature === "object"
+      && feature.design_status === "described"
       && feature.support && typeof feature.support === "object"
       && !Array.isArray(feature.support)
       && Object.keys(feature.support).length === backends.length
       && Object.keys(feature.support).every((key) => backends.includes(key))
       && backends.every((backend) => feature.support[backend] === "not-verified"))
+    && matrix.examples?.repository === "ores-truffle-oreslang/oreslang-demos"
+    && matrix.examples?.verification_scope === "historical-source-integrity-only"
     && matrix.examples?.public_verified_sources === 0
     && matrix.examples?.has_verified_compilation === false;
 }
@@ -123,7 +133,25 @@ test("published AI discovery and backend matrix fail closed under claim-promotio
   assert.ok(duplicate);
   assert.equal(safePublishedClaims(index + "\n" + duplicate, matrix), false, "duplicate source listing");
 
+  assert.equal(safePublishedClaims(index + "\nAll backend support verified\n", matrix), false,
+    "contradictory appended verification claim");
+  assert.equal(safePublishedClaims(index.replace("**Private repository**", "**Private repository**; public repository"), matrix), false,
+    "case-varied public source promotion");
   for (const mutate of [
+    (x) => { x.schema_version = 2; },
+    (x) => { x.reference_id = "released-2026-11"; },
+    (x) => { x.evidence_policy = "All compiler backends have been independently verified."; },
+    (x) => { x.examples.verification_scope = "compiled-guest-parity"; },
+    (x) => { x.examples.repository = "unreviewed/example-source"; },
+    (x) => { x.features[0].design_status = "implemented"; },
+    (x) => {
+      const prior = x.backend_keys[0];
+      x.backend_keys[0] = "unapproved-backend";
+      for (const feature of x.features) {
+        feature.support["unapproved-backend"] = feature.support[prior];
+        delete feature.support[prior];
+      }
+    },
     (x) => { x.normative = true; },
     (x) => { x.status = "released"; },
     (x) => { x.release_tag = "v1.0.0"; },
