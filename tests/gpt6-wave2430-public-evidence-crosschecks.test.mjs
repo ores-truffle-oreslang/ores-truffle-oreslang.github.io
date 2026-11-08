@@ -47,6 +47,9 @@ function validatePublication(index, matrix) {
   assert.match(index, /All backend support explicitly not-verified/);
   assert.match(index, /Do not infer stable syntax or cross-backend parity/);
   assert.match(index, /zero compiler-verified/);
+  // A contradictory promotion elsewhere in the discovery text must not
+  // override the correctly scoped private-source rows.
+  assert.doesNotMatch(index, /\\*\\*Public repository\\*\\*|(?:all|five) backends? (?:are )?(?:fully )?(?:verified|supported)|(?:native )?compiler (?:executed|certified)/iu);
   assert.match(index, /does not imply that AI services crawl, index, train on/);
 
   assert.equal(matrix.schema_version, 1);
@@ -58,6 +61,9 @@ function validatePublication(index, matrix) {
   assert.ok(Array.isArray(matrix.features) && matrix.features.length > 0);
   assert.equal(new Set(matrix.features.map(row => row.id)).size, matrix.features.length);
   for (const row of matrix.features) {
+    assert.equal(row.design_status, "described", "design-only: " + row.id);
+    assert.ok(/not established|not implied/u.test(row.notes),
+      "feature note must carry uncertainty: " + row.id);
     assert.deepEqual(Object.keys(row.support).sort(), [...matrix.backend_keys].sort(),
       "support keys of " + row.id);
     for (const status of Object.values(row.support)) assert.equal(status, "not-verified");
@@ -124,4 +130,20 @@ test("feature status cannot be promoted by a missing or extra backend field", ()
   const extra = structuredClone(original);
   extra.features[0].support["unverified-new-backend"] = "supported";
   assert.throws(() => validatePublication(discovery, extra));
+});
+
+test("contradictory evidence promotions and implicit implementation claims fail closed", () => {
+  for (const claim of [
+    "\n## Release notes\nAll backends are fully verified.\n",
+    "\n## Release notes\n**Public repository**\n",
+    "\n## Release notes\nNative compiler certified\n",
+  ]) assert.throws(() => validatePublication(discovery + claim, original));
+
+  const falselyDescribed = structuredClone(original);
+  falselyDescribed.features[0].design_status = "implemented";
+  assert.throws(() => validatePublication(discovery, falselyDescribed));
+
+  const noUncertainty = structuredClone(original);
+  noUncertainty.features[0].notes = "Compiled and supported on all targets";
+  assert.throws(() => validatePublication(discovery, noUncertainty));
 });
