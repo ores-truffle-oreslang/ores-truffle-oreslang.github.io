@@ -58,8 +58,74 @@ export function validatedSiteUrl(raw, base, attribute = "href") {
   return target;
 }
 
+/**
+ * Iterate full opening tags, respecting quoted ">" and "<" characters.
+ * A regex ending at the first ">" silently truncates an unsafe real href/src
+ * when an unrelated attribute contains ">" before that href/src.
+ */
+export function* siteTags(html) {
+  if(typeof html!=="string") throw new TypeError("HTML markup must be a string");
+  const opener=/<(?:a|link|script|img|source)\b/giu;
+  let match;
+  while((match=opener.exec(html))!==null) {
+    let quote=null;
+    let end=-1;
+    for(let i=opener.lastIndex;i<html.length;i++) {
+      const ch=html[i];
+      if(quote!==null) {
+        if(ch===quote) quote=null;
+      } else if(ch==='"'||ch==="'") {
+        quote=ch;
+      } else if(ch===">") {
+        end=i+1;
+        break;
+      } else if(ch==="<") {
+        throw new Error("Malformed HTML opening tag before another tag");
+      }
+    }
+    if(end<0) throw new Error("Unterminated HTML opening tag");
+    yield html.slice(match.index,end);
+    opener.lastIndex=end;
+  }
+}
+
+/** Read an actual attribute, never a lookalike inside another quoted value. */
 export function htmlAttribute(tag, name) {
-  const found = tag.match(new RegExp(
-    "(?:^|\\s)" + name + "\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)'|([^\\s>\"']+))", "iu"));
-  return found ? (found[1] ?? found[2] ?? found[3]) : null;
+  if(typeof tag!=="string" || !/^<[A-Za-z]/u.test(tag)
+      || typeof name!=="string" || !/^[a-z][a-z0-9-]*$/iu.test(name))
+    throw new TypeError("Invalid HTML tag or attribute selector");
+  let i=1;
+  // Skip tag name, then parse attributes as a lexical sequence.
+  while(i<tag.length && !/[\t\n\f\r />]/u.test(tag[i])) i++;
+  const wanted=name.toLowerCase();
+  while(i<tag.length) {
+    while(i<tag.length && /[\t\n\f\r ]/u.test(tag[i])) i++;
+    if(i>=tag.length||tag[i]===">") break;
+    if(tag[i]==="/"&&tag[i+1]===">") break;
+    const begin=i;
+    while(i<tag.length && !/[\t\n\f\r />=]/u.test(tag[i])) i++;
+    if(i===begin) throw new Error("Malformed HTML attribute name");
+    const key=tag.slice(begin,i).toLowerCase();
+    while(i<tag.length && /[\t\n\f\r ]/u.test(tag[i])) i++;
+    let value="";
+    if(tag[i]==="=") {
+      i++;
+      while(i<tag.length && /[\t\n\f\r ]/u.test(tag[i])) i++;
+      if(tag[i]==="'"||tag[i]==='"') {
+        const quote=tag[i++];
+        const valueStart=i;
+        while(i<tag.length&&tag[i]!==quote) i++;
+        if(i>=tag.length) throw new Error("Unterminated quoted HTML attribute");
+        value=tag.slice(valueStart,i++);
+      } else {
+        const valueStart=i;
+        while(i<tag.length&&!/[\t\n\f\r >]/u.test(tag[i])) i++;
+        if(i===valueStart) throw new Error("Missing HTML attribute value");
+        value=tag.slice(valueStart,i);
+      }
+    }
+    // HTML drops duplicate attributes after the first occurrence.
+    if(key===wanted) return value;
+  }
+  return null;
 }
