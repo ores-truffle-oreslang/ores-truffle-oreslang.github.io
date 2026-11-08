@@ -25,7 +25,7 @@ function inspectMarkup(html, route) {
   const parsed = [];
   for (const [index, contents] of blocks.entries()) {
     assert.ok(!contents.includes("<"), route + " JSON-LD " + index + " contains an unescaped HTML opener");
-    assert.ok(!contents.includes("-->"), route + " JSON-LD " + index + " contains comment terminator");
+    // An isolated "-->" is safe inside script raw text once literal "<" is escaped.
     const json = JSON.parse(contents);
     assert.equal(json["@context"], "https://schema.org", route + " schema context");
     assert.ok(json["@type"] === "WebSite" || json["@type"] === "TechArticle",
