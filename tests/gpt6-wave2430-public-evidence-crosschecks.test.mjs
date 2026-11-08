@@ -27,7 +27,17 @@ function validatePublication(index, matrix) {
     assert.equal(url.username, "");
     assert.equal(url.password, "");
     assert.equal(url.search, "");
+    assert.equal(url.hash, "");
+    assert.equal(url.port, "");
   }
+  // A new source label with a different name must not evade per-label checks.
+  const sectionStart = index.indexOf("\n## Source and verification\n");
+  const sectionEnd = index.indexOf("\n## Reliability notice\n", sectionStart + 1);
+  assert.ok(sectionStart !== -1 && sectionEnd > sectionStart, "source section delimiters");
+  const sourceRows = index.slice(sectionStart, sectionEnd).split(/\r?\n/)
+    .filter(line => line.startsWith("- "));
+  assert.equal(sourceRows.length, SOURCE_REPOS.size, "no undeclared or duplicated source claims");
+  assert.ok(sourceRows.every(line => line.startsWith("- [")), "no unlinked source claims");
   for (const [label, name] of SOURCE_REPOS) {
     const hits = entries.filter(line => line.startsWith("- [" + label + "]("));
     assert.equal(hits.length, 1, "exactly one source entry: " + label);
@@ -76,6 +86,14 @@ test("forged public source entries, credentials, or insecure link origins are re
     discovery.replace("https://github.com/ores-truffle-oreslang/oreslang-source.java",
       "https://user:secret@github.com/ores-truffle-oreslang/oreslang-source.java"),
     discovery + "\n- [LLVM implementation](https://github.com/ores-truffle-oreslang/oreslang-source.llvm): **Public repository**\n",
+    discovery.replace("## Source and verification\n",
+      "## Source and verification\n- [Rust backend](https://github.com/ores-truffle-oreslang/oreslang-source.rs): **Public repository**; compiler verified\n"),
+    discovery.replace("https://github.com/ores-truffle-oreslang/oreslang-source.java",
+      "https://github.com/ores-truffle-oreslang/oreslang-source.java#verified"),
+    discovery.replace("https://github.com/ores-truffle-oreslang/oreslang-source.java",
+      "https://github.com:8443/ores-truffle-oreslang/oreslang-source.java"),
+    discovery.replace("## Source and verification\n",
+      "## Source and verification\n- [Java mirror](https://github.com/ores-truffle-oreslang/oreslang-source.java): **Private repository**; verified native source\n"),
   ]) assert.throws(() => validatePublication(mutated, original));
 });
 
