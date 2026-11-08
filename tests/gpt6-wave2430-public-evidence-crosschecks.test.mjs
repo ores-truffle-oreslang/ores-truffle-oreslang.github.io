@@ -74,8 +74,16 @@ function validatePublication(index, matrix) {
   assert.equal(matrix.examples.inventory_url,
     "https://github.com/" + matrix.examples.repository + "/blob/" +
     matrix.examples.inventory_commit + "/" + matrix.examples.inventory_path);
-  assert.match(index, /features\.json/);
-  assert.ok(index.includes(matrix.examples.inventory_url));
+  // Do not permit a safe-sounding description to accompany a swapped link.
+  const matrixRows = entries.filter(line => line.startsWith("- [Feature support matrix]("));
+  assert.equal(matrixRows.length, 1);
+  assert.equal(matrixRows[0],
+    "- [Feature support matrix](https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/features.json): All backend support explicitly not-verified by this publication");
+  const inventoryRows = entries.filter(line =>
+    line.startsWith("- [Historical example source inventory]("));
+  assert.equal(inventoryRows.length, 1);
+  assert.ok(inventoryRows[0].includes("](" + matrix.examples.inventory_url + ")"));
+  assert.match(inventoryRows[0], /zero compiler-verified/u);
 }
 
 test("discovery links and feature matrix agree on the draft-only evidence boundary", () => {
@@ -131,6 +139,25 @@ test("feature status cannot be promoted by a missing or extra backend field", ()
   extra.features[0].support["unverified-new-backend"] = "supported";
   assert.throws(() => validatePublication(discovery, extra));
 });
+
+test("swapped feature-matrix and historical inventory links are rejected", () => {
+  const featureUrl = "https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/features.json";
+  for (const altered of [
+    discovery.replace(featureUrl,
+      "https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/features.json.bak"),
+    discovery.replace(featureUrl,
+      "https://ores-truffle-oreslang.github.io/language/draft-2026-10-14/verified.json"),
+    discovery.replace("- [Feature support matrix]", "- [Feature support matrix (verified)]"),
+    discovery.replace("zero compiler-verified", "one compiler-verified"),
+    discovery.replace(matrixInventoryUrl(original), "https://github.com/ores-truffle-oreslang/oreslang-demos/blob/main/ai/examples.manifest.json"),
+  ]) {
+    assert.throws(() => validatePublication(altered, original));
+  }
+});
+
+function matrixInventoryUrl(matrix) {
+  return matrix.examples.inventory_url;
+}
 
 test("contradictory evidence promotions and implicit implementation claims fail closed", () => {
   for (const claim of [
