@@ -14,9 +14,24 @@ const canonical = (route) => new URL(route, siteOrigin).href;
 
 function structuredDataScripts(html) {
   return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/giu)]
-    .filter((match) => /(?:^|\s)type\s*=\s*["']application\/ld\+json["']/iu.test(match[1]))
+    .filter((match) => /(?:^|\s)type\s*=\s*(?:"application\/ld\+json"|'application\/ld\+json'|application\/ld\+json(?=\s|$))/iu.test(match[1]))
     .map((match) => match[2]);
 }
+
+test("JSON-LD sink census catches quoted, unquoted and case-varied script tags", () => {
+  for (const opener of [
+    '<script type="application/ld+json">',
+    "<SCRIPT TYPE='application/ld+json'>",
+    "<script type=application/ld+json>",
+    '<script type = "application/ld+json" data-source="site">',
+  ]) {
+    const sample = opener + '{"@type":"TechArticle"}' + "</script>";
+    assert.equal(structuredDataScripts(sample).length, 1, "missed sink: " + opener);
+    assert.equal(structuredDataScripts(sample + sample).length, 2,
+      "duplicate sink slipped through: " + opener);
+  }
+  assert.equal(structuredDataScripts('<script type="module">alert(1)</script>').length, 0);
+});
 
 test("rendered JSON-LD is parseable, script-safe and bound to the canonical route", () => {
   const pages = walk(dist);
@@ -64,7 +79,8 @@ function safePublishedClaims(index, matrix) {
   const lines = index.split("\n");
   const sourcesPrivate = sourceLabels.every((label) => {
     const entries = lines.filter((line) => line.startsWith("- [" + label + "]("));
-    return entries.length === 1 && entries[0].includes("**Private repository**");
+    return entries.length === 1 && entries[0].includes("**Private repository**")
+      && !entries[0].includes("**Public repository**");
   });
   const backends = matrix.backend_keys;
   const features = matrix.features;
@@ -78,7 +94,12 @@ function safePublishedClaims(index, matrix) {
     && new Set(backends).size === backends.length
     && Array.isArray(features) && features.length >= 10
     && new Set(features.map((feature) => feature.id)).size === features.length
-    && features.every((feature) => backends.every((backend) => feature.support?.[backend] === "not-verified"))
+    && features.every((feature) => feature && typeof feature === "object"
+      && feature.support && typeof feature.support === "object"
+      && !Array.isArray(feature.support)
+      && Object.keys(feature.support).length === backends.length
+      && Object.keys(feature.support).every((key) => backends.includes(key))
+      && backends.every((backend) => feature.support[backend] === "not-verified"))
     && matrix.examples?.public_verified_sources === 0
     && matrix.examples?.has_verified_compilation === false;
 }
@@ -96,6 +117,8 @@ test("published AI discovery and backend matrix fail closed under claim-promotio
     assert.ok(index.includes(from), "missing mutation marker " + from);
     assert.equal(safePublishedClaims(index.replace(from, to), matrix), false, from);
   }
+  assert.equal(safePublishedClaims(index.replace("**Private repository**", "**Private repository**; **Public repository**"), matrix), false,
+    "conflicting private/public source entry");
   const duplicate = index.split("\n").find((line) => line.startsWith("- [LLVM implementation]("));
   assert.ok(duplicate);
   assert.equal(safePublishedClaims(index + "\n" + duplicate, matrix), false, "duplicate source listing");
@@ -109,6 +132,10 @@ test("published AI discovery and backend matrix fail closed under claim-promotio
     (x) => { x.features[0].support[x.backend_keys[0]] = "supported"; },
     (x) => { x.features.push(structuredClone(x.features[0])); },
     (x) => { x.backend_keys.push(x.backend_keys[0]); },
+    (x) => { x.features[0].support.forge = "supported"; },
+    (x) => { x.features[0].support.forge = "not-verified"; },
+    (x) => { delete x.features[0].support[x.backend_keys[0]]; },
+    (x) => { x.features[0].support[x.backend_keys[0]] = "verified"; },
   ]) {
     const altered = structuredClone(matrix);
     mutate(altered);
