@@ -80,7 +80,7 @@ function safePublishedClaims(index, matrix) {
   const sourcesPrivate = sourceLabels.every((label) => {
     const entries = lines.filter((line) => line.startsWith("- [" + label + "]("));
     return entries.length === 1 && entries[0].includes("**Private repository**")
-      && !/\\bpublic repository\\b/iu.test(entries[0]);
+      && !/\bpublic repository\b/iu.test(entries[0]);
   });
   const backends = matrix.backend_keys;
   const features = matrix.features;
@@ -89,8 +89,8 @@ function safePublishedClaims(index, matrix) {
   return sourcesPrivate
     && index.includes("All backend support explicitly not-verified")
     && index.includes("Do not infer stable syntax or cross-backend parity")
-    && !/^\\s*All backend support verified\\b/imu.test(index)
-    && !/^\\s*All backends? (?:verified|certified|supported)\\b/imu.test(index)
+    && !/^\s*All backend support verified\b/imu.test(index)
+    && !/^\s*All backends? (?:verified|certified|supported)\b/imu.test(index)
     && matrix.schema_version === 1
     && matrix.reference_id === "draft-2026-10-14"
     && matrix.evidence_policy === exactDraftEvidencePolicy
