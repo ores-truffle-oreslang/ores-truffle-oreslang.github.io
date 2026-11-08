@@ -73,9 +73,9 @@ test("quoted whitespace and angle brackets do not create fictitious attributes",
 
 test("malformed quoted tags fail closed before link policy can be bypassed",()=>{
   for(const html of [
-    '<a title="unfinished href="javascript:alert(1)>',
+    '<a title="unfinished href=javascript:alert(1)>',
     "<img alt='unfinished src=javascript:alert(1)>",
-    '<script data-note="unfinished src="data:text/javascript,evil>'
+    '<script data-note="unfinished src=data:text/javascript,evil>'
   ]) {
     assert.throws(()=>[...siteTags(html)],/Unterminated/u,html);
   }
