@@ -4,7 +4,7 @@
  * comparing raw HTML strings alone misses dangerous encoded schemes.
  *
  * Relative/local and HTTPS links, plus mailto/tel anchors, remain valid.
- * Executable, inline-data, privileged, and unknown schemes fail the build.
+ * Executable, inline-data, privileged, unknown schemes and bidi-spoofing\n * controls fail the build.
  */
 const namedEntities = new Map([
   ["amp", "&"], ["quot", '"'], ["apos", "'"], ["lt", "<"], ["gt", ">"],
@@ -29,7 +29,7 @@ export function decodeUrlAttribute(raw) {
 export function validatedSiteUrl(raw, base, attribute = "href") {
   const decoded = decodeUrlAttribute(raw);
   if (!decoded || decoded !== decoded.trim()
-      || /[\u0000-\u001f\u007f]/u.test(decoded)) {
+      || /[\u0000-\u001f\u007f\u200e\u200f\u202a-\u202e\u2066-\u2069]/u.test(decoded)) {
     throw new Error("Unsafe whitespace or control character in " + attribute + ": " + raw);
   }
   let target;
