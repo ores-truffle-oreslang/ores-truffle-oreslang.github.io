@@ -49,7 +49,11 @@ test("all local site links and assets resolve, including cross-page fragments", 
   let checked = 0;
   for (const [route, html] of markup) {
     for (const tag of siteTags(html)) {
-      for (const field of ["href", "src"]) {
+      const tagName = /^<([a-z][a-z0-9-]*)/iu.exec(tag)?.[1].toLowerCase();
+      // A base element silently changes how every relative URL resolves.
+      assert.notEqual(tagName, "base", route + " unexpected HTML base element");
+      const extra = { form: ["action"], video: ["poster"], object: ["data"] };
+      for (const field of ["href", "src", ...(extra[tagName] ?? [])]) {
         const raw = attr(tag, field);
         if (!raw) continue;
         let target;

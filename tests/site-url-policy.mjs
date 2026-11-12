@@ -65,7 +65,7 @@ export function validatedSiteUrl(raw, base, attribute = "href") {
  */
 export function* siteTags(html) {
   if(typeof html!=="string") throw new TypeError("HTML markup must be a string");
-  const opener=/<(?:a|link|script|img|source)\b/giu;
+  const opener=/<(?:a|link|script|img|source|iframe|embed|object|form|video|audio|track|base)\b/giu;
   let match;
   while((match=opener.exec(html))!==null) {
     let quote=null;
