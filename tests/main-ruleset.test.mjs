@@ -24,6 +24,9 @@ test("proposed ruleset is a static admin template, not evidence of active enforc
   const config = load();
   assert.equal(assertMainRuleset(config), true);
   assert.equal(config.enforcement, "active", "administrator should apply it in active mode");
+  const owners = readFileSync(new URL("../.github/CODEOWNERS", import.meta.url), "utf8");
+  assert.match(owners, /^\* @ORESoftware @the1mills$/mu,
+    "both trusted non-self-review options must be recorded");
   const doc = readFileSync(new URL("../docs/MAIN_BRANCH_GOVERNANCE.md", import.meta.url), "utf8");
   assert.match(doc, /not applied|not installed/iu);
   assert.match(doc, /administrator/u);
@@ -45,6 +48,7 @@ test("inactive, bypassable, unscoped, review-free or weak rulesets fail", () => 
     r => {r.ruleset.conditions.ref_name.include = ["~ALL"];},
     r => {r.ruleset.rules = r.ruleset.rules.filter(x => x.type !== "deletion");},
     r => {r.ruleset.rules.find(x => x.type === "pull_request").parameters.required_approving_review_count=0;},
+    r => {r.ruleset.rules.find(x => x.type === "pull_request").parameters.require_code_owner_review=false;},
     r => {r.ruleset.rules.find(x => x.type === "pull_request").parameters.require_last_push_approval=false;},
     r => {r.ruleset.rules.find(x => x.type === "required_status_checks").parameters.strict_required_status_checks_policy=false;},
     r => {r.ruleset.rules.find(x => x.type === "required_status_checks").parameters.required_status_checks[0].integration_id=12345;}
