@@ -20,6 +20,7 @@ export function assertMainRuleset(rule) {
     "required_review_thread_resolution"]) {
     assert.equal(pr[prop], true, prop + " must be enabled");
   }
+  assert.equal(pr.require_code_owner_review, true, "codeowner approval required");
   assert.ok(pr.required_approving_review_count >= 1, "independent approval required");
   const checks = rule.rules.find(r => r.type === "required_status_checks").parameters;
   assert.equal(checks.strict_required_status_checks_policy, true, "head must be current with main");
